@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:bakahyou/utils/constants/app_constants.dart';
 
 import 'package:bakahyou/utils/settings/settings_enums.dart';
@@ -67,6 +69,24 @@ class SettingsManager extends ChangeNotifier {
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     
+    // Detect fresh install by checking a marker in the temporary directory.
+    // The temporary directory (Library/Caches on iOS) is NOT backed up by the OS,
+    // so if the app is deleted and reinstalled, this directory will be empty.
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final markerFile = File('${tempDir.path}/.install_marker');
+      if (!await markerFile.exists()) {
+        // This is a fresh install or the cache was wiped. 
+        // We force onboarding even if SharedPreferences were restored from a backup.
+        await prefs.setBool(_onboardingCompletedKey, false);
+        // Create the marker so we don't reset again until the next reinstall
+        await markerFile.writeAsString(DateTime.now().toIso8601String());
+      }
+    } catch (e) {
+      // If we can't check the marker (e.g. path_provider error), 
+      // fall back to default behavior.
+    }
+
     // Load List Style
     final listStyleIndex = prefs.getInt(_listStyleKey);
     if (listStyleIndex != null && listStyleIndex >= 0 && listStyleIndex < AppListStyle.values.length) {
