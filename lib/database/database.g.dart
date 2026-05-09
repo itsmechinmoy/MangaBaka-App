@@ -3,37 +3,6 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-mixin _$SeriesDaoMixin on DatabaseAccessor<AppDatabase> {
-  $SeriesTableTable get seriesTable => attachedDatabase.seriesTable;
-  SeriesDaoManager get managers => SeriesDaoManager(this);
-}
-
-class SeriesDaoManager {
-  final _$SeriesDaoMixin _db;
-  SeriesDaoManager(this._db);
-  $$SeriesTableTableTableManager get seriesTable =>
-      $$SeriesTableTableTableManager(_db.attachedDatabase, _db.seriesTable);
-}
-
-mixin _$LibraryEntriesDaoMixin on DatabaseAccessor<AppDatabase> {
-  $SeriesTableTable get seriesTable => attachedDatabase.seriesTable;
-  $LibraryEntriesTableTable get libraryEntriesTable =>
-      attachedDatabase.libraryEntriesTable;
-  LibraryEntriesDaoManager get managers => LibraryEntriesDaoManager(this);
-}
-
-class LibraryEntriesDaoManager {
-  final _$LibraryEntriesDaoMixin _db;
-  LibraryEntriesDaoManager(this._db);
-  $$SeriesTableTableTableManager get seriesTable =>
-      $$SeriesTableTableTableManager(_db.attachedDatabase, _db.seriesTable);
-  $$LibraryEntriesTableTableTableManager get libraryEntriesTable =>
-      $$LibraryEntriesTableTableTableManager(
-        _db.attachedDatabase,
-        _db.libraryEntriesTable,
-      );
-}
-
 class $SeriesTableTable extends SeriesTable
     with TableInfo<$SeriesTableTable, SeriesTableData> {
   @override
@@ -3354,4 +3323,35 @@ class $AppDatabaseManager {
       $$SeriesTableTableTableManager(_db, _db.seriesTable);
   $$LibraryEntriesTableTableTableManager get libraryEntriesTable =>
       $$LibraryEntriesTableTableTableManager(_db, _db.libraryEntriesTable);
+}
+
+mixin _$SeriesDaoMixin on DatabaseAccessor<AppDatabase> {
+  $SeriesTableTable get seriesTable => attachedDatabase.seriesTable;
+  SeriesDaoManager get managers => SeriesDaoManager(this);
+}
+
+class SeriesDaoManager {
+  final _$SeriesDaoMixin _db;
+  SeriesDaoManager(this._db);
+  $$SeriesTableTableTableManager get seriesTable =>
+      $$SeriesTableTableTableManager(_db.attachedDatabase, _db.seriesTable);
+}
+
+mixin _$LibraryEntriesDaoMixin on DatabaseAccessor<AppDatabase> {
+  $SeriesTableTable get seriesTable => attachedDatabase.seriesTable;
+  $LibraryEntriesTableTable get libraryEntriesTable =>
+      attachedDatabase.libraryEntriesTable;
+  LibraryEntriesDaoManager get managers => LibraryEntriesDaoManager(this);
+}
+
+class LibraryEntriesDaoManager {
+  final _$LibraryEntriesDaoMixin _db;
+  LibraryEntriesDaoManager(this._db);
+  $$SeriesTableTableTableManager get seriesTable =>
+      $$SeriesTableTableTableManager(_db.attachedDatabase, _db.seriesTable);
+  $$LibraryEntriesTableTableTableManager get libraryEntriesTable =>
+      $$LibraryEntriesTableTableTableManager(
+        _db.attachedDatabase,
+        _db.libraryEntriesTable,
+      );
 }
