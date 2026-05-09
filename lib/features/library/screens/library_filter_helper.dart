@@ -140,6 +140,7 @@ class LibraryFilterHelper {
       if (!LibraryScreenConstants.knownStates.contains(state)) {
         state = 'reading';
       }
+      
       return state == tabKey;
     }).toList();
   }

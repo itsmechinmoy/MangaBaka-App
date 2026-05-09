@@ -127,7 +127,9 @@ class _LibraryScreenState extends State<LibraryScreen>
   }
 
   Future<void> _onRefresh() async {
-    await _libraryService.syncLibrary();
+    // We don't await here so the RefreshIndicator spinner disappears immediately.
+    // The global SyncProgressOverlay handles the visual progress.
+    _libraryService.syncLibrary().catchError((_) {});
   }
 
   @override
@@ -310,7 +312,18 @@ class _LibraryScreenState extends State<LibraryScreen>
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text(l10n.translate('empty_library')));
+          return RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: Center(child: Text(l10n.translate('empty_library'))),
+                ),
+              ],
+            ),
+          );
         }
 
         return ListenableBuilder(
@@ -346,61 +359,70 @@ class _LibraryScreenState extends State<LibraryScreen>
   }
 
   Widget _buildTabContent(List<LibraryEntry> items, String tabKey) {
-    if (items.isEmpty) {
-      final l10n = LocalizationService();
-      return Center(
-        child: Text(
-          l10n.translate('no_results'),
-          style: TextStyle(color: AppConstants.textMutedColor),
-        ),
-      );
-    }
-
+    final l10n = LocalizationService();
+    
     return RefreshIndicator(
       onRefresh: _onRefresh,
-      child: ListenableBuilder(
-        listenable: SettingsManager(),
-        builder: (context, _) {
-          final settings = SettingsManager();
-          final isGrid = settings.separateListStyles
-              ? settings.libraryListStyle.isGrid
-              : settings.currentListStyle.isGrid;
-
-          if (isGrid) {
-            return GridView.builder(
+      child: items.isEmpty
+          ? CustomScrollView(
               controller: _scrollControllers[tabKey],
-              padding: const EdgeInsets.all(12),
-              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 160,
-                childAspectRatio: 0.65,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final entry = items[index];
-                return GestureDetector(
-                  onTap: () => _navigateToSeriesDetail(entry.series),
-                  child: EntryListItem(series: entry.series, isLibrary: true),
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverFillRemaining(
+                  child: Center(
+                    child: Text(
+                      l10n.translate('no_results'),
+                      style: TextStyle(color: AppConstants.textMutedColor),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : ListenableBuilder(
+              listenable: SettingsManager(),
+              builder: (context, _) {
+                final settings = SettingsManager();
+                final isGrid = settings.separateListStyles
+                    ? settings.libraryListStyle.isGrid
+                    : settings.currentListStyle.isGrid;
+
+                if (isGrid) {
+                  return GridView.builder(
+                    controller: _scrollControllers[tabKey],
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(12),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 160,
+                      childAspectRatio: 0.65,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final entry = items[index];
+                      return GestureDetector(
+                        onTap: () => _navigateToSeriesDetail(entry.series),
+                        child: EntryListItem(series: entry.series, isLibrary: true),
+                      );
+                    },
+                  );
+                }
+
+                return ListView.builder(
+                  controller: _scrollControllers[tabKey],
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final entry = items[index];
+                    return GestureDetector(
+                      onTap: () => _navigateToSeriesDetail(entry.series),
+                      child: EntryListItem(series: entry.series, isLibrary: true),
+                    );
+                  },
                 );
               },
-            );
-          }
-
-          return ListView.builder(
-            controller: _scrollControllers[tabKey],
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final entry = items[index];
-              return GestureDetector(
-                onTap: () => _navigateToSeriesDetail(entry.series),
-                child: EntryListItem(series: entry.series, isLibrary: true),
-              );
-            },
-          );
-        },
-      ),
+            ),
     );
   }
 

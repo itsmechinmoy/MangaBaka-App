@@ -108,7 +108,9 @@ class LibraryService {
 
       _logger.info('No previous sync found. Performing full initial import...');
       await importFullLibrary();
-      _hasPerformedInitialSync = true;
+      if (!_isSyncCancelled) {
+        _hasPerformedInitialSync = true;
+      }
     } on NetworkException catch (e) {
       _logger.warning(
           'Initial import failed due to network error: $e. Using local data.');
@@ -150,17 +152,14 @@ class LibraryService {
         await _db.libraryEntriesDao.deleteEntriesNotIn(fetchedIds);
       }
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(_isIncompleteKey, result.hitCap);
-      
-      // Update last sync time using the newest entry's timestamp if available,
-      // otherwise fallback to current time.
-      // Update last sync time using the newest entry's timestamp if available,
-      // otherwise fallback to current time.
-      // Actually, it's easier to just use the current time here as a baseline,
-      // but syncLibrary will refine it.
-      await prefs.setString(
-          _lastSyncKey, DateTime.now().toUtc().toIso8601String());
+      if (!_isSyncCancelled) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool(_isIncompleteKey, result.hitCap);
+        
+        final watermark = result.newestWatermark ?? DateTime.now().toUtc().toIso8601String();
+        await prefs.setString(_lastSyncKey, watermark);
+        _logger.info('Full import complete. Watermark set to $watermark');
+      }
 
       syncStatus.value = syncStatus.value.copyWith(isSyncing: false);
       _logger.info(
@@ -200,23 +199,35 @@ class LibraryService {
 
   /// Paginates up to [AppConstants.libraryMaxPages] pages.
   /// Returns whether the cap was hit (meaning there may be more entries).
-  Future<({bool hitCap, List<String> fetchedIds})> _importSlice(
+  Future<({bool hitCap, List<String> fetchedIds, String? newestWatermark})> _importSlice(
     String token, {
     required void Function(int fetched, List<String> fetchedIds) onProgress,
   }) async {
     var page = 1;
     final int apiPageCap = AppConstants.libraryMaxPages;
     final allFetchedIds = <String>[];
+    String? newestWatermark;
 
     while (page <= apiPageCap) {
-      if (_isSyncCancelled) return (hitCap: false, fetchedIds: allFetchedIds);
+      if (_isSyncCancelled) return (hitCap: false, fetchedIds: allFetchedIds, newestWatermark: newestWatermark);
 
       final result = await _fetchPage(token, page, sortBy: 'updated_at_desc');
       final entries = result.entries;
 
       if (result.isError) {
         _logger.warning('Stopped import at page $page due to API error/limit.');
-        return (hitCap: true, fetchedIds: allFetchedIds);
+        return (hitCap: true, fetchedIds: allFetchedIds, newestWatermark: newestWatermark);
+      }
+
+      if (page == 1 && entries.isNotEmpty) {
+        final e = entries.first;
+        final dateStr = e.updatedAt ?? e.createdAt;
+        if (dateStr != null) {
+          newestWatermark = dateStr;
+        } else {
+          // Compound watermark: id|state|progress
+          newestWatermark = '${e.id}|${e.state}|${e.progressChapter ?? 0}';
+        }
       }
 
       _logger.info('Import page $page: ${entries.length} entries');
@@ -227,17 +238,17 @@ class LibraryService {
       onProgress(entries.length, ids);
 
       if (entries.isEmpty || entries.length < LibraryConstants.pageLimit) {
-        return (hitCap: false, fetchedIds: allFetchedIds); // Natural end of data
+        return (hitCap: false, fetchedIds: allFetchedIds, newestWatermark: newestWatermark); // Natural end of data
       }
 
       if (page == apiPageCap) {
-        return (hitCap: true, fetchedIds: allFetchedIds); // Hit our own app cap
+        return (hitCap: true, fetchedIds: allFetchedIds, newestWatermark: newestWatermark); // Hit our own app cap
       }
 
       page++;
     }
 
-    return (hitCap: false, fetchedIds: allFetchedIds);
+    return (hitCap: false, fetchedIds: allFetchedIds, newestWatermark: newestWatermark);
   }
 
   // ─── Recents sync ─────────────────────────────────────────────────────────
@@ -255,6 +266,7 @@ class LibraryService {
       final token = await _auth.getValidAccessToken();
       final prefs = await SharedPreferences.getInstance();
       final lastSyncStr = prefs.getString(_lastSyncKey);
+      _logger.info('Starting syncLibrary. lastSync watermark: $lastSyncStr');
       final lastSync = lastSyncStr != null ? _parseAsUtc(lastSyncStr) : null;
       String? newestEntryTimestamp;
 
@@ -277,37 +289,54 @@ class LibraryService {
 
         if (entries.isEmpty) break;
 
-        // If we know the last sync time, stop once we hit already-seen entries.
         bool reachedKnown = false;
-        if (lastSync != null) {
-          final newEntries = <api.LibraryEntry>[];
-          for (final e in entries) {
-            final dateStr = e.updatedAt ?? e.createdAt;
-            if (dateStr != null) {
-              final entryDate = _parseAsUtc(dateStr);
-              
-              // Keep track of the absolute newest entry we've seen to update the watermark
-              final newestDate = newestEntryTimestamp != null ? _parseAsUtc(newestEntryTimestamp!) : null;
-              if (newestDate == null || (entryDate != null && entryDate.isAfter(newestDate))) {
-                newestEntryTimestamp = dateStr;
-              }
+        final newEntries = <api.LibraryEntry>[];
 
-              if (entryDate != null && !entryDate.isAfter(lastSync)) {
-                reachedKnown = true;
-                break;
-              }
+        for (final e in entries) {
+          final dateStr = e.updatedAt ?? e.createdAt;
+          
+          // Keep track of the absolute newest entry we've seen to update the watermark
+          if (newestEntryTimestamp == null) {
+            // The very first entry of page 1 is our new watermark
+            if (dateStr != null) {
+              newestEntryTimestamp = dateStr;
+            } else {
+              newestEntryTimestamp = '${e.id}|${e.state}|${e.progressChapter ?? 0}';
             }
-            newEntries.add(e);
+          } else if (dateStr != null) {
+            final newestDate = _parseAsUtc(newestEntryTimestamp!);
+            final currentEntryDate = _parseAsUtc(dateStr);
+            if (newestDate != null && currentEntryDate != null && currentEntryDate.isAfter(newestDate)) {
+              newestEntryTimestamp = dateStr;
+            }
           }
-          await _saveEntries(newEntries);
-          totalFetched += newEntries.length;
-        } else {
-          if (entries.isNotEmpty) {
-            newestEntryTimestamp = entries.first.updatedAt ?? entries.first.createdAt;
+
+          // Heuristic stopping condition: 
+          // 1. If we have timestamps, use them.
+          // 2. If no timestamps, stop if we hit the exact entry (ID+State+Progress) that was newest last time.
+          bool isNew = true;
+          if (dateStr != null) {
+            final entryDate = _parseAsUtc(dateStr);
+            if (lastSync != null && entryDate != null && !entryDate.isAfter(lastSync)) {
+              isNew = false;
+            }
+          } else if (lastSyncStr != null) {
+            final currentFingerprint = '${e.id}|${e.state}|${e.progressChapter ?? 0}';
+            if (currentFingerprint == lastSyncStr) {
+              isNew = false;
+            }
           }
-          await _saveEntries(entries);
-          totalFetched += entries.length;
+
+          if (!isNew) {
+            reachedKnown = true;
+            break;
+          }
+          
+          newEntries.add(e);
         }
+
+        await _saveEntries(newEntries);
+        totalFetched += newEntries.length;
 
         syncStatus.value =
             syncStatus.value.copyWith(currentEntries: totalFetched, error: null);
@@ -317,11 +346,13 @@ class LibraryService {
         page++;
       }
 
-      if (newestEntryTimestamp != null) {
-        await prefs.setString(_lastSyncKey, newestEntryTimestamp!);
-      } else {
-        await prefs.setString(
-            _lastSyncKey, DateTime.now().toUtc().toIso8601String());
+      if (!_isSyncCancelled) {
+        if (newestEntryTimestamp != null) {
+          await prefs.setString(_lastSyncKey, newestEntryTimestamp!);
+        } else {
+          await prefs.setString(
+              _lastSyncKey, DateTime.now().toUtc().toIso8601String());
+        }
       }
       
       syncStatus.value = syncStatus.value.copyWith(isSyncing: false);
@@ -758,6 +789,20 @@ _FetchPageResult _parseLibraryPage(String responseBody) {
 
 DateTime? _parseAsUtc(String dateStr) {
   if (dateStr.isEmpty) return null;
+  
+  // Try parsing as integer (Unix timestamp)
+  final numValue = int.tryParse(dateStr);
+  if (numValue != null) {
+    // Stricter check: Unix timestamps are usually 10 digits (seconds) or 13 digits (ms)
+    if (dateStr.length == 10) {
+      return DateTime.fromMillisecondsSinceEpoch(numValue * 1000, isUtc: true);
+    } else if (dateStr.length == 13) {
+      return DateTime.fromMillisecondsSinceEpoch(numValue, isUtc: true);
+    }
+    // Otherwise it might be a numeric ID, which we should NOT parse as a date.
+    return null;
+  }
+
   // If the string doesn't have a timezone indicator, assume UTC
   String normalized = dateStr;
   if (!normalized.contains('Z') && !normalized.contains('+')) {
