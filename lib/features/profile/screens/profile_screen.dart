@@ -271,11 +271,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
             elevation: 0,
             centerTitle: true,
             title: Text(
-              _profile == null
-                  ? l10n.translate('profile')
-                  : l10n.currentLanguage == 'es'
-                      ? '${l10n.translate('profile_title_suffix')} de $username'
-                      : '${_getPossessiveName(username ?? 'User')} ${l10n.translate('profile_title_suffix')}',
+              () {
+                if (_profile == null) return l10n.translate('profile');
+                if (username == null) return l10n.translate('your_profile');
+                
+                final suffix = l10n.translate('profile_title_suffix');
+                switch (l10n.currentLanguage) {
+                  case 'es':
+                  case 'fr':
+                    return '$suffix de $username';
+                  case 'ja':
+                    return '$usernameの$suffix';
+                  default:
+                    return '${_getPossessiveName(username)} $suffix';
+                }
+              }(),
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
