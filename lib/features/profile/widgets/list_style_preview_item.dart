@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 
 class ListStylePreviewItem extends StatelessWidget {
   final AppListStyle style;

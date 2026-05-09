@@ -1,14 +1,14 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/features/browse/models/search_filters.dart';
-import 'package:bakahyou/features/series/services/series_search_service.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/features/browse/services/book_lookup_service.dart';
-import 'package:bakahyou/features/series/models/autocomplete_series_result.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/features/browse/models/search_filters.dart';
+import 'package:mangabaka_app/features/series/services/series_search_service.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/browse/services/book_lookup_service.dart';
+import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
 
 class BrowseController extends ChangeNotifier {
   final SeriesSearchService _searchService = getIt<SeriesSearchService>();

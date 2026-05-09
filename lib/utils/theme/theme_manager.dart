@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 class ThemeManager extends ChangeNotifier with WidgetsBindingObserver {
   static final ThemeManager _instance = ThemeManager._internal();

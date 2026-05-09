@@ -10,11 +10,11 @@
 
 /*
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bakahyou/features/library/models/library_entry.dart';
-import 'package:bakahyou/features/library/services/library_service.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/features/library/services/library_service.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
 
 // Service Providers
 final libraryServiceProvider = Provider<LibraryService>(

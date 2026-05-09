@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 class LibraryScreenConstants {
   static Color get backgroundColor => AppConstants.primaryBackground;

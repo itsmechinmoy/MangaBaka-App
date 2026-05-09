@@ -9,10 +9,10 @@
 
 /*
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/features/series/services/series_search_service.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/features/series/services/series_search_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
 
 // Search Service Provider
 final seriesSearchServiceProvider = Provider<SeriesSearchService>(

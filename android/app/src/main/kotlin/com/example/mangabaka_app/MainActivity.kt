@@ -1,4 +1,4 @@
-package dev.oazzies.bakahyou
+package dev.oazzies.mangabaka_app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,6 @@
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/features/series/screens/series_detail_screen.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:flutter/material.dart';
 
 class SnapshotListItem extends StatelessWidget {

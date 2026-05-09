@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 
 class CameraPermissionPage extends StatelessWidget {
   final VoidCallback onRequestPermission;

@@ -1,11 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/features/library/models/library_entry.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/features/series/widgets/series_hero_cover.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/features/series/widgets/series_hero_cover.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class SeriesDetailAppBar extends StatelessWidget {

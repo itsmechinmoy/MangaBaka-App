@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/news/models/news.dart';
-import 'package:bakahyou/features/news/services/news_service.dart';
-import 'package:bakahyou/features/news/widgets/news_list.item.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/news/models/news.dart';
+import 'package:mangabaka_app/features/news/services/news_service.dart';
+import 'package:mangabaka_app/features/news/widgets/news_list.item.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});

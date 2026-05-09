@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:bakahyou/utils/theme/app_theme_colors.dart';
-export 'package:bakahyou/utils/theme/app_theme_colors.dart' show AppTheme;
+import 'package:mangabaka_app/utils/theme/app_theme_colors.dart';
+export 'package:mangabaka_app/utils/theme/app_theme_colors.dart' show AppTheme;
 
 /// App-wide constants for UI, API, and business logic
 class AppConstants {
   // ============ API & Network ============
-  static const String appName = 'BakaHyou';
+  static const String appName = 'MangaBaka';
   static const String appVersion = '0.1.0-pre-release-5';
   static const String baseApiUrl = 'https://api.mangabaka.dev/v1';
   static const String authBaseUrl = 'https://mangabaka.org/auth/oauth2';
@@ -69,7 +69,7 @@ class AppConstants {
   ];
 
   // ============ Storage Keys ============
-  static const String prefixStorageKey = 'bakahyou_';
+  static const String prefixStorageKey = 'mangabaka_app_';
   static const String lastSyncKey = '${prefixStorageKey}last_sync';
   static const String userPreferencesKey = '${prefixStorageKey}preferences';
 

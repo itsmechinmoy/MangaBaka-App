@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:bakahyou/features/navigation/screens/main_screen.dart';
-import 'package:bakahyou/features/navigation/screens/onboarding_screen.dart';
-import 'package:bakahyou/features/navigation/screens/animated_splash_screen.dart';
-import 'package:bakahyou/utils/services/logging_service.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/features/series/services/metadata_service.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/navigation/screens/main_screen.dart';
+import 'package:mangabaka_app/features/navigation/screens/onboarding_screen.dart';
+import 'package:mangabaka_app/features/navigation/screens/animated_splash_screen.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/series/services/metadata_service.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +37,7 @@ void main() async {
   // Set initial system UI style
   _updateSystemUI(ThemeManager().isDarkMode);
 
-  runApp(const BakaHyouApp());
+  runApp(const MangaBakaApp());
 }
 
 void _updateSystemUI(bool isDarkMode) {
@@ -52,14 +52,14 @@ void _updateSystemUI(bool isDarkMode) {
   );
 }
 
-class BakaHyouApp extends StatefulWidget {
-  const BakaHyouApp({super.key});
+class MangaBakaApp extends StatefulWidget {
+  const MangaBakaApp({super.key});
 
   @override
-  State<BakaHyouApp> createState() => _BakaHyouAppState();
+  State<MangaBakaApp> createState() => _MangaBakaAppState();
 }
 
-class _BakaHyouAppState extends State<BakaHyouApp> {
+class _MangaBakaAppState extends State<MangaBakaApp> {
   bool _showSplash = true;
 
   @override

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/theme/app_theme_colors.dart';
+import 'package:mangabaka_app/utils/theme/app_theme_colors.dart';
 
 class ThemePreviewItem extends StatelessWidget {
   final AppTheme theme;

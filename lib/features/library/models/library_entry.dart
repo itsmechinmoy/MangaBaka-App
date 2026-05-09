@@ -1,4 +1,4 @@
-import 'package:bakahyou/features/series/models/series.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
 
 class LibraryEntry {
   final String id;

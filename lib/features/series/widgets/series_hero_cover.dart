@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/series/screens/full_screen_image_screen.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/series/screens/full_screen_image_screen.dart';
 
 class SeriesHeroCover extends StatelessWidget {
   final Series series;

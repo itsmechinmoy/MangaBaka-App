@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class TranslationCreditsScreen extends StatelessWidget {
   const TranslationCreditsScreen({super.key});

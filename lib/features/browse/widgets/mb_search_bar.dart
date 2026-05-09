@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/browse/models/search_filters.dart';
-import 'package:bakahyou/features/browse/widgets/search_filter_bottom_sheet.dart';
-import 'package:bakahyou/features/series/models/autocomplete_series_result.dart';
-import 'package:bakahyou/features/series/services/series_autocomplete_service.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/browse/models/search_filters.dart';
+import 'package:mangabaka_app/features/browse/widgets/search_filter_bottom_sheet.dart';
+import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
+import 'package:mangabaka_app/features/series/services/series_autocomplete_service.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 
 class MBSearchBar extends StatefulWidget {
   final ValueChanged<String> onChanged;

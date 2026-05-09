@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:bakahyou/features/navigation/screens/main_screen.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/navigation/screens/main_screen.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
-import 'package:bakahyou/utils/exceptions/app_exceptions.dart';
-import 'package:bakahyou/features/navigation/widgets/onboarding/welcome_page.dart';
-import 'package:bakahyou/features/navigation/widgets/onboarding/language_page.dart';
-import 'package:bakahyou/features/navigation/widgets/onboarding/theme_page.dart';
-import 'package:bakahyou/features/navigation/widgets/onboarding/camera_permission_page.dart';
-import 'package:bakahyou/features/navigation/widgets/onboarding/content_preferences_page.dart';
-import 'package:bakahyou/features/navigation/widgets/onboarding/login_page.dart';
+import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/features/navigation/widgets/onboarding/welcome_page.dart';
+import 'package:mangabaka_app/features/navigation/widgets/onboarding/language_page.dart';
+import 'package:mangabaka_app/features/navigation/widgets/onboarding/theme_page.dart';
+import 'package:mangabaka_app/features/navigation/widgets/onboarding/camera_permission_page.dart';
+import 'package:mangabaka_app/features/navigation/widgets/onboarding/content_preferences_page.dart';
+import 'package:mangabaka_app/features/navigation/widgets/onboarding/login_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final bool isRedoing;

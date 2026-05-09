@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/profile/widgets/mb_login_button.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/profile/widgets/mb_login_button.dart';
 
 class MBLoginPrompt extends StatelessWidget {
   final VoidCallback onLogin;

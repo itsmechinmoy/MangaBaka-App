@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/browse/widgets/tri_state_chip.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/browse/widgets/tri_state_chip.dart';
 
 class FilterListDialog extends StatefulWidget {
   final String title;

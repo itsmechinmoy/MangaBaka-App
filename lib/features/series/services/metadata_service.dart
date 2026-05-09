@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/services/logging_service.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 class MetadataService {
   final _logger = LoggingService.logger;

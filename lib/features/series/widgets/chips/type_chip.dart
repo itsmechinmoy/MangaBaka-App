@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/series/widgets/mini_badge.dart';
+import 'package:mangabaka_app/features/series/widgets/mini_badge.dart';
 
 class TypeChip extends StatelessWidget {
   final String type;

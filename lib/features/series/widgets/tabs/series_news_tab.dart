@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/news/models/news.dart';
-import 'package:bakahyou/features/news/widgets/news_list.item.dart';
-import 'package:bakahyou/features/series/widgets/series_section_header.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/news/models/news.dart';
+import 'package:mangabaka_app/features/news/widgets/news_list.item.dart';
+import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class SeriesNewsTab extends StatelessWidget {
   final List<News>? news;

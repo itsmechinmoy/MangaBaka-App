@@ -1,21 +1,21 @@
-import 'package:bakahyou/database/database.dart';
-import 'package:bakahyou/features/library/models/library_entry.dart';
-import 'package:bakahyou/features/profile/services/snapshot_service.dart';
-import 'package:bakahyou/features/profile/services/statistics_service.dart';
-import 'package:bakahyou/features/profile/widgets/snapshot_list.dart';
-import 'package:bakahyou/features/profile/widgets/statistic_card.dart';
+import 'package:mangabaka_app/database/database.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/features/profile/services/snapshot_service.dart';
+import 'package:mangabaka_app/features/profile/services/statistics_service.dart';
+import 'package:mangabaka_app/features/profile/widgets/snapshot_list.dart';
+import 'package:mangabaka_app/features/profile/widgets/statistic_card.dart';
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/profile/models/mb_profile.dart';
-import 'package:bakahyou/features/profile/screens/settings_screen.dart';
-import 'package:bakahyou/features/profile/screens/statistics_screen.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
-import 'package:bakahyou/features/library/services/library_service.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/utils/exceptions/app_exceptions.dart';
-import 'package:bakahyou/features/profile/widgets/mb_login_prompt.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/profile/models/mb_profile.dart';
+import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
+import 'package:mangabaka_app/features/profile/screens/statistics_screen.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/features/library/services/library_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/features/profile/widgets/mb_login_prompt.dart';
 
 
 class ProfileScreen extends StatefulWidget {

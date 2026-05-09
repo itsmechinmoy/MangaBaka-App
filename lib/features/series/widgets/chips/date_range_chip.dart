@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/date_utils.dart' as mb_date;
-import 'package:bakahyou/features/series/widgets/mini_badge.dart';
+import 'package:mangabaka_app/utils/date_utils.dart' as mb_date;
+import 'package:mangabaka_app/features/series/widgets/mini_badge.dart';
 import 'date_dialog.dart';
 
 class DateRangeChip extends StatelessWidget {

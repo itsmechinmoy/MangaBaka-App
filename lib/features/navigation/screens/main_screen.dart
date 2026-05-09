@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/home/screens/home_screen.dart';
-import 'package:bakahyou/features/browse/screens/browse_screen.dart';
-import 'package:bakahyou/features/library/screens/library_screen.dart';
-import 'package:bakahyou/features/news/screens/news_screen.dart';
-import 'package:bakahyou/features/profile/screens/profile_screen.dart';
-import 'package:bakahyou/features/library/widgets/sync_progress_overlay.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/home/screens/home_screen.dart';
+import 'package:mangabaka_app/features/browse/screens/browse_screen.dart';
+import 'package:mangabaka_app/features/library/screens/library_screen.dart';
+import 'package:mangabaka_app/features/news/screens/news_screen.dart';
+import 'package:mangabaka_app/features/profile/screens/profile_screen.dart';
+import 'package:mangabaka_app/features/library/widgets/sync_progress_overlay.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class MainScreen extends StatefulWidget {
   static final GlobalKey<_MainScreenState> mainScreenKey = GlobalKey<_MainScreenState>();

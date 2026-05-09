@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/features/series/widgets/entry_list_item.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/features/series/widgets/series_section_header.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
 
 class SeriesRelatedTab extends StatelessWidget {
   final List<Series>? related;

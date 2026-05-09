@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bakahyou/features/series/widgets/mini_badge.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/series/widgets/mini_badge.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class IdChip extends StatelessWidget {
   final String id;

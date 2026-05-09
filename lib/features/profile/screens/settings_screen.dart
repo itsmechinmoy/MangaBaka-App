@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/features/profile/screens/translation_credits_screen.dart';
-import 'package:bakahyou/features/profile/screens/advanced_settings_screen.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/profile/screens/translation_credits_screen.dart';
+import 'package:mangabaka_app/features/profile/screens/advanced_settings_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
-import 'package:bakahyou/features/profile/widgets/settings_dialogs.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/features/profile/widgets/settings_components.dart';
-import 'package:bakahyou/features/library/services/library_service.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/features/profile/widgets/settings_dialogs.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/features/profile/widgets/settings_components.dart';
+import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'dart:io';
 import 'package:android_intent_plus/android_intent.dart';
 
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -271,7 +271,7 @@ class SettingsScreen extends StatelessWidget {
                     icon: Icons.code,
                     title: l10n.translate('github'),
                     onTap: () => launchUrl(
-                      Uri.parse('https://github.com/Oazzies/BakaHyou'),
+                      Uri.parse('https://github.com/Oazzies/MangaBaka-App'),
                       mode: LaunchMode.externalApplication,
                     ),
                     trailing: Icon(Icons.open_in_new, color: AppConstants.textMutedColor, size: 20),
@@ -317,7 +317,7 @@ class SettingsScreen extends StatelessWidget {
                       if (Platform.isAndroid) {
                         final intent = AndroidIntent(
                           action: 'android.settings.APP_OPEN_BY_DEFAULT_SETTINGS',
-                          data: 'package:dev.oazzies.bakahyou',
+                          data: 'package:dev.oazzies.mangabaka_app',
                         );
                         await intent.launch();
                       } else {

@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
-import 'package:bakahyou/utils/services/logging_service.dart';
-import 'package:bakahyou/utils/exceptions/app_exceptions.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/series/services/metadata_service.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/series/services/metadata_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:http/http.dart' as http;
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/features/series/services/series_id_service.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/series/services/series_id_service.dart';
 
 class SeriesSearchService {
   static final String _baseUrl = '${AppConstants.baseApiUrl}/series/search';

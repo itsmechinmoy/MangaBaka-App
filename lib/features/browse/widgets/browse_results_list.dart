@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/features/series/widgets/entry_list_item.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 
 class BrowseResultsList extends StatelessWidget {
   final List<Series> results;

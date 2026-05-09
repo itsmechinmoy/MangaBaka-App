@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/library/screens/library_screen_constants.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/library/screens/library_screen_constants.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class StateSelectionSection extends StatelessWidget {
   final String? currentState;

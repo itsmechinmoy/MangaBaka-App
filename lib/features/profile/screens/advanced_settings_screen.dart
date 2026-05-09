@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/features/navigation/screens/onboarding_screen.dart';
-import 'package:bakahyou/features/profile/widgets/settings_components.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/navigation/screens/onboarding_screen.dart';
+import 'package:mangabaka_app/features/profile/widgets/settings_components.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 
 class AdvancedSettingsScreen extends StatelessWidget {
   const AdvancedSettingsScreen({super.key});

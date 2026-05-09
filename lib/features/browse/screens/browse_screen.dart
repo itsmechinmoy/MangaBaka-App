@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/browse/widgets/mb_search_bar.dart';
-import 'package:bakahyou/features/browse/widgets/browse_content.dart';
-import 'package:bakahyou/features/series/screens/series_detail_screen.dart';
-import 'package:bakahyou/features/browse/screens/browse_results_screen.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/browse/screens/barcode_scanner_screen.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/transitions/app_transitions.dart';
-import 'package:bakahyou/features/browse/controllers/browse_controller.dart';
-import 'package:bakahyou/features/series/models/autocomplete_series_result.dart';
+import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart';
+import 'package:mangabaka_app/features/browse/widgets/browse_content.dart';
+import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
+import 'package:mangabaka_app/features/browse/screens/browse_results_screen.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/browse/screens/barcode_scanner_screen.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/transitions/app_transitions.dart';
+import 'package:mangabaka_app/features/browse/controllers/browse_controller.dart';
+import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
 
 class BrowseScreen extends StatefulWidget {
   const BrowseScreen({super.key});

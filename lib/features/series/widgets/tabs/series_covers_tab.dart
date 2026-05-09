@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/series/models/series_cover.dart';
-import 'package:bakahyou/features/series/screens/full_screen_image_screen.dart';
-import 'package:bakahyou/features/series/widgets/series_section_header.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/series/models/series_cover.dart';
+import 'package:mangabaka_app/features/series/screens/full_screen_image_screen.dart';
+import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class SeriesCoversTab extends StatelessWidget {

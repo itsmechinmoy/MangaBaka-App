@@ -1,6 +1,6 @@
-import 'package:bakahyou/features/series/widgets/rating_selection_dialog.dart';
+import 'package:mangabaka_app/features/series/widgets/rating_selection_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 class RatingIconButton extends StatelessWidget {
   final int? currentRating;

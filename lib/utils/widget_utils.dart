@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/series/widgets/chip.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/series/widgets/chip.dart';
 
 class WidgetUtils {
   static Widget chipWrap(String label, List<String> items, {Color? color}) {

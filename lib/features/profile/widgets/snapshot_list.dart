@@ -1,5 +1,5 @@
-import 'package:bakahyou/features/library/models/library_entry.dart';
-import 'package:bakahyou/features/profile/widgets/snapshot_list_item.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/features/profile/widgets/snapshot_list_item.dart';
 import 'package:flutter/material.dart';
 
 class SnapshotList extends StatefulWidget {

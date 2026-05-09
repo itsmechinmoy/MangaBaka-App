@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 /// A minimalistic splash overlay that handles the transition from native splash to Flutter.
 /// Should be used inside a Stack on top of the main content.

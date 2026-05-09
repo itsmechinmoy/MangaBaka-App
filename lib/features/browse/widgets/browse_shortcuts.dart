@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/browse/widgets/shortcut_section.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/browse/widgets/shortcut_section.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class BrowseShortcuts extends StatelessWidget {
   final Function(String, String, {String? type}) onNavigate;

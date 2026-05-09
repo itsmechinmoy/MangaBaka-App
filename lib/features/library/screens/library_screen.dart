@@ -1,28 +1,28 @@
-import 'package:bakahyou/features/series/services/series_id_service.dart';
+import 'package:mangabaka_app/features/series/services/series_id_service.dart';
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/browse/widgets/mb_search_bar.dart';
-import 'package:bakahyou/features/library/models/library_entry.dart';
-import 'package:bakahyou/features/library/models/library_sync_status.dart';
-import 'package:bakahyou/features/library/screens/library_filter_helper.dart';
-import 'package:bakahyou/features/library/screens/library_screen_constants.dart';
-import 'package:bakahyou/features/library/services/library_service.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
-import 'package:bakahyou/features/series/screens/series_detail_screen.dart';
-import 'package:bakahyou/features/series/widgets/entry_list_item.dart';
-import 'package:bakahyou/features/series/models/series.dart' as api;
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/utils/settings/settings_enums.dart';
-import 'package:bakahyou/utils/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/features/library/models/library_sync_status.dart';
+import 'package:mangabaka_app/features/library/screens/library_filter_helper.dart';
+import 'package:mangabaka_app/features/library/screens/library_screen_constants.dart';
+import 'package:mangabaka_app/features/library/services/library_service.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
+import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
+import 'package:mangabaka_app/features/series/models/series.dart' as api;
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import 'package:bakahyou/features/profile/widgets/mb_login_prompt.dart';
-import 'package:bakahyou/features/browse/models/search_filters.dart';
-import 'package:bakahyou/features/series/widgets/series_list_skeleton.dart';
-import 'package:bakahyou/utils/transitions/app_transitions.dart';
+import 'package:mangabaka_app/features/profile/widgets/mb_login_prompt.dart';
+import 'package:mangabaka_app/features/browse/models/search_filters.dart';
+import 'package:mangabaka_app/features/series/widgets/series_list_skeleton.dart';
+import 'package:mangabaka_app/utils/transitions/app_transitions.dart';
 
 
 class LibraryScreen extends StatefulWidget {

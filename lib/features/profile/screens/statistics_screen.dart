@@ -1,14 +1,14 @@
-import 'package:bakahyou/database/database.dart';
-import 'package:bakahyou/features/profile/services/statistics_service.dart';
-import 'package:bakahyou/features/profile/widgets/statistic_card.dart';
+import 'package:mangabaka_app/database/database.dart';
+import 'package:mangabaka_app/features/profile/services/statistics_service.dart';
+import 'package:mangabaka_app/features/profile/widgets/statistic_card.dart';
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/features/series/screens/series_detail_screen.dart';
-import 'package:bakahyou/features/library/services/mappers/db_to_api_mapper.dart';
-import 'package:bakahyou/features/series/models/series.dart' as api;
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
+import 'package:mangabaka_app/features/library/services/mappers/db_to_api_mapper.dart';
+import 'package:mangabaka_app/features/series/models/series.dart' as api;
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});

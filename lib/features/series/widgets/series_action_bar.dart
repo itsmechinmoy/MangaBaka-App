@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/library/models/library_entry.dart';
-import 'package:bakahyou/features/series/widgets/state_selection_section.dart';
-import 'package:bakahyou/features/series/widgets/rating_icon_button.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/features/series/widgets/state_selection_section.dart';
+import 'package:mangabaka_app/features/series/widgets/rating_icon_button.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class SeriesActionBar extends StatelessWidget {
   final LibraryEntry? entry;

@@ -1,11 +1,11 @@
 import 'package:get_it/get_it.dart';
-import 'package:bakahyou/database/database.dart';
-import 'package:bakahyou/features/series/services/series_search_service.dart';
-import 'package:bakahyou/features/series/services/metadata_service.dart';
-import 'package:bakahyou/features/library/services/library_service.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
-import 'package:bakahyou/features/profile/services/snapshot_service.dart';
-import 'package:bakahyou/utils/services/logging_service.dart';
+import 'package:mangabaka_app/database/database.dart';
+import 'package:mangabaka_app/features/series/services/series_search_service.dart';
+import 'package:mangabaka_app/features/series/services/metadata_service.dart';
+import 'package:mangabaka_app/features/library/services/library_service.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/features/profile/services/snapshot_service.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 final getIt = GetIt.instance;
 

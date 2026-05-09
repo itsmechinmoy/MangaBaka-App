@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:bakahyou/utils/services/logging_service.dart';
-import 'package:bakahyou/utils/exceptions/app_exceptions.dart' as exc;
+import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart' as exc;
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:bakahyou/features/library/models/library_entry.dart' as api;
-import 'package:bakahyou/features/series/models/series.dart' as api;
+import 'package:mangabaka_app/features/library/models/library_entry.dart' as api;
+import 'package:mangabaka_app/features/series/models/series.dart' as api;
 
 import 'tables/series_table.dart';
 import 'tables/library_entries_table.dart';

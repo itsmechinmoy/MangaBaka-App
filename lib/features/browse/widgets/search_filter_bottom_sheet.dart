@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/features/browse/models/search_filters.dart';
-import 'package:bakahyou/features/series/services/series_search_service.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/features/browse/widgets/filter_list_dialog.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/features/profile/widgets/settings_components.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/browse/models/search_filters.dart';
+import 'package:mangabaka_app/features/series/services/series_search_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/features/browse/widgets/filter_list_dialog.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/profile/widgets/settings_components.dart';
 
 class SearchFilterBottomSheet extends StatefulWidget {
   final SearchFilters initialFilters;

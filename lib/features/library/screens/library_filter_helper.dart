@@ -1,7 +1,7 @@
-import 'package:bakahyou/features/browse/models/search_filters.dart';
-import 'package:bakahyou/features/library/models/library_entry.dart';
-import 'package:bakahyou/features/library/screens/library_screen_constants.dart';
-import 'package:bakahyou/features/library/services/state_normalizer.dart';
+import 'package:mangabaka_app/features/browse/models/search_filters.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/features/library/screens/library_screen_constants.dart';
+import 'package:mangabaka_app/features/library/services/state_normalizer.dart';
 
 class LibraryFilterHelper {
   final List<LibraryEntry> allEntries;

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/features/series/widgets/entry_list_item.dart';
-import 'package:bakahyou/features/browse/widgets/browse_shortcuts.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/utils/settings/settings_enums.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/features/series/widgets/series_list_skeleton.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
+import 'package:mangabaka_app/features/browse/widgets/browse_shortcuts.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/series/widgets/series_list_skeleton.dart';
 
 class BrowseContent extends StatelessWidget {
   final List<Series> searchResults;

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:bakahyou/features/news/models/news.dart';
-import 'package:bakahyou/features/news/widgets/referenced_list_item.dart';
+import 'package:mangabaka_app/features/news/models/news.dart';
+import 'package:mangabaka_app/features/news/widgets/referenced_list_item.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class NewsListItem extends StatelessWidget {
   final News news;

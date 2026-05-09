@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/theme/theme_manager.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/settings/settings_enums.dart';
-import 'package:bakahyou/features/profile/widgets/theme_preview_item.dart';
-import 'package:bakahyou/features/profile/widgets/list_style_preview_item.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/features/profile/widgets/theme_preview_item.dart';
+import 'package:mangabaka_app/features/profile/widgets/list_style_preview_item.dart';
 
 
 class SettingsDialogs {

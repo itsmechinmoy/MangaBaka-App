@@ -1,7 +1,7 @@
 import 'package:logging/logging.dart';
 
 class LoggingService {
-  static final Logger _logger = Logger('BakaHyouApp');
+  static final Logger _logger = Logger('MangaBakaApp');
 
   static void setup() {
     Logger.root.level = Level.ALL;

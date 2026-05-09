@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/series/widgets/mini_badge.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/series/widgets/mini_badge.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 class ContentRatingChip extends StatelessWidget {
   final String rating;

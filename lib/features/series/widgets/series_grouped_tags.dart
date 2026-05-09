@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/utils/localization/localization_service.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/features/series/services/metadata_service.dart';
-import 'package:bakahyou/features/series/widgets/chip.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/features/series/services/metadata_service.dart';
+import 'package:mangabaka_app/features/series/widgets/chip.dart';
 
 class SeriesGroupedTags extends StatefulWidget {
   final Series series;

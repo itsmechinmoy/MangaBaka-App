@@ -3,12 +3,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:bakahyou/utils/services/logging_service.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/exceptions/app_exceptions.dart';
-import 'package:bakahyou/features/profile/models/mb_profile.dart';
-import 'package:bakahyou/features/library/services/library_service.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/features/profile/models/mb_profile.dart';
+import 'package:mangabaka_app/features/library/services/library_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -36,7 +36,7 @@ class ProfileAuthService extends ChangeNotifier {
       // Setting it to false uses a more stable (but still encrypted) implementation.
       encryptedSharedPreferences: false,
       resetOnError: true,
-      sharedPreferencesName: 'bakahyou_secure_storage_v3', // Changed name to ensure a clean start
+      sharedPreferencesName: 'mangabaka_app_secure_storage_v3', // Changed name to ensure a clean start
     ),
   );
 
@@ -46,8 +46,8 @@ class ProfileAuthService extends ChangeNotifier {
   bool get isLoggedIn => _hasSessionCache;
   MbProfile? get cachedProfile => _cachedProfile;
 
-  String get _clientId => dotenv.env['BAKAHYOU_CLIENT_ID'] ?? '';
-  String get _redirectUri => dotenv.env['BAKAHYOU_REDIRECT_URI'] ?? '';
+  String get _clientId => dotenv.env['MANGABAKA_APP_CLIENT_ID'] ?? '';
+  String get _redirectUri => dotenv.env['MANGABAKA_APP_REDIRECT_URI'] ?? '';
 
   AuthorizationServiceConfiguration get _serviceConfig =>
       const AuthorizationServiceConfiguration(
@@ -100,7 +100,7 @@ class ProfileAuthService extends ChangeNotifier {
     try {
       if (_clientId.isEmpty || _redirectUri.isEmpty) {
         throw AuthException(
-          message: 'Missing BAKAHYOU_CLIENT_ID or BAKAHYOU_REDIRECT_URI in .env',
+          message: 'Missing MANGABAKA_APP_CLIENT_ID or MANGABAKA_APP_REDIRECT_URI in .env',
           code: 'MISSING_CONFIG',
         );
       }

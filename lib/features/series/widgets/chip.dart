@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bakahyou/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 /// Base chip widget used across the app for genres, tags, etc.
 /// Styled to match the action bar: rounded-rect with secondary background.

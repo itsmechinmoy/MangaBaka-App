@@ -1,10 +1,10 @@
 <div align="center">
 
-<a href="https://github.com/Oazzies/BakaHyou">
+<a href="https://github.com/Oazzies/MangaBaka-App">
     <img src="./.github/readme-images/mangabaka512.png" alt="Yokai logo" height="200px" width="200px" />
 </a>
 
-# BakaHyou
+# MangaBaka app
 
 </div>
 
@@ -15,11 +15,11 @@ An unofficial, free and open source app for MangaBaka
 [![Join us on Discord](https://img.shields.io/badge/Discord-Join%20Server-7389D8?logo=discord&logoColor=white)](https://mangabaka.org/discord)
 [![License: Apache-2.0](https://img.shields.io/github/license/null2264/yokai?labelColor=27303D&color=0877d2)](/LICENSE)
 
-<img src="./.github/readme-images/screens.png" alt="BakaHyou screenshots" />
+<img src="./.github/readme-images/screens.png" alt="MangaBaka screenshots" />
 
 ## Download
 
-Go to the [releases](https://github.com/Oazzies/BakaHyou/releases) page.
+Go to the [releases](https://github.com/Oazzies/MangaBaka-App/releases) page.
 
 *Requires Android 6.0 or higher.*
 
@@ -60,11 +60,11 @@ Extra
 
 ## Contributing
 
-[Code of conduct](https://github.com/Oazzies/BakaHyou/blob/main/CODE_OF_CONDUCT.md) · [Contributing guide](https://github.com/Oazzies/BakaHyou/blob/main/CONTRIBUTING.md)
+[Code of conduct](https://github.com/Oazzies/MangaBaka-App/blob/main/CODE_OF_CONDUCT.md) · [Contributing guide](https://github.com/Oazzies/MangaBaka-App/blob/main/CONTRIBUTING.md)
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-Before reporting a new issue, take a look at the [changelog](https://github.com/Oazzies/BakaHyou/releases) and the already opened [issues](https://github.com/Oazzies/BakaHyou/issues); if you got any questions, join our [Discord server](https://mangabaka.org/discord).
+Before reporting a new issue, take a look at the [changelog](https://github.com/Oazzies/MangaBaka-App/releases) and the already opened [issues](https://github.com/Oazzies/MangaBaka-App/issues); if you got any questions, join our [Discord server](https://mangabaka.org/discord).
 
 ## Disclaimer
 
