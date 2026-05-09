@@ -47,12 +47,6 @@ dev_dependencies:
   build_runner: ^2.13.1
 
 
-flutter_launcher_icons:
-  android: true
-  ios: true
-  image_path: "assets/mangabaka512.png"
-  adaptive_icon_background: "#0a0a0a"
-  adaptive_icon_foreground: "assets/mangabaka512.png"
 
 flutter_native_splash:
   color: "#0a0a0a"
