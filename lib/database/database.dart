@@ -39,19 +39,35 @@ class AppDatabase extends _$AppDatabase {
     return MigrationStrategy(
       onUpgrade: (m, from, to) async {
         if (from < 2) {
+          // Get existing columns for each table to make migrations idempotent
+          final seriesColumns = await customSelect('PRAGMA table_info("series_table")').get();
+          final seriesColumnNames = seriesColumns.map((row) => row.data['name'] as String).toSet();
+
+          final libraryColumns = await customSelect('PRAGMA table_info("library_entries_table")').get();
+          final libraryColumnNames = libraryColumns.map((row) => row.data['name'] as String).toSet();
+
+          // Helper to add column if it doesn't exist
+          Future<void> addIfMissing(GeneratedColumn col, TableInfo table, Set<String> existing) async {
+            if (!existing.contains(col.name)) {
+              await m.addColumn(table, col);
+            } else {
+              LoggingService.logger.info('Migration: Column ${col.name} already exists in ${table.actualTableName}, skipping.');
+            }
+          }
+
           // Add missing columns to SeriesTable
-          await m.addColumn(seriesTable, seriesTable.mergedWith);
-          await m.addColumn(seriesTable, seriesTable.contentRating);
-          await m.addColumn(seriesTable, seriesTable.type);
-          await m.addColumn(seriesTable, seriesTable.rating);
-          await m.addColumn(seriesTable, seriesTable.finalVolume);
-          await m.addColumn(seriesTable, seriesTable.totalChapters);
-          await m.addColumn(seriesTable, seriesTable.lastUpdated);
-          await m.addColumn(seriesTable, seriesTable.relationships);
-          await m.addColumn(seriesTable, seriesTable.source);
+          await addIfMissing(seriesTable.mergedWith, seriesTable, seriesColumnNames);
+          await addIfMissing(seriesTable.contentRating, seriesTable, seriesColumnNames);
+          await addIfMissing(seriesTable.type, seriesTable, seriesColumnNames);
+          await addIfMissing(seriesTable.rating, seriesTable, seriesColumnNames);
+          await addIfMissing(seriesTable.finalVolume, seriesTable, seriesColumnNames);
+          await addIfMissing(seriesTable.totalChapters, seriesTable, seriesColumnNames);
+          await addIfMissing(seriesTable.lastUpdated, seriesTable, seriesColumnNames);
+          await addIfMissing(seriesTable.relationships, seriesTable, seriesColumnNames);
+          await addIfMissing(seriesTable.source, seriesTable, seriesColumnNames);
           
           // Add missing columns to LibraryEntriesTable
-          await m.addColumn(libraryEntriesTable, libraryEntriesTable.rating);
+          await addIfMissing(libraryEntriesTable.rating, libraryEntriesTable, libraryColumnNames);
         }
       },
     );
