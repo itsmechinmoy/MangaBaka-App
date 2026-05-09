@@ -1,28 +1,22 @@
-import 'package:mangabaka_app/features/series/services/series_id_service.dart';
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/features/library/models/library_sync_status.dart';
-import 'package:mangabaka_app/features/library/screens/library_filter_helper.dart';
 import 'package:mangabaka_app/features/library/screens/library_screen_constants.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
-import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
 import 'package:mangabaka_app/features/series/models/series.dart' as api;
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
-import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-
-import 'package:mangabaka_app/features/profile/widgets/mb_login_prompt.dart';
 import 'package:mangabaka_app/features/browse/models/search_filters.dart';
-import 'package:mangabaka_app/features/series/widgets/series_list_skeleton.dart';
 import 'package:mangabaka_app/utils/transitions/app_transitions.dart';
+import 'package:mangabaka_app/features/library/widgets/library_status_banner.dart';
+import 'package:mangabaka_app/features/library/widgets/library_body.dart';
 
 
 class LibraryScreen extends StatefulWidget {
@@ -145,11 +139,53 @@ class _LibraryScreenState extends State<LibraryScreen>
             builder: (context, status, _) {
               return Column(
                 children: [
-                  if (status.isServerDown) _buildServerDownWarning(),
+                  if (status.isServerDown) 
+                    LibraryStatusBanner(
+                      message: LocalizationService().translate('server_unreachable_warning'),
+                      icon: Icons.cloud_off_rounded,
+                      color: AppConstants.errorColor,
+                      action: TextButton(
+                        onPressed: _onRefresh,
+                        child: Text(
+                          LocalizationService().translate('retry'),
+                          style: TextStyle(color: AppConstants.errorColor, fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
                   if (!status.isServerDown && status.error != null)
-                    _buildSyncErrorWarning(status.error!),
-                  if (_isLibraryIncomplete) _buildIncompleteWarning(),
-                  Expanded(child: _buildBody()),
+                    LibraryStatusBanner(
+                      message: LocalizationService().translate('sync_failed').replaceAll('{message}', status.error!),
+                      icon: Icons.error_outline_rounded,
+                      color: AppConstants.errorColor,
+                      onClose: () => _libraryService.syncStatus.value = 
+                          _libraryService.syncStatus.value.copyWith(clearError: true),
+                    ),
+                  if (_isLibraryIncomplete)
+                    LibraryStatusBanner(
+                      message: LocalizationService().translate('library_limit_warning'),
+                      icon: Icons.warning_amber_rounded,
+                      color: AppConstants.warningColor,
+                      action: TextButton(
+                        onPressed: () => _libraryService.importFullLibrary(),
+                        child: Text(
+                          LocalizationService().translate('re_import'),
+                          style: TextStyle(color: AppConstants.warningColor, fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  Expanded(
+                    child: LibraryBody(
+                      loggedIn: _loggedIn,
+                      entriesStream: _entriesStream,
+                      query: _query,
+                      filters: _filters,
+                      tabController: _tabController,
+                      scrollControllers: _scrollControllers,
+                      onRefresh: _onRefresh,
+                      onLogin: _loginAndReload,
+                      onItemTap: _navigateToSeriesDetail,
+                    ),
+                  ),
                 ],
               );
             },
@@ -159,108 +195,6 @@ class _LibraryScreenState extends State<LibraryScreen>
     );
   }
 
-  Widget _buildIncompleteWarning() {
-    final isDark = ThemeManager().isDarkMode;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppConstants.warningColor.withValues(alpha: isDark ? 0.12 : 0.18),
-        border: Border(
-          bottom: BorderSide(color: AppConstants.warningColor.withValues(alpha: 0.25)),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.warning_amber_rounded, color: AppConstants.warningColor, size: 18),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              LocalizationService().translate('library_limit_warning'),
-              style: TextStyle(
-                color: AppConstants.warningColor, 
-                fontSize: 12,
-                fontWeight: isDark ? FontWeight.normal : FontWeight.w600,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => _libraryService.importFullLibrary(),
-            child: Text(LocalizationService().translate('re_import'), style: TextStyle(color: AppConstants.warningColor, fontSize: 12, fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServerDownWarning() {
-    final isDark = ThemeManager().isDarkMode;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppConstants.errorColor.withValues(alpha: isDark ? 0.12 : 0.18),
-        border: Border(
-          bottom: BorderSide(color: AppConstants.errorColor.withValues(alpha: 0.25)),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.cloud_off_rounded, color: AppConstants.errorColor, size: 18),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              LocalizationService().translate('server_unreachable_warning'),
-              style: TextStyle(
-                color: AppConstants.errorColor, 
-                fontSize: 12,
-                fontWeight: isDark ? FontWeight.normal : FontWeight.w600,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () => _onRefresh(),
-            child: Text(LocalizationService().translate('retry'), style: TextStyle(color: AppConstants.errorColor, fontSize: 12, fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSyncErrorWarning(String message) {
-    final isDark = ThemeManager().isDarkMode;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppConstants.errorColor.withValues(alpha: isDark ? 0.12 : 0.18),
-        border: Border(
-          bottom: BorderSide(color: AppConstants.errorColor.withValues(alpha: 0.25)),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.error_outline_rounded, color: AppConstants.errorColor, size: 18),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              LocalizationService().translate('sync_failed').replaceAll('{message}', message),
-              style: TextStyle(
-                color: AppConstants.errorColor, 
-                fontSize: 12,
-                fontWeight: isDark ? FontWeight.normal : FontWeight.w600,
-              ),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.close, color: AppConstants.errorColor, size: 16),
-            onPressed: () => _libraryService.syncStatus.value = 
-                _libraryService.syncStatus.value.copyWith(clearError: true),
-          ),
-        ],
-      ),
-    );
-  }
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
@@ -283,146 +217,6 @@ class _LibraryScreenState extends State<LibraryScreen>
       tabs: LibraryScreenConstants.tabs
           .map((tab) => Tab(text: l10n.translate(tab.key)))
           .toList(),
-    );
-  }
-
-  Widget _buildBody() {
-    final l10n = LocalizationService();
-    if (!_loggedIn) return _buildLoginPrompt();
-    if (_entriesStream == null) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    return StreamBuilder<List<LibraryEntry>>(
-      stream: _entriesStream,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
-          final settings = SettingsManager();
-          final isGrid = settings.separateListStyles
-              ? settings.libraryListStyle.isGrid
-              : settings.currentListStyle.isGrid;
-          return SeriesListSkeleton(isGrid: isGrid);
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Text(
-              '${l10n.translate('failed_to_load')}: ${snapshot.error}',
-              style: TextStyle(color: LibraryScreenConstants.errorColor),
-            ),
-          );
-        }
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return RefreshIndicator(
-            onRefresh: _onRefresh,
-            child: ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: Center(child: Text(l10n.translate('empty_library'))),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return ListenableBuilder(
-          listenable: SettingsManager(),
-          builder: (context, _) {
-            final filterHelper = LibraryFilterHelper(
-              allEntries: snapshot.data!,
-              query: _query,
-              filters: _filters,
-              contentPreferences: SettingsManager().contentPreferences,
-            );
-
-            return TabBarView(
-              controller: _tabController,
-              children: LibraryScreenConstants.tabs.map((tab) {
-                final items = filterHelper.getByTab(tab.key);
-                return _buildTabContent(items, tab.key);
-              }).toList(),
-            );
-          },
-        );
-      },
-    );
-  }
-
-
-  Widget _buildLoginPrompt() {
-    final l10n = LocalizationService();
-    return MBLoginPrompt(
-      onLogin: _loginAndReload,
-      message: l10n.translate('login_prompt_library'),
-    );
-  }
-
-  Widget _buildTabContent(List<LibraryEntry> items, String tabKey) {
-    final l10n = LocalizationService();
-    
-    return RefreshIndicator(
-      onRefresh: _onRefresh,
-      child: items.isEmpty
-          ? CustomScrollView(
-              controller: _scrollControllers[tabKey],
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                SliverFillRemaining(
-                  child: Center(
-                    child: Text(
-                      l10n.translate('no_results'),
-                      style: TextStyle(color: AppConstants.textMutedColor),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : ListenableBuilder(
-              listenable: SettingsManager(),
-              builder: (context, _) {
-                final settings = SettingsManager();
-                final isGrid = settings.separateListStyles
-                    ? settings.libraryListStyle.isGrid
-                    : settings.currentListStyle.isGrid;
-
-                if (isGrid) {
-                  return GridView.builder(
-                    controller: _scrollControllers[tabKey],
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(12),
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 160,
-                      childAspectRatio: 0.65,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final entry = items[index];
-                      return GestureDetector(
-                        onTap: () => _navigateToSeriesDetail(entry.series),
-                        child: EntryListItem(series: entry.series, isLibrary: true),
-                      );
-                    },
-                  );
-                }
-
-                return ListView.builder(
-                  controller: _scrollControllers[tabKey],
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final entry = items[index];
-                    return GestureDetector(
-                      onTap: () => _navigateToSeriesDetail(entry.series),
-                      child: EntryListItem(series: entry.series, isLibrary: true),
-                    );
-                  },
-                );
-              },
-            ),
     );
   }
 

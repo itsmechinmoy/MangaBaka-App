@@ -1,0 +1,94 @@
+import 'package:flutter/material.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
+import 'package:mangabaka_app/features/series/models/series.dart' as api;
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+
+class LibraryGridList extends StatelessWidget {
+  final List<LibraryEntry> items;
+  final String tabKey;
+  final ScrollController scrollController;
+  final RefreshCallback onRefresh;
+  final Function(api.Series) onItemTap;
+
+  const LibraryGridList({
+    super.key,
+    required this.items,
+    required this.tabKey,
+    required this.scrollController,
+    required this.onRefresh,
+    required this.onItemTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = LocalizationService();
+
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: items.isEmpty
+          ? CustomScrollView(
+              controller: scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverFillRemaining(
+                  child: Center(
+                    child: Text(
+                      l10n.translate('no_results'),
+                      style: TextStyle(color: AppConstants.textMutedColor),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : ListenableBuilder(
+              listenable: SettingsManager(),
+              builder: (context, _) {
+                final settings = SettingsManager();
+                final isGrid = settings.separateListStyles
+                    ? settings.libraryListStyle.isGrid
+                    : settings.currentListStyle.isGrid;
+
+                if (isGrid) {
+                  return GridView.builder(
+                    controller: scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(12),
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 160,
+                      childAspectRatio: 0.65,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final entry = items[index];
+                      return GestureDetector(
+                        onTap: () => onItemTap(entry.series),
+                        child: EntryListItem(series: entry.series, isLibrary: true),
+                      );
+                    },
+                  );
+                }
+
+                return ListView.builder(
+                  controller: scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final entry = items[index];
+                    return GestureDetector(
+                      onTap: () => onItemTap(entry.series),
+                      child: EntryListItem(series: entry.series, isLibrary: true),
+                    );
+                  },
+                );
+              },
+            ),
+    );
+  }
+}
