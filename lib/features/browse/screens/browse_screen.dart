@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 import 'package:bakahyou/features/browse/widgets/mb_search_bar.dart';
 import 'package:bakahyou/features/browse/widgets/browse_content.dart';
-import 'package:bakahyou/features/series/services/series_search_service.dart';
 import 'package:bakahyou/features/series/screens/series_detail_screen.dart';
 import 'package:bakahyou/features/browse/screens/browse_results_screen.dart';
 import 'package:bakahyou/features/series/models/series.dart';
-import 'package:bakahyou/features/browse/models/search_filters.dart';
 import 'package:bakahyou/utils/constants/app_constants.dart';
-import 'package:bakahyou/utils/di/service_locator.dart';
-import 'package:bakahyou/utils/settings/settings_manager.dart';
-import 'package:bakahyou/features/profile/services/profile_auth_service.dart';
 import 'package:bakahyou/features/browse/screens/barcode_scanner_screen.dart';
-import 'package:bakahyou/features/browse/services/book_lookup_service.dart';
-import 'package:bakahyou/features/series/models/autocomplete_series_result.dart';
-import 'package:bakahyou/features/series/services/series_id_service.dart';
 import 'package:bakahyou/utils/theme/theme_manager.dart';
 import 'package:bakahyou/utils/localization/localization_service.dart';
 import 'package:bakahyou/utils/transitions/app_transitions.dart';
+import 'package:bakahyou/features/browse/controllers/browse_controller.dart';
+import 'package:bakahyou/features/series/models/autocomplete_series_result.dart';
 
 class BrowseScreen extends StatefulWidget {
   const BrowseScreen({super.key});
@@ -27,150 +20,22 @@ class BrowseScreen extends StatefulWidget {
 }
 
 class _BrowseScreenState extends State<BrowseScreen> {
-  // Services & Controllers
-  late final SeriesSearchService _searchService;
-  late final ScrollController _scrollController;
-  final TextEditingController _searchController = TextEditingController();
-
-  // Search State
-  List<Series> _searchResults = [];
-  bool _isLoading = false;
-  bool _isLoadingMore = false;
-  String? _error;
-  String _currentSearchQuery = '';
-  int _currentPage = 1;
-  bool _hasMore = true;
-  SearchFilters _currentFilters = SearchFilters();
-  bool _showBackToTop = false;
+  late final BrowseController _controller;
 
   @override
   void initState() {
     super.initState();
-    _searchService = getIt<SeriesSearchService>();
-    _scrollController = ScrollController();
-    _scrollController.addListener(_onScroll);
+    _controller = BrowseController();
   }
 
   @override
   void dispose() {
-    _searchController.dispose();
-    _scrollController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  void _resetSearchState() {
-    setState(() {
-      _searchResults = [];
-      _error = null;
-      _currentSearchQuery = '';
-      _currentPage = 1;
-      _hasMore = true;
-      _isLoadingMore = false;
-    });
-  }
-
-  void _onScroll() {
-    final isNearEnd = _scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - AppConstants.scrollThresholdPx;
-
-    if (isNearEnd &&
-        _hasMore &&
-        !_isLoadingMore &&
-        (_currentSearchQuery.isNotEmpty ||
-            _currentFilters.toMap().isNotEmpty)) {
-      _loadMoreResults();
-    }
-
-    final showBackToTop = _scrollController.offset > 500;
-    if (showBackToTop != _showBackToTop) {
-      setState(() {
-        _showBackToTop = showBackToTop;
-      });
-    }
-  }
-
-  Future<void> _searchSeries() async {
-    // If there is no query and no filters, reset
-    if (_currentSearchQuery.trim().isEmpty && _currentFilters.toMap().isEmpty) {
-      _resetSearchState();
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-      _error = null;
-      _searchResults = [];
-      _currentPage = 1;
-      _hasMore = true;
-      _isLoadingMore = false;
-    });
-
-    await _fetchSearchResults();
-  }
-
-  Future<void> _loadMoreResults() async {
-    if (_isLoadingMore || !_hasMore) return;
-
-    setState(() {
-      _isLoadingMore = true;
-    });
-    _currentPage++;
-    await _fetchSearchResults();
-  }
-
-  Future<void> _fetchSearchResults() async {
-    try {
-      String? userId;
-      if (SettingsManager().hideLibrarySeriesInBrowse) {
-        final auth = getIt<ProfileAuthService>();
-        if (auth.isLoggedIn) {
-          final profile = auth.cachedProfile;
-          if (profile != null) {
-            // exclude_user_library expects a 32-character alphanumeric string.
-            // UUIDs from the profile ID might contain hyphens, so we strip them.
-            userId = profile.id.replaceAll('-', '');
-          }
-        }
-      }
-
-      final extraParams = <String, dynamic>{
-        'page': _currentPage,
-        'limit': AppConstants.defaultPageLimit,
-        ..._currentFilters.toMap(),
-      };
-
-      if (userId != null && userId.isNotEmpty) {
-        extraParams['exclude_user_library'] = userId;
-      }
-
-      final newResults = await _searchService.searchSeriesByName(
-        _currentSearchQuery,
-        extraParams: extraParams,
-      );
-
-      setState(() {
-        _hasMore = newResults.length == AppConstants.defaultPageLimit;
-        _isLoading = false;
-        _isLoadingMore = false;
-        _searchResults.addAll(newResults);
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _isLoadingMore = false;
-        _error = e.toString();
-      });
-    }
-  }
-
-  static double _generateRandomSeed() {
-    return Random().nextDouble();
-  }
-
-
-
   void _navigateToBrowseResults(String header, String sortBy, {String? type}) {
-    final double? randomSeed = sortBy == 'random' ? _generateRandomSeed() : null;
+    final double? randomSeed = sortBy == 'random' ? BrowseController.generateRandomSeed() : null;
 
     Navigator.push(
       context,
@@ -190,17 +55,6 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
   }
 
-  String _cleanTitle(String title) {
-    // Matches common suffixes like "Vol. 1", "Volume 2", "Part 3", "Deluxe Edition", "Omnibus"
-    final regex = RegExp(
-      r'(?:\s*[,-]?\s*(?:Vol\.|Volume|Part|Book)\s*\d+.*)|(?:\s*(?:Deluxe Edition|Omnibus|Box Set|Manga)\b.*)',
-      caseSensitive: false,
-    );
-    final cleaned = title.replaceAll(regex, '').trim();
-    // Remove trailing hyphens or colons
-    return cleaned.replaceAll(RegExp(r'[\-:]$'), '').trim();
-  }
-
   Future<void> _handleBarcodeScan() async {
     final isbn = await Navigator.push<String>(
       context,
@@ -208,104 +62,32 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
 
     if (isbn != null && isbn.isNotEmpty) {
-      setState(() {
-        _isLoading = true;
-        _error = null;
-      });
-
+      final errorKey = await _controller.handleBarcodeScan(isbn);
+      
       if (!mounted) return;
 
-      try {
-        final lookupService = BookLookupService();
-        final title = await lookupService.lookupTitleByIsbn(isbn);
-
-        if (title != null && title.isNotEmpty) {
-          _searchController.text = title;
-          _currentSearchQuery = title;
-          await _searchSeries();
-
-          if (!mounted) return;
-
-          if (_searchResults.isNotEmpty) {
-            _navigateToDetail(_searchResults.first);
-          } else {
-            // Fallback: Try stripping volume numbers and edition names
-            final cleanedTitle = _cleanTitle(title);
-            if (cleanedTitle != title && cleanedTitle.isNotEmpty) {
-              _searchController.text = cleanedTitle;
-              _currentSearchQuery = cleanedTitle;
-              await _searchSeries();
-
-              if (!mounted) return;
-
-              if (_searchResults.isNotEmpty) {
-                _navigateToDetail(_searchResults.first);
-                return;
-              }
-            }
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(LocalizationService().translate('no_series_found_for').replaceAll('{title}', cleanedTitle))),
-            );
-          }
-        } else {
-          if (!mounted) return;
-          setState(() {
-            _isLoading = false;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(LocalizationService().translate('barcode_not_found'))),
-          );
+      if (errorKey != null) {
+        String message = LocalizationService().translate(errorKey);
+        if (errorKey == 'no_series_found_for') {
+          final title = _controller.searchController.text;
+          message = message.replaceAll('{title}', title);
         }
-      } catch (e) {
-        if (!mounted) return;
-        setState(() {
-          _isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(LocalizationService().translate('barcode_lookup_failed'))),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      } else if (_controller.searchResults.isNotEmpty) {
+        _navigateToDetail(_controller.searchResults.first);
       }
     }
   }
 
   void _handleResultSelected(AutocompleteSeriesResult result) {
-    // Create a partial Series object from the autocomplete result
-    final series = Series(
-      id: result.id.toString(),
-      state: '',
-      title: result.title,
-      nativeTitle: '',
-      romanizedTitle: '',
-      secondaryTitles: [],
-      coverUrl: result.thumbnailUrl,
-      rawCoverUrl: result.thumbnailUrl,
-      authors: [],
-      artists: [],
-      description: '',
-      year: '',
-      status: '',
-      isLicensed: '',
-      hasAnime: '',
-      contentRating: '',
-      type: '',
-      rating: '',
-      finalVolume: '',
-      totalChapters: '',
-      links: [],
-      publishers: [],
-      genres: [],
-      tags: [],
-      lastUpdated: DateTime.now().toIso8601String(),
-    );
-
+    final series = _controller.convertAutocompleteToSeries(result);
     _navigateToDetail(series);
   }
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([LocalizationService(), ThemeManager()]),
+      listenable: Listenable.merge([LocalizationService(), ThemeManager(), _controller]),
       builder: (context, _) {
         return Scaffold(
           backgroundColor: AppConstants.primaryBackground,
@@ -319,60 +101,39 @@ class _BrowseScreenState extends State<BrowseScreen> {
               ),
               child: Stack(
                 children: [
-                  // Main content sits below, with top padding for the search bar
                   Padding(
                     padding: const EdgeInsets.only(top: 64),
                     child: Column(
                       children: [
                         BrowseContent(
-                          searchResults: _searchResults,
-                          isLoading: _isLoading,
-                          isLoadingMore: _isLoadingMore,
-                          error: _error,
-                          scrollController: _scrollController,
-                          onRetry: _searchSeries,
+                          searchResults: _controller.searchResults,
+                          isLoading: _controller.isLoading,
+                          isLoadingMore: _controller.isLoadingMore,
+                          error: _controller.error,
+                          scrollController: _controller.scrollController,
+                          onRetry: _controller.searchSeries,
                           onNavigateToDetail: _navigateToDetail,
                           onNavigateToResults: _navigateToBrowseResults,
                         ),
                       ],
                     ),
                   ),
-                  // Search bar + suggestions float on top
                   MBSearchBar(
-                    controller: _searchController,
-                    initialFilters: _currentFilters,
+                    controller: _controller.searchController,
+                    initialFilters: _controller.currentFilters,
                     onScanTap: _handleBarcodeScan,
                     onResultSelected: _handleResultSelected,
-                    onChanged: (text) {
-                      _currentSearchQuery = text;
-                      if (text.isEmpty && _currentFilters.toMap().isEmpty) {
-                        _resetSearchState();
-                      }
-                    },
-                    onSubmitted: (text) {
-                      _currentSearchQuery = text;
-                      _searchSeries();
-                    },
-                    onFilterApplied: (filters) {
-                      setState(() {
-                        _currentFilters = filters;
-                      });
-                      _searchSeries();
-                    },
+                    onChanged: _controller.updateSearchQuery,
+                    onSubmitted: (_) => _controller.searchSeries(),
+                    onFilterApplied: _controller.updateFilters,
                   ),
                 ],
               ),
             ),
           ),
-          floatingActionButton: _showBackToTop
+          floatingActionButton: _controller.showBackToTop
               ? FloatingActionButton(
-                  onPressed: () {
-                    _scrollController.animateTo(
-                      0,
-                      duration: AppConstants.mediumAnimationDuration,
-                      curve: Curves.easeInOut,
-                    );
-                  },
+                  onPressed: _controller.scrollToTop,
                   backgroundColor: AppConstants.accentColor,
                   child: Icon(Icons.arrow_upward, color: AppConstants.primaryBackground),
                 )
