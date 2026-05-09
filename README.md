@@ -56,6 +56,14 @@ Extra
 
 </details>
 
+## Contributing
+
+[Code of conduct](https://github.com/Oazzies/BakaHyou/blob/main/CODE_OF_CONDUCT.md) · [Contributing guide](https://github.com/Oazzies/BakaHyou/blob/main/CONTRIBUTING.md)
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Before reporting a new issue, take a look at the [changelog](https://github.com/Oazzies/BakaHyou/releases) and the already opened [issues](https://github.com/Oazzies/BakaHyou/issues); if you got any questions, join our [Discord server](https://mangabaka.org/discord).
+
 </div>
 
 ## Disclaimer
