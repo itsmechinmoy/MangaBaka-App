@@ -11,23 +11,27 @@ class LocalizationService extends ChangeNotifier {
 
   static const String _languageKey = '${AppConstants.prefixStorageKey}language_pref';
 
-  Map<String, dynamic> _languageData = {};
+  Map<String, dynamic> _manifest = {};
+  Map<String, dynamic> _currentStrings = {};
   String _currentLanguage = 'en';
 
   Future<void> init() async {
     try {
-      final jsonString = await rootBundle.loadString('assets/lang/languages.json');
-      _languageData = json.decode(jsonString);
+      // Load manifest
+      final manifestString = await rootBundle.loadString('assets/lang/languages.json');
+      _manifest = json.decode(manifestString);
       
       final prefs = await SharedPreferences.getInstance();
       final savedLang = prefs.getString(_languageKey);
       
-      if (savedLang != null && _languageData.containsKey(savedLang)) {
+      if (savedLang != null && _manifest.containsKey(savedLang)) {
         _currentLanguage = savedLang;
       } else {
         // Set to English by default if not set
-        _currentLanguage = _languageData.containsKey('en') ? 'en' : _languageData.keys.first;
+        _currentLanguage = _manifest.containsKey('en') ? 'en' : _manifest.keys.first;
       }
+
+      await _loadLanguageStrings(_currentLanguage);
       
       notifyListeners();
     } catch (e) {
@@ -35,9 +39,21 @@ class LocalizationService extends ChangeNotifier {
     }
   }
 
+  Future<void> _loadLanguageStrings(String langCode) async {
+    try {
+      final langString = await rootBundle.loadString('assets/lang/$langCode.json');
+      final langData = json.decode(langString);
+      _currentStrings = langData['strings'] ?? {};
+    } catch (e) {
+      debugPrint('Error loading strings for $langCode: $e');
+      _currentStrings = {};
+    }
+  }
+
   Future<void> setLanguage(String langCode) async {
-    if (_languageData.containsKey(langCode)) {
+    if (_manifest.containsKey(langCode)) {
       _currentLanguage = langCode;
+      await _loadLanguageStrings(langCode);
       notifyListeners();
       
       final prefs = await SharedPreferences.getInstance();
@@ -47,10 +63,10 @@ class LocalizationService extends ChangeNotifier {
 
   String get currentLanguage => _currentLanguage;
 
-  Map<String, dynamic> get currentLanguageData => _languageData[_currentLanguage] ?? {};
+  Map<String, dynamic> get currentLanguageData => _manifest[_currentLanguage] ?? {};
 
   List<Map<String, dynamic>> getLanguages() {
-    return _languageData.entries.map((e) {
+    return _manifest.entries.map((e) {
       return {
         'code': e.key,
         'name': e.value['name'] ?? e.key,
@@ -61,11 +77,6 @@ class LocalizationService extends ChangeNotifier {
   }
 
   String translate(String key) {
-    if (_languageData.isEmpty || !_languageData.containsKey(_currentLanguage)) {
-      return key; // Fallback to key
-    }
-    
-    final strings = _languageData[_currentLanguage]['strings'] as Map<String, dynamic>?;
-    return strings?[key] ?? key;
+    return _currentStrings[key] ?? key;
   }
 }
