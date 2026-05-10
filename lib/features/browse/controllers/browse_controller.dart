@@ -167,7 +167,7 @@ class BrowseController extends ChangeNotifier {
 
   String cleanTitle(String title) {
     final regex = RegExp(
-      r'(?:\s*[,-]?\s*(?:Vol\.|Volume|Part|Book)\s*\d+.*)|(?:\s*(?:Deluxe Edition|Omnibus|Box Set|Manga)\b.*)',
+      r'(?:\s*[,-]?\s*(?:Vol\.|Volume|Part|Book)\s*\d+.*)|(?:\s*\(?(?:Deluxe Edition|Omnibus|Box Set|Manga)\b.*)',
       caseSensitive: false,
     );
     final cleaned = title.replaceAll(regex, '').trim();
