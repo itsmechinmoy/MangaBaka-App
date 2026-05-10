@@ -27,7 +27,7 @@
 			<dict>
 				<key>CFBundleURLSchemes</key>
 				<array>
-					<string>dev.oazzies.mangabaka_app</string>
+					<string>dev.oazzies.mangabaka-app</string>
 				</array>
 			</dict>
 		</array>

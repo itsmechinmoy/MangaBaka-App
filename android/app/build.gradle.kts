@@ -24,7 +24,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        manifestPlaceholders["appAuthRedirectScheme"] = "dev.oazzies.mangabaka_app"
+        manifestPlaceholders["appAuthRedirectScheme"] = "dev.oazzies.mangabaka-app"
     }
 
     buildTypes {
