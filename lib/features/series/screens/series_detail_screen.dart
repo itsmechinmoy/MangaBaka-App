@@ -1,5 +1,6 @@
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
+import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
@@ -199,7 +200,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
     final isTablet = screenWidth > 600 && screenWidth <= 900;
 
     return ListenableBuilder(
-      listenable: Listenable.merge([LocalizationService(), ThemeManager()]),
+      listenable: Listenable.merge([LocalizationService(), ThemeManager(), getIt<ProfileAuthService>()]),
       builder: (context, _) {
         final l10n = LocalizationService();
         return GestureDetector(
@@ -294,7 +295,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
     return StreamBuilder<LibraryEntry?>(
       stream: _entryStream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active && snapshot.data == null) {
+        if ((snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) && snapshot.data == null) {
           return FloatingActionButton.extended(
             onPressed: _isAdding ? null : _addSeriesToLibrary,
             backgroundColor: AppConstants.accentColor,

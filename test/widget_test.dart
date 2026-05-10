@@ -37,7 +37,11 @@ void main() {
 
   testWidgets('App smoke test - shows onboarding initially', (WidgetTester tester) async {
     await tester.pumpWidget(const MangaBakaApp());
-    // Wait for the splash screen animation to finish
+    // Initial pump to start animations
+    await tester.pump();
+    // Pump enough to let the splash screen finish its work
+    await tester.pump(const Duration(seconds: 3));
+    // Final settle
     await tester.pumpAndSettle();
 
     // Since onboarding is shown when not logged in and not completed onboarding
