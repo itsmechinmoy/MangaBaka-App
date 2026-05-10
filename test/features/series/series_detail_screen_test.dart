@@ -72,17 +72,9 @@ class MockLibraryService extends Fake implements LibraryService {
   @override
   Stream<LibraryEntry?> watchEntryFromDb(String id) {
     return Stream.multi((controller) {
-      // Give the current value to every new listener
       controller.add(currentEntry);
-      
-      // Then forward all future updates
-      final subscription = _controller.stream.listen(
-        controller.add,
-        onError: controller.addError,
-        onDone: controller.close,
-      );
-      
-      controller.onCancel = () => subscription.cancel();
+      final sub = _controller.stream.listen(controller.add);
+      controller.onCancel = () => sub.cancel();
     }, isBroadcast: true);
   }
 
@@ -209,16 +201,18 @@ void main() {
     // Set a large viewport for widget tests
     tester.view.physicalSize = const Size(1200, 1600);
     tester.view.devicePixelRatio = 1.0;
+    await tester.pump();
     addTearDown(() => tester.view.reset());
     
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
     
-    final fabFinder = find.byType(FloatingActionButton);
+    final fabFinder = find.byKey(const Key('add_to_library_fab'));
     expect(fabFinder, findsOneWidget);
+    expect(tester.widget<FloatingActionButton>(fabFinder).onPressed, isNotNull);
     
-    // Tap the center directly to avoid hit-test issues with animations
-    await tester.tapAt(tester.getCenter(fabFinder));
+    // Use standard tap instead of tapAt to be more robust
+    await tester.tap(fabFinder);
     await tester.pump();
     await tester.pumpAndSettle();
     

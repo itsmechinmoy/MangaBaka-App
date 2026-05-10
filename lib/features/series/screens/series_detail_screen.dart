@@ -203,13 +203,13 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
       listenable: Listenable.merge([LocalizationService(), ThemeManager(), getIt<ProfileAuthService>()]),
       builder: (context, _) {
         final l10n = LocalizationService();
-        return GestureDetector(
-          onHorizontalDragUpdate: (details) {
-            if (details.delta.dx > 15) Navigator.of(context).pop();
-          },
-          child: Scaffold(
-            backgroundColor: AppConstants.primaryBackground,
-            body: StreamBuilder<LibraryEntry?>(
+        return Scaffold(
+          backgroundColor: AppConstants.primaryBackground,
+          body: GestureDetector(
+            onHorizontalDragUpdate: (details) {
+              if (details.delta.dx > 15) Navigator.of(context).pop();
+            },
+            child: StreamBuilder<LibraryEntry?>(
               stream: _entryStream,
               builder: (context, snapshot) {
                 final entry = snapshot.data;
@@ -246,8 +246,8 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
                 );
               },
             ),
-            floatingActionButton: _buildFAB(l10n),
           ),
+          floatingActionButton: _buildFAB(l10n),
         );
       },
     );
@@ -292,19 +292,24 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
   }
 
   Widget _buildFAB(LocalizationService l10n) {
+    final isLoggedIn = getIt<ProfileAuthService>().isLoggedIn;
+    if (!isLoggedIn) return const SizedBox.shrink();
     return StreamBuilder<LibraryEntry?>(
       stream: _entryStream,
       builder: (context, snapshot) {
-        if ((snapshot.connectionState == ConnectionState.active || snapshot.connectionState == ConnectionState.done) && snapshot.data == null) {
+        if (snapshot.data == null) {
           return FloatingActionButton.extended(
-            onPressed: _isAdding ? null : _addSeriesToLibrary,
+            key: const Key('add_to_library_fab'),
+            onPressed: _isAdding ? null : () {
+              _addSeriesToLibrary();
+            },
             backgroundColor: AppConstants.accentColor,
             foregroundColor: AppConstants.primaryBackground,
             label: _isAdding 
               ? SizedBox(height: 24, width: 24, child: CircularProgressIndicator(strokeWidth: 2, color: AppConstants.primaryBackground))
               : Text(l10n.translate('add_to_library'), style: const TextStyle(fontWeight: FontWeight.bold)),
             icon: _isAdding ? null : const Icon(Icons.add),
-          ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack);
+          );
         }
         return const SizedBox.shrink();
       },
