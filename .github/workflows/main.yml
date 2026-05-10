@@ -1,10 +1,12 @@
 name: Flutter CI/CD
 
 on:
-  push:
-    tags:
-      - 'v*' # Trigger only when you push a tag (e.g., v1.0.1)
-  workflow_dispatch: # Allows manual triggering from the Actions tab
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag for this release (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
 
 jobs:
   # JOB 1: Quality Check (Analysis and Testing)
@@ -53,7 +55,6 @@ jobs:
           flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Build APK
-        # Point 3: Using github.run_number for automated versioning
         run: flutter build apk --release --build-number=${{ github.run_number }}
 
       - name: Upload APK Artifact
@@ -112,8 +113,9 @@ jobs:
       - name: Create Draft Release
         uses: softprops/action-gh-release@v1
         with:
-          # This creates a draft so you can manually add descriptions
-          draft: true 
+          tag_name: ${{ github.event.inputs.version }}
+          name: Release ${{ github.event.inputs.version }}
+          draft: true
           files: |
             app-release.apk
             Runner.xcarchive
