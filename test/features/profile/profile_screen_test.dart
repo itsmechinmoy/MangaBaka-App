@@ -18,19 +18,12 @@ class MockProfileAuthService extends Fake implements ProfileAuthService {
   @override
   MbProfile? get cachedProfile => null;
   @override
-  String? get username => null;
-  @override
   void addListener(VoidCallback listener) {}
   @override
   void removeListener(VoidCallback listener) {}
 }
 
-class MockSnapshotService extends Fake implements SnapshotService {
-  @override
-  void addListener(VoidCallback listener) {}
-  @override
-  void removeListener(VoidCallback listener) {}
-}
+class MockSnapshotService extends Fake implements SnapshotService {}
 
 void main() {
   setUp(() async {

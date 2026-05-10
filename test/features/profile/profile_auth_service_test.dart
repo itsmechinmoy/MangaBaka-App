@@ -5,17 +5,13 @@ import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 class MockProfileAuthService extends ProfileAuthService {
   bool _mockLoggedIn = false;
-  String? _mockUsername;
 
   @override
   bool get isLoggedIn => _mockLoggedIn;
-  @override
-  String? get username => _mockUsername;
 
   @override
   Future<void> logout() async {
     _mockLoggedIn = false;
-    _mockUsername = null;
   }
 }
 
@@ -29,14 +25,12 @@ void main() {
     test('initial state is logged out', () {
       final auth = MockProfileAuthService();
       expect(auth.isLoggedIn, isFalse);
-      expect(auth.username, isNull);
     });
 
     test('logout clears state', () async {
       final auth = MockProfileAuthService();
       await auth.logout();
       expect(auth.isLoggedIn, isFalse);
-      expect(auth.username, isNull);
     });
   });
 }

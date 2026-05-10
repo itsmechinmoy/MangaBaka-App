@@ -107,10 +107,6 @@ class MockProfileAuthService extends ChangeNotifier implements ProfileAuthServic
   }
   @override
   MbProfile? get cachedProfile => null;
-  @override
-  String? get username => null;
-  @override
-  String? get userId => null;
   
   @override
   Future<void> init() async {}

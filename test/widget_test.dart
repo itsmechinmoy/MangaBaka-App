@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/features/profile/models/mb_profile.dart';
-import 'package:mangabaka_app/features/navigation/screens/main_screen.dart';
 import 'package:mangabaka_app/features/navigation/screens/onboarding_screen.dart';
-import 'package:mangabaka_app/database/database.dart';
 import 'package:mangabaka_app/main.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 
 class MockProfileAuthService extends Fake implements ProfileAuthService {
   @override

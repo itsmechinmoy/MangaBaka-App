@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                 Icon(Icons.explore_outlined, color: AppConstants.textMutedColor, size: 64),
                 const SizedBox(height: 16),
                 Text(
-                  l10n.translate("discover_coming_soon") ?? "Discover feature coming soon!",
+                  l10n.translate("discover_coming_soon"),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppConstants.textMutedColor,

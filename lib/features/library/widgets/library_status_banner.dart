@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 
 class LibraryStatusBanner extends StatelessWidget {

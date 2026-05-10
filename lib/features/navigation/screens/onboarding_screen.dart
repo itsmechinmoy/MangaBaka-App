@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:mangabaka_app/features/navigation/screens/main_screen.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';

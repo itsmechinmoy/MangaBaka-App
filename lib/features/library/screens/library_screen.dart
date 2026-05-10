@@ -9,7 +9,6 @@ import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart'
 import 'package:mangabaka_app/features/series/models/series.dart' as api;
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';

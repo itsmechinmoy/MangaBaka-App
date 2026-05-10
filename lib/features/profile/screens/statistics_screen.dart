@@ -8,7 +8,6 @@ import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
 import 'package:mangabaka_app/features/library/services/mappers/db_to_api_mapper.dart';
-import 'package:mangabaka_app/features/series/models/series.dart' as api;
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});

@@ -8,7 +8,6 @@ import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
-import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/profile/models/mb_profile.dart';
 
 class MockProfileAuthService extends Fake implements ProfileAuthService {

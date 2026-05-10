@@ -12,7 +12,7 @@ import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
 class MainScreen extends StatefulWidget {
-  static final GlobalKey<_MainScreenState> mainScreenKey = GlobalKey<_MainScreenState>();
+  static final GlobalKey<MainScreenState> mainScreenKey = GlobalKey<MainScreenState>();
   
   MainScreen({Key? key}) : super(key: key ?? mainScreenKey);
 
@@ -21,10 +21,10 @@ class MainScreen extends StatefulWidget {
   }
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<MainScreen> createState() => MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> {
   late int _selectedIndex;
 
   @override

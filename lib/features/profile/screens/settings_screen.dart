@@ -10,7 +10,6 @@ import 'package:mangabaka_app/features/profile/services/profile_auth_service.dar
 import 'package:mangabaka_app/features/profile/widgets/settings_dialogs.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/features/profile/widgets/settings_components.dart';
-import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'dart:io';
 import 'package:android_intent_plus/android_intent.dart';
 

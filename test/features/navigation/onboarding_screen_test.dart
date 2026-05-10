@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/features/navigation/screens/onboarding_screen.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/series/services/series_search_service.dart';

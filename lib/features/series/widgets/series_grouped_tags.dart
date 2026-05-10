@@ -120,11 +120,7 @@ class _SeriesGroupedTagsState extends State<SeriesGroupedTags> {
                                       children: [
                                         if (tagParts.length > 1) ...[
                                           TextSpan(
-                                            text: tagParts
-                                                    .sublist(
-                                                        0, tagParts.length - 1)
-                                                    .join(' > ') +
-                                                ' > ',
+                                            text: '${tagParts.sublist(0, tagParts.length - 1).join(' > ')} > ',
                                             style: TextStyle(
                                               color: AppConstants.textMutedColor,
                                               fontSize: 12,
@@ -151,7 +147,7 @@ class _SeriesGroupedTagsState extends State<SeriesGroupedTags> {
                               const SizedBox(height: 16),
                           ],
                         );
-                      }).toList(),
+                      }),
                     ],
                   ),
                 ),

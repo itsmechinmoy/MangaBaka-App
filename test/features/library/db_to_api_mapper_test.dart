@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/database/database.dart' as db;
 import 'package:mangabaka_app/features/library/services/mappers/db_to_api_mapper.dart';
-import 'package:mangabaka_app/features/library/models/library_entry.dart' as api;
-import 'package:mangabaka_app/features/series/models/series.dart' as api;
 
 void main() {
   group('DbToApiMapper', () {

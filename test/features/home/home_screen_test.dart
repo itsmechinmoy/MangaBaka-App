@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/features/home/screens/home_screen.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 
 void main() {
   testWidgets('HomeScreen renders discover coming soon message', (WidgetTester tester) async {

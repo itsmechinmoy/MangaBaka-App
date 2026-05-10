@@ -459,9 +459,7 @@ class LibraryService {
 
         for (final e in entries) {
           final dateStr = e.updatedAt ?? e.createdAt;
-          if (newestEntryTimestamp == null) {
-            newestEntryTimestamp = dateStr ?? '${e.id}|${e.state}|${e.progressChapter ?? 0}';
-          }
+          newestEntryTimestamp ??= dateStr ?? '${e.id}|${e.state}|${e.progressChapter ?? 0}';
 
           bool isNew = true;
           if (dateStr != null) {

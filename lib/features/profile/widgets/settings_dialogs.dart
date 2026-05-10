@@ -332,7 +332,6 @@ class SettingsDialogs {
     required AppListStyle Function() currentValueGetter,
     required void Function(AppListStyle) onSelected,
   }) {
-    final l10n = LocalizationService();
     final settingsManager = SettingsManager();
     
     showModalBottomSheet(

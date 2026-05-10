@@ -3,8 +3,6 @@ import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/features/series/services/metadata_service.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 
 
@@ -82,7 +80,6 @@ class EntryListItem extends StatelessWidget {
       case AppListStyle.compact:
         return _buildCompactListItem(context, l10n, displayTitle);
       case AppListStyle.comfortable:
-      default:
         return _buildComfortableListItem(context, l10n, displayTitle);
     }
   }

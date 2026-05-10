@@ -40,8 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _totalSeries = 0;
   int _chaptersRead = 0;
   int _volumesRead = 0;
-  double _completionRate = 0.0;
-  int _totalRereads = 0;
   double _meanScore = 0.0;
 
   final List<LibraryEntry> _recentlyChanged = [];
@@ -115,8 +113,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _totalSeries = 0;
         _chaptersRead = 0;
         _volumesRead = 0;
-        _completionRate = 0.0;
-        _totalRereads = 0;
         _meanScore = 0.0;
         _recentlyChanged.clear();
         _recentlyAdded.clear();
@@ -177,8 +173,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _totalSeries = results[0] as int;
       _chaptersRead = results[1] as int;
       _volumesRead = results[2] as int;
-      _completionRate = results[3] as double;
-      _totalRereads = results[4] as int;
       _meanScore = results[5] as double;
     });
   }

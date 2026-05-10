@@ -29,9 +29,7 @@ class LibraryEntryWithSeries {
   daos: [SeriesDao, LibraryEntriesDao],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase._(QueryExecutor executor) : super(executor);
-
-  AppDatabase.forTesting(QueryExecutor executor) : super(executor);
+  AppDatabase.forTesting(super.executor);
 
   @override
   int get schemaVersion => 2;

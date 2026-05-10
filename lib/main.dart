@@ -95,19 +95,19 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
             ),
             scaffoldBackgroundColor: AppConstants.primaryBackground,
             cardColor: AppConstants.secondaryBackground,
-            dialogBackgroundColor: AppConstants.secondaryBackground,
+            dialogTheme: DialogThemeData(
+              backgroundColor: AppConstants.secondaryBackground,
+            ),
             dividerColor: AppConstants.borderColor,
             bottomSheetTheme: BottomSheetThemeData(
               backgroundColor: AppConstants.secondaryBackground,
-              modalBackgroundColor: AppConstants.secondaryBackground,
             ),
             appBarTheme: AppBarTheme(
               backgroundColor: AppConstants.primaryBackground,
               surfaceTintColor: Colors.transparent,
             ),
           ),
-          darkTheme: ThemeData.dark().copyWith(
-            useMaterial3: true,
+          darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
             colorScheme: ColorScheme.fromSeed(
               seedColor: AppConstants.primaryAccent,
               brightness: Brightness.dark,
@@ -117,11 +117,12 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
             ),
             scaffoldBackgroundColor: AppConstants.primaryBackground,
             cardColor: AppConstants.secondaryBackground,
-            dialogBackgroundColor: AppConstants.secondaryBackground,
+            dialogTheme: DialogThemeData(
+              backgroundColor: AppConstants.secondaryBackground,
+            ),
             dividerColor: AppConstants.borderColor,
             bottomSheetTheme: BottomSheetThemeData(
               backgroundColor: AppConstants.secondaryBackground,
-              modalBackgroundColor: AppConstants.secondaryBackground,
             ),
             appBarTheme: AppBarTheme(
               backgroundColor: AppConstants.primaryBackground,
