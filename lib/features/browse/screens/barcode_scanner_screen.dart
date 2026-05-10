@@ -3,6 +3,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 class BarcodeScannerScreen extends StatefulWidget {
   const BarcodeScannerScreen({super.key});
@@ -12,6 +13,7 @@ class BarcodeScannerScreen extends StatefulWidget {
 }
 
 class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
+  static final _logger = LoggingService.logger;
   final MobileScannerController _scannerController = MobileScannerController(
     formats: const [BarcodeFormat.ean13, BarcodeFormat.ean8], // ISBNs are usually EAN-13
   );
@@ -31,6 +33,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
     if (barcodes.isNotEmpty) {
       final String? barcodeValue = barcodes.first.rawValue;
       if (barcodeValue != null && barcodeValue.isNotEmpty) {
+        _logger.info('Barcode detected: $barcodeValue');
         setState(() {
           _isScanned = true;
         });

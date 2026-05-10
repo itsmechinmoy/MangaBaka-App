@@ -11,6 +11,7 @@ import 'package:mangabaka_app/utils/transitions/app_transitions.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 import 'package:mangabaka_app/features/browse/widgets/browse_results_body.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 class BrowseResultsScreen extends StatefulWidget {
   final String sortType;
@@ -33,6 +34,7 @@ class BrowseResultsScreen extends StatefulWidget {
 }
 
 class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
+  static final _logger = LoggingService.logger;
   // Services & Controllers
   late final SeriesSearchService _searchService;
   late final ScrollController _scrollController;
@@ -77,6 +79,7 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
             AppConstants.scrollThresholdPx;
 
     if (isNearEnd && _hasMore && !_isLoading) {
+      _logger.fine('Near end of scroll in results, loading page: ${_currentPage + 1}');
       _fetchResults(initial: false);
     }
 
@@ -91,6 +94,7 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
   Future<void> _fetchResults({bool initial = false}) async {
     if (_isLoading) return;
 
+    _logger.info('Fetching results for "${widget.sortType}" (sortBy: ${widget.sortBy}), page: $_currentPage, initial: $initial');
     setState(() {
       _isLoading = true;
       _error = null;
@@ -106,6 +110,7 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
             // exclude_user_library expects a 32-character alphanumeric string.
             // UUIDs from the profile ID might contain hyphens, so we strip them.
             userId = profile.id.replaceAll('-', '');
+            _logger.fine('Hiding library series for user: $userId');
           }
         }
       }
@@ -118,6 +123,10 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
         extraParams: params,
       );
 
+      _logger.info('Fetched ${newResults.length} results for page $_currentPage');
+
+      if (!mounted) return;
+
       setState(() {
         if (initial) {
           _results.clear();
@@ -128,6 +137,8 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
         _incrementPageIfNeeded();
       });
     } catch (e) {
+      _logger.severe('Failed to fetch results for "${widget.sortType}" at page $_currentPage: $e');
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
         _error = LocalizationService().translate('failed_to_load');

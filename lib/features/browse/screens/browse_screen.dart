@@ -13,6 +13,7 @@ import 'package:mangabaka_app/features/browse/controllers/browse_controller.dart
 import 'package:mangabaka_app/features/browse/utils/browse_helpers.dart';
 import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 class BrowseScreen extends StatefulWidget {
   const BrowseScreen({super.key});
@@ -22,6 +23,7 @@ class BrowseScreen extends StatefulWidget {
 }
 
 class _BrowseScreenState extends State<BrowseScreen> {
+  static final _logger = LoggingService.logger;
   late final BrowseController _controller;
 
   @override
@@ -37,6 +39,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 
   void _navigateToBrowseResults(String header, String sortBy, {String? type}) {
+    _logger.info('Navigating to BrowseResults: header=$header, sortBy=$sortBy, type=$type');
     final double? randomSeed = sortBy == 'random' ? BrowseController.generateRandomSeed() : null;
 
     Navigator.push(
@@ -51,6 +54,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 
   void _navigateToDetail(Series series) {
+    _logger.info('Navigating to SeriesDetail: ${series.title} (ID: ${series.id})');
     Navigator.push(
       context,
       AppTransitions.slideUp(SeriesDetailScreen(series: series)),
@@ -58,9 +62,11 @@ class _BrowseScreenState extends State<BrowseScreen> {
   }
 
   Future<void> _handleBarcodeScan() async {
+    _logger.info('Requested barcode scan');
     final status = await Permission.camera.request();
     
     if (status.isPermanentlyDenied) {
+      _logger.warning('Camera permission permanently denied');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -75,6 +81,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
     }
 
     if (!status.isGranted) {
+      _logger.warning('Camera permission denied (status: $status)');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(LocalizationService().translate('camera_permission_denied'))),
@@ -82,6 +89,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
       return;
     }
 
+    _logger.fine('Camera permission granted, opening scanner');
     if (!mounted) return;
     final isbn = await Navigator.push<String>(
       context,
@@ -89,11 +97,13 @@ class _BrowseScreenState extends State<BrowseScreen> {
     );
 
     if (isbn != null && isbn.isNotEmpty) {
+      _logger.info('Scanned ISBN: $isbn');
       final errorKey = await _controller.handleBarcodeScan(isbn);
       
       if (!mounted) return;
 
       if (errorKey != null) {
+        _logger.warning('Barcode scan handling failed with error key: $errorKey');
         String message = LocalizationService().translate(errorKey);
         if (errorKey == 'no_series_found_for') {
           final title = _controller.searchController.text;
@@ -101,12 +111,16 @@ class _BrowseScreenState extends State<BrowseScreen> {
         }
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
       } else if (_controller.searchResults.isNotEmpty) {
+        _logger.info('Successfully handled barcode scan, navigating to first result');
         _navigateToDetail(_controller.searchResults.first);
       }
+    } else {
+      _logger.fine('Barcode scan cancelled or empty');
     }
   }
 
   void _handleResultSelected(AutocompleteSeriesResult result) {
+    _logger.info('Autocomplete result selected: ${result.title}');
     final series = BrowseHelpers.convertAutocompleteToSeries(result);
     _navigateToDetail(series);
   }
