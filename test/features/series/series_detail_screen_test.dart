@@ -71,12 +71,19 @@ class MockLibraryService extends Fake implements LibraryService {
 
   @override
   Stream<LibraryEntry?> watchEntryFromDb(String id) {
-    final controller = StreamController<LibraryEntry?>.broadcast(sync: true);
-    // Emit initial value immediately
-    controller.add(currentEntry);
-    final subscription = _controller.stream.listen((e) => controller.add(e));
-    controller.onCancel = () => subscription.cancel();
-    return controller.stream;
+    return Stream.multi((controller) {
+      // Give the current value to every new listener
+      controller.add(currentEntry);
+      
+      // Then forward all future updates
+      final subscription = _controller.stream.listen(
+        controller.add,
+        onError: controller.addError,
+        onDone: controller.close,
+      );
+      
+      controller.onCancel = () => subscription.cancel();
+    }, isBroadcast: true);
   }
 
   @override
@@ -198,18 +205,23 @@ void main() {
 
   testWidgets('SeriesDetailScreen allows adding to library when logged in', (WidgetTester tester) async {
     mockAuthService.isLoggedIn = true;
+    
+    // Set a large viewport for widget tests
+    tester.view.physicalSize = const Size(1200, 1600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.reset());
+    
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
-    
-    // Extra pumps to ensure StreamBuilder is active
-    await tester.pump();
-    await tester.pump();
     
     final fabFinder = find.byType(FloatingActionButton);
     expect(fabFinder, findsOneWidget);
     
-    await tester.tap(fabFinder);
+    // Tap the center directly to avoid hit-test issues with animations
+    await tester.tapAt(tester.getCenter(fabFinder));
+    await tester.pump();
     await tester.pumpAndSettle();
+    
     expect(mockLibraryService.createCalled, isTrue);
   });
 

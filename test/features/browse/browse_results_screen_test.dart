@@ -16,7 +16,7 @@ class MockSeriesSearchService extends Fake implements SeriesSearchService {
   bool shouldFail = false;
 
   @override
-  Future<List<Series>> searchSeries(String query, {int page = 1, Map<String, dynamic>? filters}) async {
+  Future<List<Series>> searchSeriesByName(String query, {String? sortBy, String? type, Map<String, dynamic>? extraParams}) async {
     wasCalled = true;
     if (shouldFail) throw Exception('Search failed');
     return response;
@@ -41,7 +41,7 @@ void main() {
 
   Widget createWidgetUnderTest() {
     return const MaterialApp(
-      home: BrowseResultsScreen(title: 'Test Search', query: 'test'),
+      home: BrowseResultsScreen(sortType: 'Test Search', sortBy: 'test'),
     );
   }
 
@@ -60,6 +60,7 @@ void main() {
   testWidgets('BrowseResultsScreen shows loading state initially', (WidgetTester tester) async {
     await tester.pumpWidget(createWidgetUnderTest());
     expect(find.byType(BrowseResultsLoading), findsOneWidget);
+    await tester.pumpAndSettle(); // Resolve pending timers from initState fetch
   });
 
   testWidgets('BrowseResultsScreen shows empty state when no results found', (WidgetTester tester) async {

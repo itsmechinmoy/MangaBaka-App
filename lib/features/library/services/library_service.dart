@@ -13,6 +13,7 @@ import 'package:mangabaka_app/utils/services/logging_service.dart';
 import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:flutter/foundation.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
 
 part 'library_service_sync_full.dart';
 part 'library_service_sync_recent.dart';
@@ -44,9 +45,9 @@ class LibraryService {
         .copyWith(isSyncing: false, clearError: true, clearInfo: true);
   }
 
-  LibraryService({required ProfileAuthService auth})
+  LibraryService({required ProfileAuthService auth, db.AppDatabase? database})
       : _auth = auth,
-        _db = db.AppDatabase();
+        _db = database ?? getIt<db.AppDatabase>();
 
   // ─── DB streams ───────────────────────────────────────────────────────────
 

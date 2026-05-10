@@ -75,9 +75,7 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  static final AppDatabase _instance = AppDatabase._(_openConnection());
-
-  factory AppDatabase() => _instance;
+  AppDatabase() : super(_openConnection());
 
   static LazyDatabase _openConnection() {
     final logger = LoggingService.logger;
