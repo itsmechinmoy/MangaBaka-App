@@ -15,6 +15,7 @@ class SeriesSearchService {
   static final String _baseUrl = '${AppConstants.baseApiUrl}/series/search';
   final _logger = LoggingService.logger;
   final _metadataService = getIt<MetadataService>();
+  final _seriesService = getIt<SeriesService>();
 
   Future<List<Map<String, dynamic>>> getGenres() async {
     if (!_metadataService.isInitialized) {
@@ -90,7 +91,7 @@ class SeriesSearchService {
               .toList();
           
           for (var series in results) {
-            SeriesService.precacheSeries(series);
+            _seriesService.precacheSeries(series);
           }
           
           return results;

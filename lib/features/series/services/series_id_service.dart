@@ -13,14 +13,14 @@ import 'dart:io';
 import 'dart:async';
 
 class SeriesService {
-  static final _logger = LoggingService.logger;
-  static final Map<String, Series> _cache = {};
+  final _logger = LoggingService.logger;
+  final Map<String, Series> _cache = {};
   
-  static void precacheSeries(Series series) {
+  void precacheSeries(Series series) {
     _cache[series.id] = series;
   }
 
-  static Future<List<SeriesLink>> fetchSeriesLinks(String id) async {
+  Future<List<SeriesLink>> fetchSeriesLinks(String id) async {
     try {
       final url = Uri.parse("${AppConstants.baseApiUrl}/series/$id/links");
       final response = await http
@@ -54,9 +54,9 @@ class SeriesService {
     }
   }
 
-  static get logger => _logger;
+  get logger => _logger;
 
-  static Future<Series> fetchSeries(String id) async {
+  Future<Series> fetchSeries(String id) async {
     // Check cache first
     if (_cache.containsKey(id)) {
       _logger.fine('Returning cached series data for ID: $id');
@@ -158,7 +158,7 @@ class SeriesService {
       );
     }
   }
-  static Future<List<SeriesCover>> fetchSeriesCovers(String id) async {
+  Future<List<SeriesCover>> fetchSeriesCovers(String id) async {
     try {
       final url = Uri.parse("${AppConstants.baseApiUrl}/series/$id/images?limit=50");
       final response = await http
@@ -185,7 +185,7 @@ class SeriesService {
     }
   }
 
-  static Future<List<Series>> fetchSeriesRelated(String id) async {
+  Future<List<Series>> fetchSeriesRelated(String id) async {
     try {
       final url = Uri.parse("${AppConstants.baseApiUrl}/series/$id/related");
       final response = await http
@@ -212,7 +212,7 @@ class SeriesService {
     }
   }
 
-  static Future<List<News>> fetchSeriesNews(String id) async {
+  Future<List<News>> fetchSeriesNews(String id) async {
     try {
       final url = Uri.parse("${AppConstants.baseApiUrl}/series/$id/news");
       final response = await http
@@ -239,7 +239,7 @@ class SeriesService {
     }
   }
 
-  static Future<List<SeriesCollection>> fetchSeriesCollections(String id) async {
+  Future<List<SeriesCollection>> fetchSeriesCollections(String id) async {
     try {
       final url = Uri.parse("${AppConstants.baseApiUrl}/series/$id/collections");
       final response = await http
@@ -266,7 +266,7 @@ class SeriesService {
     }
   }
 
-  static Future<List<SeriesWork>> fetchSeriesWorks(String id) async {
+  Future<List<SeriesWork>> fetchSeriesWorks(String id) async {
     try {
       final url = Uri.parse("${AppConstants.baseApiUrl}/series/$id/works");
       final response = await http

@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:mangabaka_app/database/database.dart';
 import 'package:mangabaka_app/features/series/services/series_search_service.dart';
+import 'package:mangabaka_app/features/series/services/series_id_service.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
@@ -31,6 +32,7 @@ void setupServiceLocator() {
   );
 
   // Series Services (lazy singletons - created on first use)
+  getIt.registerLazySingleton<SeriesService>(() => SeriesService());
   getIt.registerLazySingleton<SeriesSearchService>(() => SeriesSearchService());
 
   // Library Service (singleton to maintain state)

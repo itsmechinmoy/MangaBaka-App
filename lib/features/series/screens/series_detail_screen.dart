@@ -44,6 +44,7 @@ class SeriesDetailScreen extends StatefulWidget {
 
 class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
   late final LibraryService _libraryService;
+  late final SeriesService _seriesService;
   Stream<LibraryEntry?>? _entryStream;
   bool _isAdding = false;
   List<SeriesLink>? _enrichedLinks;
@@ -62,6 +63,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
   void initState() {
     super.initState();
     _libraryService = getIt<LibraryService>();
+    _seriesService = getIt<SeriesService>();
     _entryStream = _libraryService.watchEntryFromDb(widget.series.id);
     _fullSeries = widget.series; 
     _fetchFullData();
@@ -74,31 +76,31 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
     switch (tab) {
       case 'Covers':
         if (_covers == null) {
-          final data = await SeriesService.fetchSeriesCovers(id);
+          final data = await _seriesService.fetchSeriesCovers(id);
           if (mounted) setState(() => _covers = data);
         }
         break;
       case 'Related':
         if (_related == null) {
-          final data = await SeriesService.fetchSeriesRelated(id);
+          final data = await _seriesService.fetchSeriesRelated(id);
           if (mounted) setState(() => _related = data);
         }
         break;
       case 'News':
         if (_news == null) {
-          final data = await SeriesService.fetchSeriesNews(id);
+          final data = await _seriesService.fetchSeriesNews(id);
           if (mounted) setState(() => _news = data);
         }
         break;
       case 'Collections':
         if (_collections == null) {
-          final data = await SeriesService.fetchSeriesCollections(id);
+          final data = await _seriesService.fetchSeriesCollections(id);
           if (mounted) setState(() => _collections = data);
         }
         break;
       case 'Works':
         if (_works == null) {
-          final data = await SeriesService.fetchSeriesWorks(id);
+          final data = await _seriesService.fetchSeriesWorks(id);
           if (mounted) setState(() => _works = data);
         }
         break;
@@ -109,9 +111,9 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
     try {
       // Core data fetch
       final results = await Future.wait([
-        SeriesService.fetchSeriesLinks(widget.series.id),
+        _seriesService.fetchSeriesLinks(widget.series.id),
         // Stagger the second core request slightly if needed, but 2 is usually fine
-        SeriesService.fetchSeries(widget.series.id),
+        _seriesService.fetchSeries(widget.series.id),
       ]);
       
       // If we are on a tab that needs data, fetch it now
@@ -128,7 +130,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
         });
       }
     } catch (e) {
-      SeriesService.logger.warning('Error fetching full data: $e');
+      _seriesService.logger.warning('Error fetching full data: $e');
       if (mounted) {
         setState(() {
           _isDataLoaded = true; 
@@ -489,7 +491,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> {
     try {
       await _libraryService.createLibraryEntry(widget.series.id, SettingsManager().addLibraryDefaultTab);
     } catch (e) {
-      SeriesService.logger.warning('Failed to add series to library: $e');
+      _seriesService.logger.warning('Failed to add series to library: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(LocalizationService().translate('failed_to_add'))),
