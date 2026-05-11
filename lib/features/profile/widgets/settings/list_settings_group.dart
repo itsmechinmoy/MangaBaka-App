@@ -50,7 +50,6 @@ class ListSettingsGroup extends StatelessWidget {
               SettingsManager().browseListStyle,
             ),
             onTap: () => ListStyleDialogs.showBrowseListStyleSelectionDialog(context),
-            isLast: true,
           ),
         ] else ...[
           const SettingsDivider(),
@@ -61,9 +60,22 @@ class ListSettingsGroup extends StatelessWidget {
               SettingsManager().currentListStyle,
             ),
             onTap: () => ListStyleDialogs.showListStyleSelectionDialog(context),
-            isLast: true,
           ),
         ],
+        const SettingsDivider(),
+        SettingsItem(
+          icon: Icons.article_outlined,
+          title: l10n.translate('news_columns'),
+          subtitle: SettingsManager().newsListColumns == 1
+              ? l10n.translate('one_column')
+              : l10n.translate('two_columns'),
+          onTap: () {
+            SettingsManager().setNewsListColumns(
+              SettingsManager().newsListColumns == 1 ? 2 : 1,
+            );
+          },
+          isLast: true,
+        ),
       ],
     );
   }

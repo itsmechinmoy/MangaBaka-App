@@ -10,6 +10,10 @@ import 'package:mangabaka_app/utils/widget_utils.dart';
 
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
+
+
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -121,52 +125,140 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   Future<void> _onRefresh() async {
-    _logger.info('User triggered pull-to-refresh for news');
+    _logger.info('User triggered manual refresh for news');
     setState(() {
+      _isLoading = true;
       _currentPage = 1;
       _hasMore = true;
     });
-    await _fetchNews(initial: true);
+    
+    // Ensure the spinner is visible for at least 800ms for visual feedback
+    await Future.wait([
+      _fetchNews(initial: true),
+      Future.delayed(const Duration(milliseconds: 800)),
+    ]);
   }
 
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([LocalizationService(), ThemeManager()]),
+      listenable: Listenable.merge([
+        LocalizationService(),
+        ThemeManager(),
+        SettingsManager(),
+      ]),
       builder: (context, _) {
         final l10n = LocalizationService();
+        final settings = SettingsManager();
+        final screenWidth = MediaQuery.of(context).size.width;
+        
+        // Settings/Screen dependent grid logic
+        final int columns = settings.newsListColumns;
+        final bool isGrid = columns > 1 && screenWidth > 400; // Small grid possible on phones too
+
+        Widget content = _newsList.isEmpty && !_isLoading && !_isBackgroundRefresh
+            ? Center(
+                child: Text(
+                  _error != null
+                      ? '${l10n.translate('failed_to_load')}: $_error'
+                      : l10n.translate('no_results'),
+                  style: TextStyle(color: AppConstants.textMutedColor),
+                ),
+              )
+            : RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: ListView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: isGrid 
+                      ? const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0)
+                      : EdgeInsets.zero,
+                  children: [
+                    if (isGrid)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                for (int i = 0; i < _newsList.length; i += 2)
+                                  NewsListItem(
+                                    key: ValueKey('grid_left_${_newsList[i].id}'),
+                                    news: _newsList[i],
+                                  ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                for (int i = 1; i < _newsList.length; i += 2)
+                                  NewsListItem(
+                                    key: ValueKey('grid_right_${_newsList[i].id}'),
+                                    news: _newsList[i],
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      for (int i = 0; i < _newsList.length; i++)
+                        NewsListItem(
+                          key: ValueKey('list_${_newsList[i].id}'),
+                          news: _newsList[i],
+                        ),
+                    if (_isLoading)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+
         return Scaffold(
           backgroundColor: AppConstants.primaryBackground,
-          body: WidgetUtils.responsiveConstraint(
-            SafeArea(
-              child: _newsList.isEmpty && !_isLoading && !_isBackgroundRefresh
-                  ? Center(
-                      child: Text(
-                        _error != null
-                            ? '${l10n.translate('failed_to_load')}: $_error'
-                            : l10n.translate('no_results'),
-                        style: TextStyle(color: AppConstants.textMutedColor),
-                      ),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: _onRefresh,
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: _newsList.length + (_isLoading ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index == _newsList.length) {
-                            return const Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(16.0),
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
-                          }
-                          return NewsListItem(news: _newsList[index]);
-                        },
-                      ),
-                    ),
+          appBar: AppBar(
+            backgroundColor: AppConstants.primaryBackground,
+            elevation: 0,
+            centerTitle: true,
+            title: Text(
+              l10n.translate('news'),
+              style: TextStyle(
+                color: AppConstants.textColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  settings.newsListColumns == 2 ? Icons.view_agenda_outlined : Icons.grid_view_rounded,
+                  color: AppConstants.textColor,
+                ),
+                tooltip: l10n.translate('toggle_layout'),
+                onPressed: () {
+                  settings.setNewsListColumns(settings.newsListColumns == 1 ? 2 : 1);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          body: WidgetUtils.responsiveConstraint(
+            SafeArea(child: content),
+            maxWidth: isGrid ? 1200 : 800,
           ),
           floatingActionButton: _showBackToTop
               ? FloatingActionButton(

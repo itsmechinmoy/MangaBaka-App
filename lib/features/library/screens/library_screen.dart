@@ -224,7 +224,10 @@ class _LibraryScreenState extends State<LibraryScreen>
                 ],
               );
 
-              return isGrid ? content : WidgetUtils.responsiveConstraint(content);
+              return WidgetUtils.responsiveConstraint(
+                content,
+                maxWidth: isGrid ? 1200 : 800,
+              );
             },
           ),
         );

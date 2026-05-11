@@ -37,7 +37,11 @@ class SeriesNewsTab extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: news!.length,
           itemBuilder: (context, index) {
-            return NewsListItem(news: news![index], showReferencedSeries: false);
+            return NewsListItem(
+              key: ValueKey('series_news_${news![index].id}'),
+              news: news![index], 
+              showReferencedSeries: false,
+            );
           },
         ),
       ],

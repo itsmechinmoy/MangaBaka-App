@@ -10,92 +10,119 @@ class NewsListItem extends StatelessWidget {
   final News news;
   final bool showReferencedSeries;
 
-  const NewsListItem({super.key, required this.news, this.showReferencedSeries = true});
+  const NewsListItem({
+    super.key,
+    required this.news,
+    this.showReferencedSeries = true,
+  });
 
   String _formatDate(String date) {
     if (date.isEmpty) return '';
     try {
       final dt = DateTime.parse(date);
-      return DateFormat('MMM d').format(dt);
+      return DateFormat('MMM d, yyyy').format(dt);
     } catch (_) {
       return date;
     }
   }
 
-  String _formatAuthorLine(LocalizationService l10n) {
-    final publishedDate = _formatDate(news.publishedAt);
-    if (news.author.isEmpty) {
-      return '${l10n.translate('published_on')} $publishedDate - ${news.source}';
-    }
-    return '${l10n.translate('by_author')} ${news.author} ${l10n.translate('published_on').toLowerCase()} $publishedDate - ${news.source}';
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: LocalizationService(),
-      builder: (context, _) {
-        final l10n = LocalizationService();
-        return Card(
-          color: AppConstants.secondaryBackground,
-          margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.article_outlined),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: () => launchUrl(Uri.parse(news.url)),
-                            child: Text(
-                              news.title,
-                              style: Theme.of(context).textTheme.titleMedium
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            _formatAuthorLine(l10n),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
+    final l10n = LocalizationService();
+    final publishedDate = _formatDate(news.publishedAt);
+
+    return Card(
+      color: AppConstants.secondaryBackground,
+      elevation: 2,
+      shadowColor: Colors.black.withOpacity(0.2),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: const EdgeInsets.all(8.0),
+      child: InkWell(
+        onTap: () => launchUrl(Uri.parse(news.url)),
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppConstants.accentColor.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      news.source.toUpperCase(),
+                      style: TextStyle(
+                        color: AppConstants.accentColor,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
                       ),
                     ),
-                  ],
-                ),
-                if (showReferencedSeries && news.series.isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  Text(l10n.translate('series_referenced')),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 220,
-                    child: GridView.builder(
-                      scrollDirection: Axis.horizontal,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 1,
-                        childAspectRatio: 1.5,
-                        mainAxisSpacing: 8,
-                      ),
-                      itemCount: news.series.length,
-                      itemBuilder: (context, index) {
-                        return ReferencedListItem(series: news.series[index]);
-                      },
+                  ),
+                  const Spacer(),
+                  Text(
+                    publishedDate,
+                    style: TextStyle(
+                      color: AppConstants.textMutedColor,
+                      fontSize: 11,
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                news.title,
+                style: TextStyle(
+                  color: AppConstants.textColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  height: 1.3,
+                ),
+              ),
+              if (news.author.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  '${l10n.translate('by_author')} ${news.author}',
+                  style: TextStyle(
+                    color: AppConstants.textMutedColor,
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
               ],
-            ),
+              if (showReferencedSeries && news.series.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Text(
+                  l10n.translate('series_referenced'),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppConstants.textColor.withOpacity(0.8),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 12.0,
+                  runSpacing: 12.0,
+                  children: news.series.map((s) {
+                    return ReferencedListItem(
+                      key: ValueKey('ref_${news.id}_${s.id}'),
+                      series: s,
+                      compact: true,
+                    );
+                  }).toList(),
+                ),
+              ],
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
+
 }

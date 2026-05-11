@@ -49,6 +49,9 @@ class SettingsManager extends ChangeNotifier {
   bool _autoSuggestBrowse = false;
   bool get autoSuggestBrowse => _autoSuggestBrowse;
 
+  int _newsListColumns = 1;
+  int get newsListColumns => _newsListColumns;
+
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     
@@ -108,6 +111,7 @@ class SettingsManager extends ChangeNotifier {
 
     _pushNotifications = prefs.getBool(SettingsKeys.pushNotifications) ?? false;
     _autoSuggestBrowse = prefs.getBool(SettingsKeys.autoSuggestBrowse) ?? false;
+    _newsListColumns = prefs.getInt(SettingsKeys.newsListColumns) ?? 1;
 
     notifyListeners();
   }
@@ -212,6 +216,14 @@ class SettingsManager extends ChangeNotifier {
     _autoSuggestBrowse = value;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(SettingsKeys.autoSuggestBrowse, value);
+    notifyListeners();
+  }
+
+  Future<void> setNewsListColumns(int columns) async {
+    if (_newsListColumns == columns) return;
+    _newsListColumns = columns;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(SettingsKeys.newsListColumns, columns);
     notifyListeners();
   }
 }

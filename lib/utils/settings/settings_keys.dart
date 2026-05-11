@@ -14,4 +14,5 @@ class SettingsKeys {
   static const String pushNotifications = '${AppConstants.prefixStorageKey}push_notifications';
   static const String autoSuggestBrowse = '${AppConstants.prefixStorageKey}auto_suggest_browse';
   static const String listStylePref = '${AppConstants.prefixStorageKey}list_style_pref';
+  static const String newsListColumns = '${AppConstants.prefixStorageKey}news_list_columns';
 }
