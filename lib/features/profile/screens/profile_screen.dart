@@ -13,6 +13,7 @@ import 'package:mangabaka_app/features/profile/widgets/mb_login_prompt.dart';
 import 'package:mangabaka_app/features/profile/widgets/profile_statistics_section.dart';
 import 'package:mangabaka_app/features/profile/widgets/profile_snapshot_section.dart';
 import 'package:mangabaka_app/features/profile/mixins/profile_data_mixin.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 import 'package:mangabaka_app/utils/services/logging_service.dart';
 
@@ -188,38 +189,40 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
               ),
             ],
           ),
-          body: loading
-              ? const Center(child: CircularProgressIndicator())
-              : error != null
-              ? Center(child: Text(error!))
-              : profile == null
-              ? _buildLoginPrompt()
-              : RefreshIndicator(
-                  onRefresh: bootstrap,
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 16),
-                            ProfileStatisticsSection(
-                              totalSeries: totalSeries,
-                              chaptersRead: chaptersRead,
-                              volumesRead: volumesRead,
-                              meanScore: meanScore,
-                            ),
-                            const SizedBox(height: 24),
-                            ProfileSnapshotSection(
-                              recentlyChanged: recentlyChanged,
-                              hasMoreChanged: hasMoreChanged,
-                              onFetchMoreChanged: () => fetchRecentlyChanged(),
-                              recentlyAdded: recentlyAdded,
-                              hasMoreAdded: hasMoreAdded,
-                              onFetchMoreAdded: () => fetchRecentlyAdded(),
-                            ),
-                          ],
+          body: WidgetUtils.responsiveConstraint(
+            loading
+                ? const Center(child: CircularProgressIndicator())
+                : error != null
+                ? Center(child: Text(error!))
+                : profile == null
+                ? _buildLoginPrompt()
+                : RefreshIndicator(
+                    onRefresh: bootstrap,
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 16),
+                              ProfileStatisticsSection(
+                                totalSeries: totalSeries,
+                                chaptersRead: chaptersRead,
+                                volumesRead: volumesRead,
+                                meanScore: meanScore,
+                              ),
+                              const SizedBox(height: 24),
+                              ProfileSnapshotSection(
+                                recentlyChanged: recentlyChanged,
+                                hasMoreChanged: hasMoreChanged,
+                                onFetchMoreChanged: () => fetchRecentlyChanged(),
+                                recentlyAdded: recentlyAdded,
+                                hasMoreAdded: hasMoreAdded,
+                                onFetchMoreAdded: () => fetchRecentlyAdded(),
+                              ),
+                            ],
+                        ),
                       ),
-                    ),
+            ),
           ),
         );
       },

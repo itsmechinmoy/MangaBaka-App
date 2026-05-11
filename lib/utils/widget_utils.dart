@@ -4,6 +4,16 @@ import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/widgets/chip.dart';
 
 class WidgetUtils {
+  static Widget responsiveConstraint(Widget child, {double maxWidth = 800}) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: maxWidth),
+        child: child,
+      ),
+    );
+  }
+
   static Widget chipWrap(String label, List<String> items, {Color? color}) {
     if (items.isEmpty) return const SizedBox.shrink();
     return Column(

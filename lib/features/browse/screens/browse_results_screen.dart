@@ -11,6 +11,7 @@ import 'package:mangabaka_app/utils/transitions/app_transitions.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 import 'package:mangabaka_app/features/browse/widgets/browse_results_body.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 class BrowseResultsScreen extends StatefulWidget {
@@ -198,17 +199,19 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
               style: TextStyle(color: AppConstants.textColor),
             ),
           ),
-          body: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: AppConstants.horizontalPadding),
-              child: BrowseResultsBody(
-                error: _error,
-                isLoading: _isLoading,
-                results: _results,
-                sortBy: widget.sortBy,
-                scrollController: _scrollController,
-                onRetry: () => _fetchResults(initial: true),
-                onSeriesTap: _navigateToDetail,
+          body: WidgetUtils.responsiveConstraint(
+            SafeArea(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppConstants.horizontalPadding),
+                child: BrowseResultsBody(
+                  error: _error,
+                  isLoading: _isLoading,
+                  results: _results,
+                  sortBy: widget.sortBy,
+                  scrollController: _scrollController,
+                  onRetry: () => _fetchResults(initial: true),
+                  onSeriesTap: _navigateToDetail,
+                ),
               ),
             ),
           ),

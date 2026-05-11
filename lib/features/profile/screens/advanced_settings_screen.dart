@@ -6,6 +6,7 @@ import 'package:mangabaka_app/features/profile/widgets/settings_components.dart'
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 import 'package:mangabaka_app/features/profile/screens/logs_screen.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class AdvancedSettingsScreen extends StatelessWidget {
   const AdvancedSettingsScreen({super.key});
@@ -37,52 +38,54 @@ class AdvancedSettingsScreen extends StatelessWidget {
           body: ListenableBuilder(
             listenable: SettingsManager(),
             builder: (context, _) {
-              return ListView(
-                padding: EdgeInsets.all(AppConstants.horizontalPadding),
-                children: [
-                  SettingsGroup(
-                    children: [
-                      SettingsItem(
-                        icon: Icons.replay_outlined,
-                        title: l10n.translate('redo_onboarding'),
-                        subtitle: l10n.translate('redo_onboarding_subtitle'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const OnboardingScreen(isRedoing: true),
-                            ),
-                          );
-                        },
-                        isFirst: true,
-                      ),
-                      const SettingsDivider(),
-                      SettingsSwitchItem(
-                        icon: Icons.search,
-                        title: l10n.translate('auto_suggest_browse'),
-                        subtitle: l10n.translate('auto_suggest_browse_subtitle'),
-                        value: SettingsManager().autoSuggestBrowse,
-                        onChanged: (val) => SettingsManager().setAutoSuggestBrowse(val),
-                      ),
-                      const SettingsDivider(),
-                      SettingsItem(
-                        icon: Icons.assignment_outlined,
-                        title: l10n.translate('view_logs'),
-                        subtitle: l10n.translate('view_logs_subtitle'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LogsScreen(),
-                              fullscreenDialog: true,
-                            ),
-                          );
-                        },
-                        isLast: true,
-                      ),
-                    ],
-                  ),
-                ],
+              return WidgetUtils.responsiveConstraint(
+                ListView(
+                  padding: EdgeInsets.all(AppConstants.horizontalPadding),
+                  children: [
+                    SettingsGroup(
+                      children: [
+                        SettingsItem(
+                          icon: Icons.replay_outlined,
+                          title: l10n.translate('redo_onboarding'),
+                          subtitle: l10n.translate('redo_onboarding_subtitle'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const OnboardingScreen(isRedoing: true),
+                              ),
+                            );
+                          },
+                          isFirst: true,
+                        ),
+                        const SettingsDivider(),
+                        SettingsSwitchItem(
+                          icon: Icons.search,
+                          title: l10n.translate('auto_suggest_browse'),
+                          subtitle: l10n.translate('auto_suggest_browse_subtitle'),
+                          value: SettingsManager().autoSuggestBrowse,
+                          onChanged: (val) => SettingsManager().setAutoSuggestBrowse(val),
+                        ),
+                        const SettingsDivider(),
+                        SettingsItem(
+                          icon: Icons.assignment_outlined,
+                          title: l10n.translate('view_logs'),
+                          subtitle: l10n.translate('view_logs_subtitle'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LogsScreen(),
+                                fullscreenDialog: true,
+                              ),
+                            );
+                          },
+                          isLast: true,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               );
             },
           ),

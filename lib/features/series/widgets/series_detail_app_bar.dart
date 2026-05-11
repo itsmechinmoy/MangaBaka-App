@@ -12,6 +12,8 @@ class SeriesDetailAppBar extends StatelessWidget {
   final String title;
   final LibraryEntry? entry;
   final bool isWide;
+  final bool showCover;
+  final double horizontalPadding;
   final bool isLoaded;
   final VoidCallback onBack;
   final VoidCallback onShare;
@@ -24,6 +26,8 @@ class SeriesDetailAppBar extends StatelessWidget {
     required this.title,
     this.entry,
     required this.isWide,
+    this.showCover = true,
+    this.horizontalPadding = 16.0,
     required this.isLoaded,
     required this.onBack,
     required this.onShare,
@@ -141,28 +145,31 @@ class SeriesDetailAppBar extends StatelessWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        AppConstants.primaryBackground.withValues(alpha: 0),
+                        Colors.black.withValues(alpha: 0.5),
+                        Colors.black.withValues(alpha: 0),
                         AppConstants.primaryBackground.withValues(alpha: 0.4),
                         AppConstants.primaryBackground.withValues(alpha: 0.9),
                         AppConstants.primaryBackground,
                       ],
-                      stops: const [0.0, 0.5, 0.85, 1.0],
+                      stops: const [0.0, 0.15, 0.5, 0.85, 1.0],
                     ),
                   ),
                 ),
                 Positioned(
                   bottom: 20,
-                  left: 16,
-                  right: 16,
+                  left: horizontalPadding,
+                  right: horizontalPadding,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SeriesHeroCover(
-                        series: series,
-                        height: isWide ? 220 : 180,
-                        width: isWide ? 150 : 125,
-                      ).animate().fadeIn(duration: 600.ms).slideX(begin: 0.1, end: 0, curve: Curves.easeOutCubic),
-                      const SizedBox(width: 16),
+                      if (showCover) ...[
+                        SeriesHeroCover(
+                          series: series,
+                          height: isWide ? 220 : 180,
+                          width: isWide ? 150 : 125,
+                        ).animate().fadeIn(duration: 600.ms).slideX(begin: 0.1, end: 0, curve: Curves.easeOutCubic),
+                        const SizedBox(width: 16),
+                      ],
                       Expanded(
                         child: _buildMainInfo(context, isDark)
                             .animate(target: isLoaded ? 1 : 0)

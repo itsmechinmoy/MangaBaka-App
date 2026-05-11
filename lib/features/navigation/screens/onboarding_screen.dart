@@ -15,6 +15,7 @@ import 'package:mangabaka_app/features/navigation/widgets/onboarding/theme_page.
 import 'package:mangabaka_app/features/navigation/widgets/onboarding/camera_permission_page.dart';
 import 'package:mangabaka_app/features/navigation/widgets/onboarding/content_preferences_page.dart';
 import 'package:mangabaka_app/features/navigation/widgets/onboarding/login_page.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class OnboardingScreen extends StatefulWidget {
   final bool isRedoing;
@@ -128,38 +129,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       builder: (context, _) {
         return Scaffold(
           backgroundColor: AppConstants.primaryBackground,
-          body: SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: PageView(
-                    controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentPage = index;
-                      });
-                    },
-                    children: [
-                      const WelcomePage(),
-                      const LanguagePage(),
-                      const ThemePage(),
-                      ContentPreferencesPage(
-                        contentOptions: _contentOptions,
-                      ),
-                      CameraPermissionPage(
-                        onRequestPermission: _requestCameraPermission,
-                      ),
-                      LoginPage(
-                        isLoggingIn: _isLoggingIn,
-                        isLoggedIn: _isLoggedIn,
-                        onLogin: _login,
-                      ),
-                    ],
+          body: WidgetUtils.responsiveConstraint(
+            SafeArea(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentPage = index;
+                        });
+                      },
+                      children: [
+                        const WelcomePage(),
+                        const LanguagePage(),
+                        const ThemePage(),
+                        ContentPreferencesPage(
+                          contentOptions: _contentOptions,
+                        ),
+                        CameraPermissionPage(
+                          onRequestPermission: _requestCameraPermission,
+                        ),
+                        LoginPage(
+                          isLoggingIn: _isLoggingIn,
+                          isLoggedIn: _isLoggedIn,
+                          onLogin: _login,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                _buildBottomControls(),
-              ],
+                  _buildBottomControls(),
+                ],
+              ),
             ),
           ),
         );

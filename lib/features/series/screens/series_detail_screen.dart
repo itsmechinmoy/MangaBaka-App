@@ -108,6 +108,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                             title: (fullSeries ?? widget.series).getDisplayTitle(settings.defaultTitleLanguage),
                             entry: entry,
                             isWide: isWide || isTablet,
+                            horizontalPadding: isWide ? 40.0 : 16.0,
                             isLoaded: isDataLoaded,
                             onBack: () => Navigator.pop(context),
                             onShare: shareLink,

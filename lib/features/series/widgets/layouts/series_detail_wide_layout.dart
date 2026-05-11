@@ -49,10 +49,8 @@ class SeriesDetailWideLayout extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SeriesHeroCover(series: series, height: 420, width: 300),
-                const SizedBox(height: 32),
                 if (isDataLoaded)
-                  SeriesMetadataChips(series: series, entry: entry, isVertical: true)
+                  SeriesMetadataChips(series: series, entry: entry, isVertical: false)
                       .animate().fadeIn(duration: 400.ms).slideX(begin: -0.1, end: 0),
               ],
             ),

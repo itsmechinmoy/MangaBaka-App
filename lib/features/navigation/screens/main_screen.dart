@@ -59,18 +59,76 @@ class MainScreenState extends State<MainScreen> {
     return ListenableBuilder(
       listenable: Listenable.merge([ThemeManager(), LocalizationService()]),
       builder: (context, _) {
+        final size = MediaQuery.of(context).size;
+        final isTablet = size.width >= 600;
         final l10n = LocalizationService();
+
+        Widget content = Stack(
+          children: [
+            IndexedStack(
+              index: _selectedIndex,
+              children: _pages,
+            ),
+            const SyncProgressOverlay(),
+          ],
+        );
+
+        if (isTablet) {
+          return Scaffold(
+            backgroundColor: AppConstants.secondaryBackground,
+            body: Row(
+              children: [
+                SafeArea(
+                  right: false,
+                  child: NavigationRail(
+                    backgroundColor: AppConstants.secondaryBackground,
+                    indicatorColor: AppConstants.accentColor,
+                    selectedIndex: _selectedIndex,
+                    onDestinationSelected: _onItemTapped,
+                    labelType: NavigationRailLabelType.all,
+                    unselectedLabelTextStyle: TextStyle(color: AppConstants.textColor, fontSize: 12),
+                    selectedLabelTextStyle: TextStyle(color: AppConstants.textColor, fontSize: 12),
+                    unselectedIconTheme: IconThemeData(color: AppConstants.textColor, size: 28),
+                    selectedIconTheme: IconThemeData(color: AppConstants.textColor, size: 28),
+                    destinations: [
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.home_outlined),
+                        selectedIcon: const Icon(Icons.home),
+                        label: Text(l10n.translate("home")),
+                      ),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.library_books_outlined),
+                        selectedIcon: const Icon(Icons.library_books),
+                        label: Text(l10n.translate("library")),
+                      ),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.explore_outlined),
+                        selectedIcon: const Icon(Icons.explore),
+                        label: Text(l10n.translate("browse")),
+                      ),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.article_outlined),
+                        selectedIcon: const Icon(Icons.article),
+                        label: Text(l10n.translate("news")),
+                      ),
+                      NavigationRailDestination(
+                        icon: const Icon(Icons.person_outline),
+                        selectedIcon: const Icon(Icons.person),
+                        label: Text(l10n.translate("profile")),
+                      ),
+                    ],
+                  ),
+                ),
+                const VerticalDivider(thickness: 1, width: 1),
+                Expanded(child: content),
+              ],
+            ),
+          );
+        }
+
         return Scaffold(
           backgroundColor: AppConstants.secondaryBackground,
-          body: Stack(
-            children: [
-              IndexedStack(
-                index: _selectedIndex,
-                children: _pages,
-              ),
-              const SyncProgressOverlay(),
-            ],
-          ),
+          body: content,
           bottomNavigationBar: SafeArea(
             child: NavigationBarTheme(
               data: NavigationBarThemeData(
