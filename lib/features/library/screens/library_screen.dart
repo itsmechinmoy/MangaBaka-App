@@ -20,6 +20,7 @@ import 'package:mangabaka_app/features/library/widgets/library_body.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
 
 
 class LibraryScreen extends StatefulWidget {
@@ -237,18 +238,59 @@ class _LibraryScreenState extends State<LibraryScreen>
 
 
   PreferredSizeWidget _buildAppBar() {
+    final orientation = MediaQuery.of(context).orientation;
+    final isLandscape = orientation == Orientation.landscape;
+    final settings = SettingsManager();
+    final l10n = LocalizationService();
+
+    final currentStyle = settings.separateListStyles
+        ? settings.libraryListStyle
+        : settings.currentListStyle;
+
     return AppBar(
       backgroundColor: LibraryScreenConstants.backgroundColor,
-      title: MBSearchBar(
-        onChanged: (value) => setState(() => _query = value),
-        initialFilters: _filters,
-        onFilterApplied: (filters) => setState(() => _filters = filters),
+      elevation: 0,
+      centerTitle: isLandscape,
+      title: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 800),
+        child: MBSearchBar(
+          onChanged: (value) => setState(() => _query = value),
+          initialFilters: _filters,
+          onFilterApplied: (filters) => setState(() => _filters = filters),
+        ),
       ),
-      bottom: _buildTabBar(),
+      actions: isLandscape
+          ? [
+              IconButton(
+                icon: Icon(currentStyle.icon, color: AppConstants.textColor),
+                tooltip: l10n.translate('toggle_layout'),
+                onPressed: () {
+                  final nextStyle = currentStyle.next;
+                  if (settings.separateListStyles) {
+                    settings.setLibraryListStyle(nextStyle);
+                  } else {
+                    settings.setListStyle(nextStyle);
+                  }
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.settings, color: AppConstants.textColor),
+                tooltip: l10n.translate('settings'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
+            ]
+          : null,
+      bottom: _buildTabBar(isLandscape),
     );
   }
 
-  PreferredSizeWidget _buildTabBar() {
+  PreferredSizeWidget _buildTabBar(bool isLandscape) {
     final l10n = LocalizationService();
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
@@ -264,7 +306,7 @@ class _LibraryScreenState extends State<LibraryScreen>
           return TabBar(
             controller: _tabController,
             isScrollable: true,
-            tabAlignment: TabAlignment.start,
+            tabAlignment: isLandscape ? TabAlignment.center : TabAlignment.start,
             tabs: LibraryScreenConstants.tabs.map((tab) {
               final count = counts[tab.key] ?? 0;
               final label = l10n.translate(tab.key);

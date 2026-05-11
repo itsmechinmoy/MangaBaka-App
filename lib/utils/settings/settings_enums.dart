@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 enum AppListStyle {
   comfortable,
   compact,
@@ -9,6 +11,26 @@ enum AppListStyle {
 extension AppListStyleExtension on AppListStyle {
   bool get isGrid => this == AppListStyle.coverOnlyGrid || 
                      this == AppListStyle.compactGrid;
+
+  AppListStyle get next {
+    final nextIndex = (index + 1) % AppListStyle.values.length;
+    return AppListStyle.values[nextIndex];
+  }
+
+  IconData get icon {
+    switch (this) {
+      case AppListStyle.comfortable:
+        return Icons.view_day_outlined;
+      case AppListStyle.compact:
+        return Icons.view_headline_rounded;
+      case AppListStyle.minimalList:
+        return Icons.reorder_rounded;
+      case AppListStyle.coverOnlyGrid:
+        return Icons.grid_view_rounded;
+      case AppListStyle.compactGrid:
+        return Icons.apps_rounded;
+    }
+  }
 }
 
 enum AppStartPage { home, library, browse, news, profile }
