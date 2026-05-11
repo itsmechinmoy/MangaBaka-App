@@ -80,6 +80,7 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
 
         return MaterialApp(
           title: AppConstants.appName,
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(

@@ -18,6 +18,9 @@ import 'package:mangabaka_app/utils/widget_utils.dart';
 import 'package:mangabaka_app/features/library/widgets/library_status_banner.dart';
 import 'package:mangabaka_app/features/library/widgets/library_body.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -152,67 +155,76 @@ class _LibraryScreenState extends State<LibraryScreen>
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: Listenable.merge([LocalizationService(), ThemeManager()]),
+      listenable: Listenable.merge([
+        LocalizationService(),
+        ThemeManager(),
+        SettingsManager(),
+      ]),
       builder: (context, _) {
+        final settings = SettingsManager();
+        final isGrid = settings.separateListStyles
+            ? settings.libraryListStyle.isGrid
+            : settings.currentListStyle.isGrid;
+
         return Scaffold(
           backgroundColor: LibraryScreenConstants.backgroundColor,
           appBar: _buildAppBar(),
           body: ValueListenableBuilder<LibrarySyncStatus>(
             valueListenable: _libraryService.syncStatus,
             builder: (context, status, _) {
-              return WidgetUtils.responsiveConstraint(
-                Column(
-                  children: [
-                    if (status.isServerDown) 
-                      LibraryStatusBanner(
-                        message: LocalizationService().translate('server_unreachable_warning'),
-                        icon: Icons.cloud_off_rounded,
-                        color: AppConstants.errorColor,
-                        action: TextButton(
-                          onPressed: _onRefresh,
-                          child: Text(
-                            LocalizationService().translate('retry'),
-                            style: TextStyle(color: AppConstants.errorColor, fontSize: 12, fontWeight: FontWeight.bold),
-                          ),
+              final content = Column(
+                children: [
+                  if (status.isServerDown) 
+                    LibraryStatusBanner(
+                      message: LocalizationService().translate('server_unreachable_warning'),
+                      icon: Icons.cloud_off_rounded,
+                      color: AppConstants.errorColor,
+                      action: TextButton(
+                        onPressed: _onRefresh,
+                        child: Text(
+                          LocalizationService().translate('retry'),
+                          style: TextStyle(color: AppConstants.errorColor, fontSize: 12, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                    if (!status.isServerDown && status.error != null)
-                      LibraryStatusBanner(
-                        message: LocalizationService().translate('sync_failed').replaceAll('{message}', status.error!),
-                        icon: Icons.error_outline_rounded,
-                        color: AppConstants.errorColor,
-                        onClose: () => _libraryService.syncStatus.value = 
-                            _libraryService.syncStatus.value.copyWith(clearError: true),
-                      ),
-                    if (_isLibraryIncomplete)
-                      LibraryStatusBanner(
-                        message: LocalizationService().translate('library_limit_warning'),
-                        icon: Icons.warning_amber_rounded,
-                        color: AppConstants.warningColor,
-                        action: TextButton(
-                          onPressed: () => _libraryService.importFullLibrary(),
-                          child: Text(
-                            LocalizationService().translate('re_import'),
-                            style: TextStyle(color: AppConstants.warningColor, fontSize: 12, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    Expanded(
-                      child: LibraryBody(
-                        loggedIn: _loggedIn,
-                        entriesStream: _entriesStream,
-                        query: _query,
-                        filters: _filters,
-                        tabController: _tabController,
-                        scrollControllers: _scrollControllers,
-                        onRefresh: _onRefresh,
-                        onLogin: _loginAndReload,
-                        onItemTap: _navigateToSeriesDetail,
                       ),
                     ),
-                  ],
-                ),
+                  if (!status.isServerDown && status.error != null)
+                    LibraryStatusBanner(
+                      message: LocalizationService().translate('sync_failed').replaceAll('{message}', status.error!),
+                      icon: Icons.error_outline_rounded,
+                      color: AppConstants.errorColor,
+                      onClose: () => _libraryService.syncStatus.value = 
+                          _libraryService.syncStatus.value.copyWith(clearError: true),
+                    ),
+                  if (_isLibraryIncomplete)
+                    LibraryStatusBanner(
+                      message: LocalizationService().translate('library_limit_warning'),
+                      icon: Icons.warning_amber_rounded,
+                      color: AppConstants.warningColor,
+                      action: TextButton(
+                        onPressed: () => _libraryService.importFullLibrary(),
+                        child: Text(
+                          LocalizationService().translate('re_import'),
+                          style: TextStyle(color: AppConstants.warningColor, fontSize: 12, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  Expanded(
+                    child: LibraryBody(
+                      loggedIn: _loggedIn,
+                      entriesStream: _entriesStream,
+                      query: _query,
+                      filters: _filters,
+                      tabController: _tabController,
+                      scrollControllers: _scrollControllers,
+                      onRefresh: _onRefresh,
+                      onLogin: _loginAndReload,
+                      onItemTap: _navigateToSeriesDetail,
+                    ),
+                  ),
+                ],
               );
+
+              return isGrid ? content : WidgetUtils.responsiveConstraint(content);
             },
           ),
         );
