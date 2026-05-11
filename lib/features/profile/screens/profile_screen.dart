@@ -144,6 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
       listenable: Listenable.merge([LocalizationService(), ThemeManager()]),
       builder: (context, _) {
         final l10n = LocalizationService();
+        final screenWidth = MediaQuery.of(context).size.width;
         final username = profile?.nickname?.isNotEmpty == true
             ? profile!.nickname
             : profile?.preferredUsername;
@@ -176,17 +177,18 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
               ),
             ),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsScreen(),
-                    ),
-                  );
-                },
-              ),
+              if (screenWidth < 600)
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SettingsScreen(),
+                      ),
+                    );
+                  },
+                ),
             ],
           ),
           body: WidgetUtils.responsiveConstraint(

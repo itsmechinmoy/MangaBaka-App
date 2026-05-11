@@ -11,6 +11,7 @@ import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
 
 class MainScreen extends StatefulWidget {
   static final GlobalKey<MainScreenState> mainScreenKey = GlobalKey<MainScreenState>();
@@ -117,6 +118,25 @@ class MainScreenState extends State<MainScreen> {
                         label: Text(l10n.translate("profile")),
                       ),
                     ],
+                    trailing: Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 16.0),
+                          child: IconButton(
+                            icon: const Icon(Icons.settings_outlined),
+                            selectedIcon: const Icon(Icons.settings),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                              );
+                            },
+                            tooltip: l10n.translate("settings"),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 const VerticalDivider(thickness: 1, width: 1),

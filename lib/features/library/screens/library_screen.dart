@@ -274,16 +274,6 @@ class _LibraryScreenState extends State<LibraryScreen>
                   }
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.settings, color: AppConstants.textColor),
-                tooltip: l10n.translate('settings'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                  );
-                },
-              ),
               const SizedBox(width: 8),
             ]
           : null,

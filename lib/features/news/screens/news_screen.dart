@@ -243,17 +243,18 @@ class _NewsScreenState extends State<NewsScreen> {
                   settings.setNewsListColumns(settings.newsListColumns == 1 ? 2 : 1);
                 },
               ),
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SettingsScreen(),
-                    ),
-                  );
-                },
-              ),
+              if (screenWidth < 600)
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SettingsScreen(),
+                      ),
+                    );
+                  },
+                ),
             ],
           ),
           body: WidgetUtils.responsiveConstraint(
