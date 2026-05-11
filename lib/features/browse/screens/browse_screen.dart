@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart';
 import 'package:mangabaka_app/features/browse/widgets/browse_content.dart';
@@ -64,30 +65,35 @@ class _BrowseScreenState extends State<BrowseScreen> {
 
   Future<void> _handleBarcodeScan() async {
     _logger.info('Requested barcode scan');
-    final status = await Permission.camera.request();
-    
-    if (status.isPermanentlyDenied) {
-      _logger.warning('Camera permission permanently denied');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(LocalizationService().translate('camera_permission_denied')),
-          action: SnackBarAction(
-            label: LocalizationService().translate('settings'),
-            onPressed: () => openAppSettings(),
-          ),
-        ),
-      );
-      return;
-    }
 
-    if (!status.isGranted) {
-      _logger.warning('Camera permission denied (status: $status)');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocalizationService().translate('camera_permission_denied'))),
-      );
-      return;
+    // permission_handler is not supported on macOS — the entitlement and the
+    // system dialog shown on first camera access handle permissions there.
+    if (Platform.isAndroid || Platform.isIOS) {
+      final status = await Permission.camera.request();
+
+      if (status.isPermanentlyDenied) {
+        _logger.warning('Camera permission permanently denied');
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(LocalizationService().translate('camera_permission_denied')),
+            action: SnackBarAction(
+              label: LocalizationService().translate('settings'),
+              onPressed: () => openAppSettings(),
+            ),
+          ),
+        );
+        return;
+      }
+
+      if (!status.isGranted) {
+        _logger.warning('Camera permission denied (status: $status)');
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(LocalizationService().translate('camera_permission_denied'))),
+        );
+        return;
+      }
     }
 
     _logger.fine('Camera permission granted, opening scanner');
@@ -100,7 +106,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
     if (isbn != null && isbn.isNotEmpty) {
       _logger.info('Scanned ISBN: $isbn');
       final errorKey = await _controller.handleBarcodeScan(isbn);
-      
+
       if (!mounted) return;
 
       if (errorKey != null) {

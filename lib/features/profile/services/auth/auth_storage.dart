@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
 import 'package:mangabaka_app/features/profile/models/mb_profile.dart';
 
@@ -18,27 +19,58 @@ class AuthStorage {
       resetOnError: true,
       sharedPreferencesName: 'mangabaka_app_secure_storage_v3',
     ),
+    mOptions: MacOsOptions(
+      accessibility: KeychainAccessibility.first_unlock,
+      synchronizable: false,
+    ),
   );
 
   Future<String?> read(String key) async {
     try {
-      return await _storage.read(key: key);
+      final value = await _storage.read(key: key);
+      if (value != null) return value;
+      
+      // Check fallback
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(key);
     } on PlatformException catch (e) {
-      _logger.severe('Secure storage read error for key $key: $e');
-      return null;
+      _logger.warning('Secure storage read error for key $key: $e. Checking fallback.');
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(key);
     }
   }
 
   Future<void> write(String key, String? value) async {
-    await _storage.write(key: key, value: value);
+    try {
+      await _storage.write(key: key, value: value);
+    } on PlatformException catch (e) {
+      _logger.warning('Secure storage write error for key $key: $e. Falling back to SharedPreferences.');
+      // Fallback for macOS development without signing
+      final prefs = await SharedPreferences.getInstance();
+      if (value == null) {
+        await prefs.remove(key);
+      } else {
+        await prefs.setString(key, value);
+      }
+    }
   }
 
   Future<void> delete(String key) async {
-    await _storage.delete(key: key);
+    try {
+      await _storage.delete(key: key);
+    } on PlatformException {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(key);
+    }
   }
 
   Future<void> deleteAll() async {
-    await _storage.deleteAll();
+    try {
+      await _storage.deleteAll();
+    } on PlatformException {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+    }
   }
 
   Future<MbProfile?> getCachedProfile() async {

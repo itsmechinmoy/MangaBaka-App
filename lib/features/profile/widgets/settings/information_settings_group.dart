@@ -78,11 +78,17 @@ class InformationSettingsGroup extends StatelessWidget {
             if (Platform.isAndroid) {
               final intent = AndroidIntent(
                 action: 'android.settings.APP_OPEN_BY_DEFAULT_SETTINGS',
-                data: 'package:dev.oazzies.mangabaka_app',
+                data: 'package:dev.oazzies.mangabaka-app',
               );
               await intent.launch();
-            } else {
+            } else if (Platform.isIOS) {
               await openAppSettings();
+            } else {
+              // macOS: open System Settings > Privacy & Security
+              await launchUrl(
+                Uri.parse('x-apple.systempreferences:com.apple.preference.security'),
+                mode: LaunchMode.externalApplication,
+              );
             }
           },
           trailing: Icon(Icons.open_in_new, color: AppConstants.textMutedColor, size: 20),

@@ -28,5 +28,7 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSCameraUsageDescription</key>
+	<string>MangaBaka needs camera access to scan ISBN barcodes.</string>
 </dict>
 </plist>

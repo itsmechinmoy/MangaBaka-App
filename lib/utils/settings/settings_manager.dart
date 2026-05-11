@@ -56,8 +56,8 @@ class SettingsManager extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     
     try {
-      final tempDir = await getTemporaryDirectory();
-      final markerFile = File('${tempDir.path}/.install_marker');
+      final supportDir = await getApplicationSupportDirectory();
+      final markerFile = File('${supportDir.path}/.install_marker');
       if (!await markerFile.exists()) {
         await prefs.setBool(SettingsKeys.onboardingCompleted, false);
         await markerFile.writeAsString(DateTime.now().toIso8601String());

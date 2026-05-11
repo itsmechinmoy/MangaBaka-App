@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
@@ -86,6 +87,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   Future<void> _requestCameraPermission() async {
     _logger.info('Requesting camera permission during onboarding');
+    // permission_handler does not support macOS — camera access is controlled
+    // via the entitlements file and system dialog on first use.
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      _logger.info('Platform does not use permission_handler; skipping request');
+      _nextPage();
+      return;
+    }
     final status = await Permission.camera.request();
     _logger.info('Camera permission status: $status');
     if (!mounted) return;
