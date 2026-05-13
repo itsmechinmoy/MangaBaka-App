@@ -37,10 +37,23 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration {
     return MigrationStrategy(
       onUpgrade: (m, from, to) async {
-        // First, ensure tables exist (robust for skip-upgrades)
-        await m.createTable(seriesTable);
-        await m.createTable(libraryEntriesTable);
+        // Robust "Self-Healing" Migration Strategy:
+        // Instead of linear version checks, we verify the actual schema state.
+        // This handles skip-upgrades (e.g. v1 -> v4) and potential inconsistencies.
+        
+        // 1. Check existing tables
+        final tables = await customSelect("SELECT name FROM sqlite_master WHERE type='table'").get();
+        final tableNames = tables.map((row) => row.read<String>('name')).toSet();
 
+        // 2. Create tables ONLY if they don't exist
+        if (!tableNames.contains('series_table')) {
+          await m.createTable(seriesTable);
+        }
+        if (!tableNames.contains('library_entries_table')) {
+          await m.createTable(libraryEntriesTable);
+        }
+
+        // 3. Inspect columns for existing tables
         final seriesColumns = await customSelect('PRAGMA table_info("series_table")').get();
         final seriesColumnNames = seriesColumns.map((row) => row.data['name'] as String).toSet();
 
@@ -54,7 +67,7 @@ class AppDatabase extends _$AppDatabase {
           }
         }
 
-        // Ensure all SeriesTable columns exist (except primary key 'id')
+        // 4. Ensure all SeriesTable columns exist (id is primary key, created with table)
         await addIfMissing(seriesTable.state, seriesTable, seriesColumnNames);
         await addIfMissing(seriesTable.mergedWith, seriesTable, seriesColumnNames);
         await addIfMissing(seriesTable.title, seriesTable, seriesColumnNames);
@@ -84,7 +97,7 @@ class AppDatabase extends _$AppDatabase {
         await addIfMissing(seriesTable.relationships, seriesTable, seriesColumnNames);
         await addIfMissing(seriesTable.source, seriesTable, seriesColumnNames);
 
-        // Ensure all LibraryEntriesTable columns exist (except primary key 'id')
+        // 5. Ensure all LibraryEntriesTable columns exist
         await addIfMissing(libraryEntriesTable.state, libraryEntriesTable, libraryColumnNames);
         await addIfMissing(libraryEntriesTable.note, libraryEntriesTable, libraryColumnNames);
         await addIfMissing(libraryEntriesTable.progressChapter, libraryEntriesTable, libraryColumnNames);
