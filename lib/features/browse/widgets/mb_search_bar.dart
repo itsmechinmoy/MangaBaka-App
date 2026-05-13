@@ -17,6 +17,7 @@ class MBSearchBar extends StatefulWidget {
   final SearchFilters? initialFilters;
   final ValueChanged<SearchFilters>? onFilterApplied;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final VoidCallback? onScanTap;
   final ValueChanged<AutocompleteSeriesResult>? onResultSelected;
 
@@ -27,6 +28,7 @@ class MBSearchBar extends StatefulWidget {
     this.initialFilters,
     this.onFilterApplied,
     this.controller,
+    this.focusNode,
     this.onScanTap,
     this.onResultSelected,
   });
@@ -37,7 +39,7 @@ class MBSearchBar extends StatefulWidget {
 
 class _MBSearchBarState extends State<MBSearchBar> {
   late final TextEditingController _controller;
-  final FocusNode _focusNode = FocusNode();
+  late final FocusNode _focusNode;
   final SeriesAutocompleteService _service = SeriesAutocompleteService();
   late SearchFilters _currentFilters;
 
@@ -48,6 +50,7 @@ class _MBSearchBarState extends State<MBSearchBar> {
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
+    _focusNode = widget.focusNode ?? FocusNode();
     _currentFilters = widget.initialFilters ?? SearchFilters();
     _controller.addListener(() => setState(() {}));
     _focusNode.addListener(_onFocusChange);
@@ -59,7 +62,9 @@ class _MBSearchBarState extends State<MBSearchBar> {
       _controller.dispose();
     }
     _focusNode.removeListener(_onFocusChange);
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     _service.dispose();
     super.dispose();
   }

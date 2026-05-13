@@ -287,6 +287,7 @@
         "tap_to_update_progress": "Tocar chips para actualizar progreso",
         "tap_to_update_progress_subtitle": "Permite actualizar el progreso de capítulos y tomos tocando los chips de metadatos",
         "tap_to_update_rating": "Tocar chips para actualizar calificación",
-        "tap_to_update_rating_subtitle": "Permite actualizar tu calificación personal tocando el chip de calificación"
+        "tap_to_update_rating_subtitle": "Permite actualizar tu calificación personal tocando el chip de calificación",
+        "back_to_top": "Volver arriba"
     }
 }

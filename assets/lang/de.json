@@ -285,6 +285,7 @@
         "tap_to_update_progress": "Chips zum Aktualisieren des Fortschritts tippen",
         "tap_to_update_progress_subtitle": "Ermöglicht das Aktualisieren des Kapitel- und Bandfortschritts durch Tippen auf Metadaten-Chips",
         "tap_to_update_rating": "Chips zum Aktualisieren der Bewertung tippen",
-        "tap_to_update_rating_subtitle": "Ermöglicht das Aktualisieren Ihrer persönlichen Bewertung durch Tippen auf den Bewertungs-Chip"
+        "tap_to_update_rating_subtitle": "Ermöglicht das Aktualisieren Ihrer persönlichen Bewertung durch Tippen auf den Bewertungs-Chip",
+        "back_to_top": "Nach oben"
     }
 }

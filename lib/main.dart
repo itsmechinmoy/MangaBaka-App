@@ -13,6 +13,7 @@ import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/app_shortcuts.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -133,18 +134,20 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
               statusBarColor: Colors.transparent,
               statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
             ),
-            child: Stack(
-              children: [
-                content,
-                if (_showSplash)
-                  AnimatedSplashOverlay(
-                    onComplete: () {
-                      setState(() {
-                        _showSplash = false;
-                      });
-                    },
-                  ),
-              ],
+            child: AppShortcuts(
+              child: Stack(
+                children: [
+                  content,
+                  if (_showSplash)
+                    AnimatedSplashOverlay(
+                      onComplete: () {
+                        setState(() {
+                          _showSplash = false;
+                        });
+                      },
+                    ),
+                ],
+              ),
             ),
           ),
         );

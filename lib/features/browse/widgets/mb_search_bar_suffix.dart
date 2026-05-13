@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/features/browse/models/search_filters.dart';
 
@@ -30,6 +31,7 @@ class MBSearchBarSuffix extends StatelessWidget {
             IconButton(
               icon: Icon(Icons.clear, color: AppConstants.textColor),
               onPressed: onClear,
+              tooltip: LocalizationService().translate('reset'),
               constraints: const BoxConstraints(),
             ),
             const SizedBox(width: 4),
@@ -41,6 +43,7 @@ class MBSearchBarSuffix extends StatelessWidget {
                 color: AppConstants.textColor,
               ),
               onPressed: onScanTap,
+              tooltip: LocalizationService().translate('scan_isbn_barcode'),
               constraints: const BoxConstraints(),
             ),
             const SizedBox(width: 4),
@@ -53,6 +56,7 @@ class MBSearchBarSuffix extends StatelessWidget {
                   : AppConstants.textColor,
             ),
             onPressed: onFilterTap,
+            tooltip: LocalizationService().translate('filters'),
             constraints: const BoxConstraints(),
           ),
         ],

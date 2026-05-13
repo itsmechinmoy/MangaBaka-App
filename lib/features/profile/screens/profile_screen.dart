@@ -1,5 +1,6 @@
 import 'package:mangabaka_app/database/database.dart';
 import 'package:mangabaka_app/features/profile/services/snapshot_service.dart';
+import 'package:mangabaka_app/utils/app_shortcuts.dart';
 import 'package:mangabaka_app/features/profile/services/statistics_service.dart';
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
@@ -191,39 +192,49 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
                 ),
             ],
           ),
-          body: WidgetUtils.responsiveConstraint(
-            loading
-                ? const Center(child: CircularProgressIndicator())
-                : error != null
-                ? Center(child: Text(error!))
-                : profile == null
-                ? _buildLoginPrompt()
-                : RefreshIndicator(
-                    onRefresh: bootstrap,
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 16),
-                              ProfileStatisticsSection(
-                                totalSeries: totalSeries,
-                                chaptersRead: chaptersRead,
-                                volumesRead: volumesRead,
-                                meanScore: meanScore,
-                              ),
-                              const SizedBox(height: 24),
-                              ProfileSnapshotSection(
-                                recentlyChanged: recentlyChanged,
-                                hasMoreChanged: hasMoreChanged,
-                                onFetchMoreChanged: () => fetchRecentlyChanged(),
-                                recentlyAdded: recentlyAdded,
-                                hasMoreAdded: hasMoreAdded,
-                                onFetchMoreAdded: () => fetchRecentlyAdded(),
-                              ),
-                            ],
+          body: Actions(
+            actions: <Type, Action<Intent>>{
+              RefreshIntent: CallbackAction<RefreshIntent>(
+                onInvoke: (intent) {
+                  bootstrap();
+                  return null;
+                },
+              ),
+            },
+            child: WidgetUtils.responsiveConstraint(
+              loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : error != null
+                  ? Center(child: Text(error!))
+                  : profile == null
+                  ? _buildLoginPrompt()
+                  : RefreshIndicator(
+                      onRefresh: bootstrap,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 16),
+                                ProfileStatisticsSection(
+                                  totalSeries: totalSeries,
+                                  chaptersRead: chaptersRead,
+                                  volumesRead: volumesRead,
+                                  meanScore: meanScore,
+                                ),
+                                const SizedBox(height: 24),
+                                ProfileSnapshotSection(
+                                  recentlyChanged: recentlyChanged,
+                                  hasMoreChanged: hasMoreChanged,
+                                  onFetchMoreChanged: () => fetchRecentlyChanged(),
+                                  recentlyAdded: recentlyAdded,
+                                  hasMoreAdded: hasMoreAdded,
+                                  onFetchMoreAdded: () => fetchRecentlyAdded(),
+                                ),
+                              ],
+                          ),
                         ),
-                      ),
+              ),
             ),
           ),
         );

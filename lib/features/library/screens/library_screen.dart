@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart';
+import 'package:mangabaka_app/utils/app_shortcuts.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/features/library/models/library_sync_status.dart';
 import 'package:mangabaka_app/features/library/screens/library_screen_constants.dart';
@@ -38,6 +39,7 @@ class _LibraryScreenState extends State<LibraryScreen>
   late final LibraryService _libraryService;
   late TabController _tabController;
   late final Map<String, ScrollController> _scrollControllers;
+  final FocusNode _searchFocusNode = FocusNode();
 
   late bool _loggedIn;
   String _query = '';
@@ -86,6 +88,7 @@ class _LibraryScreenState extends State<LibraryScreen>
     for (var c in _scrollControllers.values) {
       c.dispose();
     }
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -226,9 +229,25 @@ class _LibraryScreenState extends State<LibraryScreen>
                 ],
               );
 
-              return WidgetUtils.responsiveConstraint(
-                content,
-                maxWidth: isGrid ? 1200 : 800,
+              return Actions(
+                actions: <Type, Action<Intent>>{
+                  SearchIntent: CallbackAction<SearchIntent>(
+                    onInvoke: (intent) {
+                      _searchFocusNode.requestFocus();
+                      return null;
+                    },
+                  ),
+                  RefreshIntent: CallbackAction<RefreshIntent>(
+                    onInvoke: (intent) {
+                      _onRefresh();
+                      return null;
+                    },
+                  ),
+                },
+                child: WidgetUtils.responsiveConstraint(
+                  content,
+                  maxWidth: isGrid ? 1200 : 800,
+                ),
               );
             },
           ),
@@ -255,6 +274,7 @@ class _LibraryScreenState extends State<LibraryScreen>
       title: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 800),
         child: MBSearchBar(
+          focusNode: _searchFocusNode,
           onChanged: (value) => setState(() => _query = value),
           initialFilters: _filters,
           onFilterApplied: (filters) => setState(() => _filters = filters),

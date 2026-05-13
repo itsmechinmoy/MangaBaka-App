@@ -1,4 +1,5 @@
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/app_shortcuts.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
@@ -89,7 +90,20 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
         final l10n = LocalizationService();
         return Scaffold(
           backgroundColor: AppConstants.primaryBackground,
-          body: GestureDetector(
+          body: Actions(
+            actions: <Type, Action<Intent>>{
+              RefreshIntent: CallbackAction<RefreshIntent>(
+                onInvoke: (intent) {
+                  setState(() {
+                    isDataLoaded = false;
+                    fetchError = false;
+                  });
+                  fetchFullData();
+                  return null;
+                },
+              ),
+            },
+            child: GestureDetector(
             onHorizontalDragUpdate: (details) {
               if (!_isPopping && details.delta.dx > 15) {
                 final navigator = Navigator.of(context);
@@ -203,6 +217,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                 );
               },
             ),
+          ),
           ),
           floatingActionButton: SeriesDetailFAB(entryStream: _entryStream, isAdding: _isAdding, onAdd: addSeriesToLibrary),
         );

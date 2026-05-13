@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:mangabaka_app/utils/app_shortcuts.dart';
 import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart';
 import 'package:mangabaka_app/features/browse/widgets/browse_content.dart';
 import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
@@ -27,6 +28,7 @@ class BrowseScreen extends StatefulWidget {
 class _BrowseScreenState extends State<BrowseScreen> {
   static final _logger = LoggingService.logger;
   late final BrowseController _controller;
+  final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -137,9 +140,24 @@ class _BrowseScreenState extends State<BrowseScreen> {
     return ListenableBuilder(
       listenable: Listenable.merge([LocalizationService(), ThemeManager(), _controller]),
       builder: (context, _) {
-        return Scaffold(
-          backgroundColor: AppConstants.primaryBackground,
-          body: WidgetUtils.responsiveConstraint(
+        return Actions(
+          actions: <Type, Action<Intent>>{
+            SearchIntent: CallbackAction<SearchIntent>(
+              onInvoke: (intent) {
+                _searchFocusNode.requestFocus();
+                return null;
+              },
+            ),
+            RefreshIntent: CallbackAction<RefreshIntent>(
+              onInvoke: (intent) {
+                _controller.searchSeries();
+                return null;
+              },
+            ),
+          },
+          child: Scaffold(
+            backgroundColor: AppConstants.primaryBackground,
+            body: WidgetUtils.responsiveConstraint(
             SafeArea(
               child: Padding(
                 padding: EdgeInsets.only(
@@ -168,6 +186,7 @@ class _BrowseScreenState extends State<BrowseScreen> {
                       ),
                     ),
                     MBSearchBar(
+                      focusNode: _searchFocusNode,
                       controller: _controller.searchController,
                       initialFilters: _controller.currentFilters,
                       onScanTap: _handleBarcodeScan,
@@ -185,11 +204,13 @@ class _BrowseScreenState extends State<BrowseScreen> {
               ? FloatingActionButton(
                   onPressed: _controller.scrollToTop,
                   backgroundColor: AppConstants.accentColor,
+                  tooltip: LocalizationService().translate('back_to_top'),
                   child: Icon(Icons.arrow_upward, color: AppConstants.primaryBackground),
                 )
               : null,
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/news/models/news.dart';
+import 'package:mangabaka_app/utils/app_shortcuts.dart';
 import 'package:mangabaka_app/features/news/services/news_service.dart';
 import 'package:mangabaka_app/features/news/widgets/news_list.item.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
@@ -257,9 +258,19 @@ class _NewsScreenState extends State<NewsScreen> {
                 ),
             ],
           ),
-          body: WidgetUtils.responsiveConstraint(
-            SafeArea(child: content),
-            maxWidth: isGrid ? 1200 : 800,
+          body: Actions(
+            actions: <Type, Action<Intent>>{
+              RefreshIntent: CallbackAction<RefreshIntent>(
+                onInvoke: (intent) {
+                  _onRefresh();
+                  return null;
+                },
+              ),
+            },
+            child: WidgetUtils.responsiveConstraint(
+              SafeArea(child: content),
+              maxWidth: isGrid ? 1200 : 800,
+            ),
           ),
           floatingActionButton: _showBackToTop
               ? FloatingActionButton(
@@ -271,6 +282,7 @@ class _NewsScreenState extends State<NewsScreen> {
                     );
                   },
                   backgroundColor: AppConstants.accentColor,
+                  tooltip: LocalizationService().translate('back_to_top'),
                   child: Icon(Icons.arrow_upward, color: AppConstants.primaryBackground),
                 )
               : null,
