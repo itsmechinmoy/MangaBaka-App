@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,6 +11,7 @@ import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/features/profile/services/auth/auth_storage.dart';
 import 'package:mangabaka_app/features/profile/services/auth/auth_network_client.dart';
+import 'package:mangabaka_app/features/profile/services/auth/windows_auth_handler.dart';
 
 class ProfileAuthService extends ChangeNotifier {
   final _logger = LoggingService.logger;
@@ -71,15 +73,31 @@ class ProfileAuthService extends ChangeNotifier {
         );
       }
 
-      final response = await _appAuth.authorizeAndExchangeCode(
-        AuthorizationTokenRequest(
-          _clientId,
-          _redirectUri,
-          serviceConfiguration: _serviceConfig,
+      TokenResponse? response;
+
+      if (Platform.isWindows) {
+        response = await WindowsAuthHandler.authorizeAndExchangeCode(
+          clientId: _clientId,
+          redirectUri: _redirectUri,
+          authorizationEndpoint: _authorizationEndpoint,
+          tokenEndpoint: _tokenEndpoint,
           scopes: AppConstants.oauthScopes,
-          promptValues: const ['consent'],
-        ),
-      );
+        );
+      } else {
+        response = await _appAuth.authorizeAndExchangeCode(
+          AuthorizationTokenRequest(
+            _clientId,
+            _redirectUri,
+            serviceConfiguration: _serviceConfig,
+            scopes: AppConstants.oauthScopes,
+            promptValues: const ['consent'],
+          ),
+        );
+      }
+
+      if (response == null) {
+        throw AuthException(message: 'Login failed: No response from auth server');
+      }
 
       _logger.info('OAuth2 authorization successful. Persisting tokens...');
       await _persistTokens(response);
@@ -145,15 +163,31 @@ class ProfileAuthService extends ChangeNotifier {
         return;
       }
 
-      final response = await _appAuth.token(
-        TokenRequest(
-          _clientId,
-          _redirectUri,
-          serviceConfiguration: _serviceConfig,
+      TokenResponse? response;
+
+      if (Platform.isWindows) {
+        response = await WindowsAuthHandler.refresh(
+          clientId: _clientId,
+          redirectUri: _redirectUri,
+          tokenEndpoint: _tokenEndpoint,
           refreshToken: refreshToken,
           scopes: AppConstants.oauthScopes,
-        ),
-      );
+        );
+      } else {
+        response = await _appAuth.token(
+          TokenRequest(
+            _clientId,
+            _redirectUri,
+            serviceConfiguration: _serviceConfig,
+            refreshToken: refreshToken,
+            scopes: AppConstants.oauthScopes,
+          ),
+        );
+      }
+
+      if (response == null) {
+        throw AuthException(message: 'Token refresh failed: No response from auth server');
+      }
 
       _logger.info('Token refresh successful');
       await _persistTokens(response);
