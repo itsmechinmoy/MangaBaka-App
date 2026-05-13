@@ -138,6 +138,9 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                                 },
                                 onStateChanged: (s) => _libraryService.updateLibraryEntryState((fullSeries ?? widget.series).id, s),
                                 onRatingChanged: (r) => _libraryService.updateLibraryEntryRating((fullSeries ?? widget.series).id, r),
+                                onUpdateChapter: () => entry != null ? showUpdateProgressDialog(entry, isChapter: true) : null,
+                                onUpdateVolume: () => entry != null ? showUpdateProgressDialog(entry, isChapter: false) : null,
+                                onUpdateRating: () => entry != null ? showUpdateRatingDialog(entry) : null,
                                 buildTabContent: (hPadding, {isWide = false, wideRightPaddingOnly = false}) => SeriesDetailTabContent(
                                   series: fullSeries ?? widget.series,
                                   entry: entry,
@@ -167,6 +170,9 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                                 },
                                 onStateChanged: (s) => _libraryService.updateLibraryEntryState((fullSeries ?? widget.series).id, s),
                                 onRatingChanged: (r) => _libraryService.updateLibraryEntryRating((fullSeries ?? widget.series).id, r),
+                                onUpdateChapter: () => entry != null ? showUpdateProgressDialog(entry, isChapter: true) : null,
+                                onUpdateVolume: () => entry != null ? showUpdateProgressDialog(entry, isChapter: false) : null,
+                                onUpdateRating: () => entry != null ? showUpdateRatingDialog(entry) : null,
                                 buildTabContent: (hPadding) => SeriesDetailTabContent(
                                   series: fullSeries ?? widget.series,
                                   entry: entry,

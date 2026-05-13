@@ -6,11 +6,13 @@ class VolumeChip extends StatelessWidget {
   final String volume;
   final int? progress;
   final bool inLibrary;
+  final VoidCallback? onTap;
 
   const VolumeChip({
     required this.volume,
     this.progress,
     this.inLibrary = false,
+    this.onTap,
     super.key,
   });
 
@@ -25,6 +27,7 @@ class VolumeChip extends StatelessWidget {
         icon: Icons.shelves,
         color: AppConstants.successColor,
         backgroundColor: AppConstants.successColor.withValues(alpha: 0.1),
+        onTap: onTap,
       );
     }
 

@@ -6,11 +6,13 @@ class ChaptersChip extends StatelessWidget {
   final String chapters;
   final int? progress;
   final bool inLibrary;
+  final VoidCallback? onTap;
 
   const ChaptersChip({
     required this.chapters,
     this.progress,
     this.inLibrary = false,
+    this.onTap,
     super.key,
   });
 
@@ -25,6 +27,7 @@ class ChaptersChip extends StatelessWidget {
         icon: Icons.format_list_bulleted,
         color: AppConstants.successColor,
         backgroundColor: AppConstants.successColor.withValues(alpha: 0.1),
+        onTap: onTap,
       );
     }
 

@@ -6,6 +6,7 @@ class MiniBadge extends StatelessWidget {
   final IconData? icon;
   final Color? color;
   final Color? backgroundColor;
+  final VoidCallback? onTap;
 
   const MiniBadge({
     super.key,
@@ -13,11 +14,12 @@ class MiniBadge extends StatelessWidget {
     this.icon,
     this.color,
     this.backgroundColor,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    final badge = Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppConstants.secondaryBackground,
@@ -47,5 +49,15 @@ class MiniBadge extends StatelessWidget {
         ],
       ),
     );
+
+    if (onTap != null) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: badge,
+      );
+    }
+
+    return badge;
   }
 }

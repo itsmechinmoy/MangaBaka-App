@@ -114,6 +114,63 @@ mixin LibraryCrudMixin on LibraryServiceBase {
     }
   }
 
+  Future<void> updateLibraryEntryProgress(String seriesId, {int? progressChapter, int? progressVolume}) async {
+    logger.info('Updating library entry progress for $seriesId - Ch: $progressChapter, Vol: $progressVolume');
+    final token = await auth.getValidAccessToken();
+    final url = Uri.parse('${LibraryConstants.baseUrl}/$seriesId');
+    
+    final body = <String, dynamic>{};
+    if (progressChapter != null) body['progress_chapter'] = progressChapter;
+    if (progressVolume != null) body['progress_volume'] = progressVolume;
+
+    try {
+      final response = await http
+          .put(
+            url,
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+              'User-Agent': LibraryConstants.userAgent,
+            },
+            body: jsonEncode(body),
+          )
+          .timeout(
+            const Duration(seconds: AppConstants.networkTimeoutSeconds),
+            onTimeout: () => throw TimeoutException('Update progress request timed out'),
+          );
+
+      if (response.statusCode == 401) {
+        logger.severe('Unauthorized update progress request for $seriesId');
+        throw AuthException(message: 'Authentication failed.', code: 'AUTH_FAILED');
+      }
+      if (response.statusCode != 200) {
+        logger.severe('Failed to update entry progress for $seriesId. Status: ${response.statusCode}, Body: ${response.body}');
+        throw ApiException(
+          message: 'Failed to update entry progress',
+          statusCode: response.statusCode,
+          responseBody: response.body,
+          code: 'UPDATE_PROGRESS_FAILED',
+        );
+      }
+
+      await database.libraryEntriesDao.updateEntryProgress(seriesId, progressChapter: progressChapter, progressVolume: progressVolume);
+      logger.info('Successfully updated progress for $seriesId in DB');
+    } on http.ClientException catch (e, st) {
+      logger.severe('ClientException updating entry progress for $seriesId: $e');
+      throw NetworkException(message: 'Network error.', code: 'NETWORK_ERROR', originalError: e, stackTrace: st);
+    } on SocketException catch (e, st) {
+      logger.severe('SocketException updating entry progress for $seriesId: $e');
+      throw NetworkException(message: 'Network error.', code: 'NETWORK_ERROR', originalError: e, stackTrace: st);
+    } on TimeoutException catch (e, st) {
+      logger.severe('TimeoutException updating entry progress for $seriesId');
+      throw NetworkException(message: 'Request timed out.', code: 'TIMEOUT', originalError: e, stackTrace: st);
+    } catch (e, st) {
+      logger.severe('Unexpected error updating entry progress for $seriesId: $e\n$st');
+      if (e is AppException) rethrow;
+      throw AppError(message: 'Failed to update entry progress', originalError: e, stackTrace: st);
+    }
+  }
+
   Future<void> createLibraryEntry(String seriesId, String state) async {
     logger.info('Creating library entry for $seriesId with state: $state');
     final token = await auth.getValidAccessToken();

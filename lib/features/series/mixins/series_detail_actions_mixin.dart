@@ -5,13 +5,47 @@ import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/series/widgets/progress_update_dialog.dart';
+import 'package:mangabaka_app/features/series/widgets/rating_selection_dialog.dart';
 
 mixin SeriesDetailActionsMixin<T extends StatefulWidget> on State<T> {
   LibraryService get libraryService;
   Series get series;
   bool get isAdding;
   set isAdding(bool value);
+
+  void showUpdateRatingDialog(LibraryEntry entry) {
+    showDialog(
+      context: context,
+      builder: (context) => RatingSelectionDialog(
+        initialRating: entry.rating ?? 0,
+        onRatingChanged: (rating) {
+          libraryService.updateLibraryEntryRating(series.id, rating);
+        },
+      ),
+    );
+  }
+
+  void showUpdateProgressDialog(LibraryEntry entry, {bool isChapter = true}) {
+    final l10n = LocalizationService();
+    showDialog(
+      context: context,
+      builder: (context) => ProgressUpdateDialog(
+        initialValue: (isChapter ? entry.progressChapter : entry.progressVolume) ?? 0,
+        title: isChapter ? l10n.translate('update_chapters') : l10n.translate('update_volumes'),
+        maxValue: isChapter ? series.totalChapters : series.finalVolume,
+        onUpdate: (value) {
+          if (isChapter) {
+            libraryService.updateLibraryEntryProgress(series.id, progressChapter: value);
+          } else {
+            libraryService.updateLibraryEntryProgress(series.id, progressVolume: value);
+          }
+        },
+      ),
+    );
+  }
 
   void shareLink() {
     final l10n = LocalizationService();

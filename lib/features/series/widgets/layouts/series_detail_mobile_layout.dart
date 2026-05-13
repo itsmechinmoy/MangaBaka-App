@@ -12,6 +12,8 @@ import 'package:mangabaka_app/features/series/widgets/series_genres_section.dart
 import 'package:mangabaka_app/features/series/widgets/series_segmented_control.dart';
 import 'package:mangabaka_app/features/series/widgets/series_detail_skeleton.dart';
 
+import 'package:mangabaka_app/features/series/widgets/external_ratings_section.dart';
+
 class SeriesDetailMobileLayout extends StatelessWidget {
   final Series series;
   final LibraryEntry? entry;
@@ -21,6 +23,9 @@ class SeriesDetailMobileLayout extends StatelessWidget {
   final ValueChanged<String> onTabChanged;
   final Function(String) onStateChanged;
   final Function(int) onRatingChanged;
+  final VoidCallback onUpdateChapter;
+  final VoidCallback onUpdateVolume;
+  final VoidCallback onUpdateRating;
   final Widget Function(double hPadding) buildTabContent;
 
   const SeriesDetailMobileLayout({
@@ -33,6 +38,9 @@ class SeriesDetailMobileLayout extends StatelessWidget {
     required this.onTabChanged,
     required this.onStateChanged,
     required this.onRatingChanged,
+    required this.onUpdateChapter,
+    required this.onUpdateVolume,
+    required this.onUpdateRating,
     required this.buildTabContent,
   });
 
@@ -65,7 +73,13 @@ class SeriesDetailMobileLayout extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SeriesMetadataChips(series: series, entry: entry),
+                        SeriesMetadataChips(
+                          series: series, 
+                          entry: entry,
+                          onUpdateChapter: onUpdateChapter,
+                          onUpdateVolume: onUpdateVolume,
+                          onUpdateRating: onUpdateRating,
+                        ),
                         const SizedBox(height: 16),
                         SeriesActionBar(
                           entry: entry, 
@@ -80,6 +94,7 @@ class SeriesDetailMobileLayout extends StatelessWidget {
                           const SizedBox(height: 20),
                         ],
                         SeriesGenresSection(series: series, l10n: l10n),
+                        ExternalRatingsSection(series: series),
                         SeriesSegmentedControl(
                           selectedTab: selectedTab,
                           onTabChanged: onTabChanged,

@@ -14,6 +14,7 @@ class DbToApiMapper {
       progressChapter: dbEntry.libraryEntry.progressChapter,
       progressVolume: dbEntry.libraryEntry.progressVolume,
       numberOfRereads: dbEntry.libraryEntry.numberOfRereads,
+      rating: dbEntry.libraryEntry.rating,
       series: seriesFromDb(dbEntry.series),
     );
   }

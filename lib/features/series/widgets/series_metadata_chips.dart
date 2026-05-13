@@ -16,17 +16,23 @@ class SeriesMetadataChips extends StatelessWidget {
   final Series series;
   final LibraryEntry? entry;
   final bool isVertical;
+  final VoidCallback? onUpdateChapter;
+  final VoidCallback? onUpdateVolume;
+  final VoidCallback? onUpdateRating;
 
   const SeriesMetadataChips({
     super.key,
     required this.series,
     this.entry,
     this.isVertical = false,
+    this.onUpdateChapter,
+    this.onUpdateVolume,
+    this.onUpdateRating,
   });
 
   @override
   Widget build(BuildContext context) {
-    final children = [
+    final List<Widget> children = [
       TypeChip(type: series.type),
       StatusChip(status: series.status),
       if (series.isLicensed == 'true') const LicensedChip(),
@@ -35,12 +41,14 @@ class SeriesMetadataChips extends StatelessWidget {
           volume: series.finalVolume,
           progress: entry?.progressVolume,
           inLibrary: entry != null,
+          onTap: onUpdateVolume,
         ),
       if (series.totalChapters.isNotEmpty && series.totalChapters != 'null')
         ChaptersChip(
           chapters: series.totalChapters,
           progress: entry?.progressChapter,
           inLibrary: entry != null,
+          onTap: onUpdateChapter,
         ),
       if ((series.published?['start_date']?.toString().isNotEmpty ?? false) ||
           (series.published?['end_date']?.toString().isNotEmpty ?? false))
@@ -49,7 +57,11 @@ class SeriesMetadataChips extends StatelessWidget {
           end: series.published?['end_date']?.toString() ?? '',
         ),
       if (series.hasAnime == 'true') const HasAnimeChip(),
-      RatingChip(sources: (series.source?.values.toList() ?? [])),
+      RatingChip(
+        sources: (series.source?.values.toList() ?? []),
+        entry: entry,
+        onTap: onUpdateRating,
+      ),
       if (['suggestive', 'erotica', 'pornographic'].contains(series.contentRating.toLowerCase()))
         ContentRatingChip(rating: series.contentRating),
       IdChip(id: series.id),

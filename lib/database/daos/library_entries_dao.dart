@@ -112,6 +112,20 @@ class LibraryEntriesDao extends DatabaseAccessor<AppDatabase>
     }
   }
 
+  Future<void> updateEntryProgress(String seriesId, {int? progressChapter, int? progressVolume}) async {
+    try {
+      await (update(libraryEntriesTable)
+            ..where((t) => t.seriesId.equals(seriesId)))
+          .write(LibraryEntriesTableCompanion(
+            progressChapter: progressChapter != null ? Value(progressChapter) : const Value.absent(),
+            progressVolume: progressVolume != null ? Value(progressVolume) : const Value.absent(),
+          ));
+    } catch (e) {
+      _logger.severe('Failed to update entry progress: $e');
+      throw exc.DatabaseException(message: 'Failed to update entry progress', originalError: e);
+    }
+  }
+
   Future<void> deleteEntry(String seriesId) async {
     try {
       await (delete(

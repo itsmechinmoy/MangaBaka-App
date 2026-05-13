@@ -12,6 +12,8 @@ import 'package:mangabaka_app/features/series/widgets/series_segmented_control.d
 import 'package:mangabaka_app/features/series/widgets/series_detail_skeleton.dart';
 import 'package:mangabaka_app/features/series/widgets/series_hero_cover.dart';
 
+import 'package:mangabaka_app/features/series/widgets/external_ratings_section.dart';
+
 class SeriesDetailWideLayout extends StatelessWidget {
   final Series series;
   final LibraryEntry? entry;
@@ -21,6 +23,9 @@ class SeriesDetailWideLayout extends StatelessWidget {
   final ValueChanged<String> onTabChanged;
   final Function(String) onStateChanged;
   final Function(int) onRatingChanged;
+  final VoidCallback onUpdateChapter;
+  final VoidCallback onUpdateVolume;
+  final VoidCallback onUpdateRating;
   final Widget Function(double hPadding, {bool isWide, bool wideRightPaddingOnly}) buildTabContent;
 
   const SeriesDetailWideLayout({
@@ -33,6 +38,9 @@ class SeriesDetailWideLayout extends StatelessWidget {
     required this.onTabChanged,
     required this.onStateChanged,
     required this.onRatingChanged,
+    required this.onUpdateChapter,
+    required this.onUpdateVolume,
+    required this.onUpdateRating,
     required this.buildTabContent,
   });
 
@@ -50,8 +58,14 @@ class SeriesDetailWideLayout extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (isDataLoaded)
-                  SeriesMetadataChips(series: series, entry: entry, isVertical: false)
-                      .animate().fadeIn(duration: 400.ms).slideX(begin: -0.1, end: 0),
+                  SeriesMetadataChips(
+                    series: series, 
+                    entry: entry, 
+                    isVertical: false,
+                    onUpdateChapter: onUpdateChapter,
+                    onUpdateVolume: onUpdateVolume,
+                    onUpdateRating: onUpdateRating,
+                  ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.1, end: 0),
               ],
             ),
           ),
@@ -83,6 +97,7 @@ class SeriesDetailWideLayout extends StatelessWidget {
                             const SizedBox(height: 24),
                           ],
                           SeriesGenresSection(series: series, l10n: l10n),
+                          ExternalRatingsSection(series: series),
                           SeriesSegmentedControl(
                             selectedTab: selectedTab,
                             onTabChanged: onTabChanged,
