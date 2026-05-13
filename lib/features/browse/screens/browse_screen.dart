@@ -167,29 +167,8 @@ class _BrowseScreenState extends State<BrowseScreen> {
                   top: AppConstants.verticalPadding,
                   bottom: 8.0,
                 ),
-                child: Stack(
+                child: Column(
                   children: [
-                    Positioned.fill(
-                      top: 64,
-                      child: Column(
-                        children: [
-                          FilterChipsRow(
-                            filters: _controller.currentFilters,
-                            onFiltersChanged: _controller.updateFilters,
-                          ),
-                          BrowseContent(
-                            searchResults: _controller.searchResults,
-                            isLoading: _controller.isLoading,
-                            isLoadingMore: _controller.isLoadingMore,
-                            error: _controller.error,
-                            scrollController: _controller.scrollController,
-                            onRetry: _controller.searchSeries,
-                            onNavigateToDetail: _navigateToDetail,
-                            onNavigateToResults: _navigateToBrowseResults,
-                          ),
-                        ],
-                      ),
-                    ),
                     MBSearchBar(
                       focusNode: _searchFocusNode,
                       controller: _controller.searchController,
@@ -199,6 +178,21 @@ class _BrowseScreenState extends State<BrowseScreen> {
                       onChanged: _controller.updateSearchQuery,
                       onSubmitted: (_) => _controller.searchSeries(),
                       onFilterApplied: _controller.updateFilters,
+                    ),
+                    const SizedBox(height: 12),
+                    FilterChipsRow(
+                      filters: _controller.currentFilters,
+                      onFiltersChanged: _controller.updateFilters,
+                    ),
+                    BrowseContent(
+                      searchResults: _controller.searchResults,
+                      isLoading: _controller.isLoading,
+                      isLoadingMore: _controller.isLoadingMore,
+                      error: _controller.error,
+                      scrollController: _controller.scrollController,
+                      onRetry: _controller.searchSeries,
+                      onNavigateToDetail: _navigateToDetail,
+                      onNavigateToResults: _navigateToBrowseResults,
                     ),
                   ],
                 ),
