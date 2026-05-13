@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "dev.oazzies" "\0"
-            VALUE "FileDescription", "mangabaka_app" "\0"
+            VALUE "FileDescription", "MangaBaka" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "mangabaka_app" "\0"
+            VALUE "InternalName", "MangaBaka" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 dev.oazzies. All rights reserved." "\0"
-            VALUE "OriginalFilename", "mangabaka_app.exe" "\0"
-            VALUE "ProductName", "mangabaka_app" "\0"
+            VALUE "OriginalFilename", "MangaBaka.exe" "\0"
+            VALUE "ProductName", "MangaBaka" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

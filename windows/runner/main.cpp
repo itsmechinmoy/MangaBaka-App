@@ -30,7 +30,7 @@ bool SendAppLinkToInstance(const std::wstring& title) {
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
                       _In_ wchar_t *command_line, _In_ int show_command) {
   // Pass the exact title used in window.Create()
-  if (SendAppLinkToInstance(L"mangabaka_app")) {
+  if (SendAppLinkToInstance(L"MangaBaka")) {
     return EXIT_SUCCESS;
   }
 
@@ -54,7 +54,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
-  if (!window.Create(L"mangabaka_app", origin, size)) {
+  if (!window.Create(L"MangaBaka", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
