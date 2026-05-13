@@ -6,6 +6,8 @@ import 'package:mangabaka_app/features/browse/widgets/browse_shortcuts.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/features/series/services/series_search_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
+import 'package:mangabaka_app/features/series/services/metadata_service.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
 
 class MockSeriesSearchService extends Fake implements SeriesSearchService {
   @override
@@ -23,11 +25,20 @@ class MockProfileAuthService extends Fake implements ProfileAuthService {
   void removeListener(VoidCallback listener) {}
 }
 
+class MockMetadataService extends Fake implements MetadataService {
+  @override
+  String getGenreLabel(String value) => value;
+  @override
+  String getTagName(int id) => 'Tag $id';
+}
+
 void main() {
   setUp(() async {
     await resetServiceLocator();
+    getIt.registerSingleton<LoggingService>(LoggingService());
     getIt.registerSingleton<SeriesSearchService>(MockSeriesSearchService());
     getIt.registerSingleton<ProfileAuthService>(MockProfileAuthService());
+    getIt.registerSingleton<MetadataService>(MockMetadataService());
   });
 
   Widget createWidgetUnderTest() {

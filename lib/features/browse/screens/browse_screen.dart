@@ -169,8 +169,8 @@ class _BrowseScreenState extends State<BrowseScreen> {
                 ),
                 child: Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 64),
+                    Positioned.fill(
+                      top: 64,
                       child: Column(
                         children: [
                           FilterChipsRow(

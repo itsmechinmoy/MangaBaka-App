@@ -46,6 +46,6 @@ void main() {
     await tester.pump(); // first fetch trigger
 
     expect(find.text('Mock News Title'), findsOneWidget);
-    expect(find.textContaining('Mock Source'), findsOneWidget);
+    expect(find.textContaining('MOCK SOURCE'), findsOneWidget);
   });
 }

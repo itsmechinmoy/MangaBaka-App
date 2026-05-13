@@ -17,6 +17,11 @@ void main() {
     service = StatisticsService(db);
   });
 
+  tearDown(() async {
+    await db.close();
+    await resetServiceLocator();
+  });
+
   group('StatisticsService', () {
     test('getTotalSeries returns 0 initially', () async {
       final total = await service.getTotalSeries();

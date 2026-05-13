@@ -31,6 +31,11 @@ void main() {
   });
 
   testWidgets('MainScreen starts on Browse tab by default', (WidgetTester tester) async {
+    // Set mobile size to ensure NavigationBar is used instead of NavigationRail
+    tester.view.physicalSize = const Size(400, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.reset());
+
     await tester.pumpWidget(MaterialApp(
       home: MainScreen(),
     ));

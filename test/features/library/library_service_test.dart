@@ -24,6 +24,11 @@ void main() {
     service = LibraryService(auth: mockAuth);
   });
 
+  tearDown(() async {
+    await getIt<AppDatabase>().close();
+    await resetServiceLocator();
+  });
+
   group('LibraryService', () {
     test('initial sync status is idle', () {
       expect(service.syncStatus.value.isSyncing, isFalse);

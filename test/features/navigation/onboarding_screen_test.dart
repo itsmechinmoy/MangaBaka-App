@@ -28,6 +28,11 @@ void main() {
     getIt.registerLazySingleton<SeriesSearchService>(() => SeriesSearchService());
   });
 
+  tearDown(() async {
+    await getIt<AppDatabase>().close();
+    await resetServiceLocator();
+  });
+
   Widget createWidgetUnderTest() {
     return const MaterialApp(
       home: OnboardingScreen(),
