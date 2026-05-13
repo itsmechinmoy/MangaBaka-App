@@ -299,6 +299,8 @@
         "tap_to_update_rating_subtitle": "Ermöglicht das Aktualisieren Ihrer persönlichen Bewertung durch Tippen auf den Bewertungs-Chip",
         "back_to_top": "Nach oben",
         "show_rating": "Bewertung anzeigen",
-        "anime_adaptation": "Anime-Adaption"
+        "anime_adaptation": "Anime-Adaption",
+        "go_back": "Zurückgehen",
+        "share_series": "Serie teilen"
     }
 }

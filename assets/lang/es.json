@@ -301,6 +301,8 @@
         "tap_to_update_rating_subtitle": "Permite actualizar tu calificación personal tocando el chip de calificación",
         "back_to_top": "Volver arriba",
         "show_rating": "Mostrar calificación",
-        "anime_adaptation": "Adaptación al anime"
+        "anime_adaptation": "Adaptación al anime",
+        "go_back": "Regresar",
+        "share_series": "Compartir serie"
     }
 }

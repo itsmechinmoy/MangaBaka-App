@@ -300,6 +300,8 @@
         "tap_to_update_rating": "チップをタップして評価を更新",
         "tap_to_update_rating_subtitle": "評価チップをタップして、個人の評価を更新できるようにします",
         "show_rating": "評価を表示",
-        "anime_adaptation": "アニメ化"
+        "anime_adaptation": "アニメ化",
+        "go_back": "戻る",
+        "share_series": "シリーズを共有"
     }
 }

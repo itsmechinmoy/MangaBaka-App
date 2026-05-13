@@ -302,6 +302,8 @@
         "tap_to_update_rating": "Tap Chips to Update Rating",
         "tap_to_update_rating_subtitle": "Enable updating your personal rating by tapping on the rating chip",
         "back_to_top": "Back to top",
-        "anime_adaptation": "Anime Adaptation"
+        "anime_adaptation": "Anime Adaptation",
+        "go_back": "Go Back",
+        "share_series": "Share Series"
     }
 }

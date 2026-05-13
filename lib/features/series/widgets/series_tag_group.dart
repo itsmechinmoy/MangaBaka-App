@@ -83,35 +83,30 @@ class SeriesTagGroup extends StatelessWidget {
 
   Widget _buildTagChip(String tag) {
     final tagParts = tag.split(' > ');
-    return Tooltip(
-      message: LocalizationService()
-          .translate(header.toLowerCase() == 'genres' ? 'browse_genre' : 'browse_tag')
-          .replaceAll(header.toLowerCase() == 'genres' ? '{genre}' : '{tag}', tagParts.last),
-      child: ChipBase(
-        label: Text.rich(
-          TextSpan(
-            children: [
-              if (tagParts.length > 1) ...[
-                TextSpan(
-                  text: '${tagParts.sublist(0, tagParts.length - 1).join(' > ')} > ',
-                  style: TextStyle(
-                    color: AppConstants.textMutedColor,
-                    fontSize: 12,
-                    height: 1.2,
-                  ),
-                ),
-              ],
+    return ChipBase(
+      label: Text.rich(
+        TextSpan(
+          children: [
+            if (tagParts.length > 1) ...[
               TextSpan(
-                text: tagParts.last,
+                text: '${tagParts.sublist(0, tagParts.length - 1).join(' > ')} > ',
                 style: TextStyle(
-                  color: AppConstants.textColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  color: AppConstants.textMutedColor,
+                  fontSize: 12,
                   height: 1.2,
                 ),
               ),
             ],
-          ),
+            TextSpan(
+              text: tagParts.last,
+              style: TextStyle(
+                color: AppConstants.textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                height: 1.2,
+              ),
+            ),
+          ],
         ),
       ),
     );

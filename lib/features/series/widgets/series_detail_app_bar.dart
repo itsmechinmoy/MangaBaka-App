@@ -38,7 +38,11 @@ class SeriesDetailAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double expandedHeight = isWide ? 400 : 320;
+    final orientation = MediaQuery.of(context).orientation;
+    final isLandscape = orientation == Orientation.landscape;
+    final double expandedHeight = isWide 
+        ? (isLandscape ? 300 : 400) 
+        : (isLandscape ? 200 : 320);
     
     return SliverLayoutBuilder(
       builder: (context, constraints) {
@@ -76,24 +80,33 @@ class SeriesDetailAppBar extends StatelessWidget {
           leading: Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Center(
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                onPressed: onBack,
-                style: buttonStyle,
+              child: Tooltip(
+                message: LocalizationService().translate('go_back'),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: onBack,
+                  style: buttonStyle,
+                ),
               ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
             ),
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.share),
-              onPressed: onShare,
-              style: buttonStyle,
+            Tooltip(
+              message: LocalizationService().translate('share_series'),
+              child: IconButton(
+                icon: const Icon(Icons.share),
+                onPressed: onShare,
+                style: buttonStyle,
+              ),
             ).animate().fadeIn(delay: 100.ms, duration: 400.ms).slideX(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
             if (entry != null)
-              IconButton(
-                icon: const Icon(Icons.delete_outline),
-                onPressed: onDelete,
-                style: buttonStyle,
+              Tooltip(
+                message: LocalizationService().translate('delete_from_library'),
+                child: IconButton(
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: onDelete,
+                  style: buttonStyle,
+                ),
               ).animate().fadeIn(delay: 200.ms, duration: 400.ms).slideX(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
             const SizedBox(width: 8),
           ],
@@ -169,8 +182,8 @@ class SeriesDetailAppBar extends StatelessWidget {
                       if (showCover) ...[
                         SeriesHeroCover(
                           series: series,
-                          height: isWide ? 220 : 180,
-                          width: isWide ? 150 : 125,
+                          height: isWide ? (isLandscape ? 180 : 220) : (isLandscape ? 140 : 180),
+                          width: isWide ? (isLandscape ? 120 : 150) : (isLandscape ? 100 : 125),
                         ).animate().fadeIn(duration: 600.ms).slideX(begin: 0.1, end: 0, curve: Curves.easeOutCubic),
                         const SizedBox(width: 16),
                       ],
