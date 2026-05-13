@@ -9,6 +9,25 @@ class SettingsManager extends ChangeNotifier {
   static final SettingsManager _instance = SettingsManager._internal();
   factory SettingsManager() => _instance;
   SettingsManager._internal();
+  
+  @visibleForTesting
+  static void resetForTesting() {
+    _instance._currentListStyle = AppListStyle.compactGrid;
+    _instance._hideLibrarySeriesInBrowse = false;
+    _instance._contentPreferences = ['safe', 'suggestive'];
+    _instance._hasCompletedOnboarding = false;
+    _instance._defaultStartPage = AppStartPage.browse;
+    _instance._ratingSliderStep = RatingSliderStep.step1;
+    _instance._addLibraryDefaultTab = 'plan_to_read';
+    _instance._defaultTitleLanguage = TitleLanguage.defaultLang;
+    _instance._separateListStyles = false;
+    _instance._libraryListStyle = AppListStyle.compactGrid;
+    _instance._browseListStyle = AppListStyle.compactGrid;
+    _instance._pushNotifications = false;
+    _instance._autoSuggestBrowse = false;
+    _instance._newsListColumns = 1;
+    _instance._showTooltips = true;
+  }
 
   AppListStyle _currentListStyle = AppListStyle.compactGrid;
   AppListStyle get currentListStyle => _currentListStyle;

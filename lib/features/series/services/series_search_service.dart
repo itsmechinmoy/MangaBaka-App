@@ -16,6 +16,9 @@ class SeriesSearchService {
   final _logger = LoggingService.logger;
   final _metadataService = getIt<MetadataService>();
   final _seriesService = getIt<SeriesService>();
+  final http.Client _client;
+
+  SeriesSearchService({http.Client? client}) : _client = client ?? http.Client();
 
   Future<List<Map<String, dynamic>>> getGenres() async {
     if (!_metadataService.isInitialized) {
@@ -72,7 +75,7 @@ class SeriesSearchService {
     _logger.info('Performing series search. URI: $uri');
 
     try {
-      final response = await http
+      final response = await _client
           .get(uri, headers: {'User-Agent': AppConstants.userAgent})
           .timeout(
             Duration(seconds: AppConstants.networkTimeoutSeconds),
