@@ -65,4 +65,6 @@ class AppConstants {
   static const String userPreferencesKey = '${prefixStorageKey}preferences';
 
   static const Duration debounceDelay = Duration(milliseconds: 500);
+
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

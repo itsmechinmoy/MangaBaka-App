@@ -78,8 +78,12 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
             : const OnboardingScreen();
 
         return MaterialApp(
+          navigatorKey: AppConstants.navigatorKey,
           title: AppConstants.appName,
           debugShowCheckedModeBanner: false,
+          builder: (context, child) {
+            return AppShortcuts(child: child!);
+          },
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
@@ -134,20 +138,18 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
               statusBarColor: Colors.transparent,
               statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
             ),
-            child: AppShortcuts(
-              child: Stack(
-                children: [
-                  content,
-                  if (_showSplash)
-                    AnimatedSplashOverlay(
-                      onComplete: () {
-                        setState(() {
-                          _showSplash = false;
-                        });
-                      },
-                    ),
-                ],
-              ),
+            child: Stack(
+              children: [
+                content,
+                if (_showSplash)
+                  AnimatedSplashOverlay(
+                    onComplete: () {
+                      setState(() {
+                        _showSplash = false;
+                      });
+                    },
+                  ),
+              ],
             ),
           ),
         );

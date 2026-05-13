@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mangabaka_app/utils/trackpad_navigation_listener.dart';
 import 'package:mangabaka_app/features/navigation/screens/main_screen.dart';
 import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 class BackIntent extends Intent {
   const BackIntent();
@@ -57,17 +59,16 @@ class AppShortcuts extends StatelessWidget {
         actions: <Type, Action<Intent>>{
           BackIntent: CallbackAction<BackIntent>(
             onInvoke: (intent) {
-              final NavigatorState? navigator = Navigator.maybeOf(context);
+              final navigator = AppConstants.navigatorKey.currentState;
               if (navigator != null && navigator.canPop()) {
-                navigator.pop();
+                navigator.maybePop();
               }
               return null;
             },
           ),
           SettingsIntent: CallbackAction<SettingsIntent>(
             onInvoke: (intent) {
-              Navigator.push(
-                context,
+              AppConstants.navigatorKey.currentState?.push(
                 MaterialPageRoute(builder: (context) => const SettingsScreen()),
               );
               return null;
@@ -82,7 +83,9 @@ class AppShortcuts extends StatelessWidget {
           // Search and Refresh are context-dependent and will be handled in specific screens if needed
           // or we can try to find a way to dispatch them.
         },
-        child: child,
+        child: TrackpadNavigationListener(
+          child: child,
+        ),
       ),
     );
   }
