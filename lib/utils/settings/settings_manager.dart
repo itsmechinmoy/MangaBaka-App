@@ -52,11 +52,7 @@ class SettingsManager extends ChangeNotifier {
   int _newsListColumns = 1;
   int get newsListColumns => _newsListColumns;
 
-  bool _tapToUpdateProgressInChips = true;
-  bool get tapToUpdateProgressInChips => _tapToUpdateProgressInChips;
 
-  bool _tapToUpdateRatingInChips = true;
-  bool get tapToUpdateRatingInChips => _tapToUpdateRatingInChips;
 
   bool _showTooltips = true;
   bool get showTooltips => _showTooltips;
@@ -121,8 +117,7 @@ class SettingsManager extends ChangeNotifier {
     _pushNotifications = prefs.getBool(SettingsKeys.pushNotifications) ?? false;
     _autoSuggestBrowse = prefs.getBool(SettingsKeys.autoSuggestBrowse) ?? false;
     _newsListColumns = prefs.getInt(SettingsKeys.newsListColumns) ?? 1;
-    _tapToUpdateProgressInChips = prefs.getBool(SettingsKeys.tapToUpdateProgressInChips) ?? true;
-    _tapToUpdateRatingInChips = prefs.getBool(SettingsKeys.tapToUpdateRatingInChips) ?? true;
+
     _showTooltips = prefs.getBool(SettingsKeys.showTooltips) ?? true;
 
     notifyListeners();
@@ -239,21 +234,7 @@ class SettingsManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setTapToUpdateProgressInChips(bool value) async {
-    if (_tapToUpdateProgressInChips == value) return;
-    _tapToUpdateProgressInChips = value;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(SettingsKeys.tapToUpdateProgressInChips, value);
-    notifyListeners();
-  }
 
-  Future<void> setTapToUpdateRatingInChips(bool value) async {
-    if (_tapToUpdateRatingInChips == value) return;
-    _tapToUpdateRatingInChips = value;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(SettingsKeys.tapToUpdateRatingInChips, value);
-    notifyListeners();
-  }
 
   Future<void> setShowTooltips(bool value) async {
     if (_showTooltips == value) return;

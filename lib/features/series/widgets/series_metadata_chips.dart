@@ -48,14 +48,14 @@ class SeriesMetadataChips extends StatelessWidget {
               volume: series.finalVolume,
               progress: entry?.progressVolume,
               inLibrary: entry != null,
-              onTap: settings.tapToUpdateProgressInChips ? onUpdateVolume : null,
+              onTap: onUpdateVolume,
             ),
           if (series.totalChapters.isNotEmpty && series.totalChapters != 'null')
             ChaptersChip(
               chapters: series.totalChapters,
               progress: entry?.progressChapter,
               inLibrary: entry != null,
-              onTap: settings.tapToUpdateProgressInChips ? onUpdateChapter : null,
+              onTap: onUpdateChapter,
             ),
           if ((series.published?['start_date']?.toString().isNotEmpty ?? false) ||
               (series.published?['end_date']?.toString().isNotEmpty ?? false))
@@ -67,7 +67,7 @@ class SeriesMetadataChips extends StatelessWidget {
           RatingChip(
             sources: (series.source?.values.toList() ?? []),
             entry: entry,
-            onTap: settings.tapToUpdateRatingInChips ? onUpdateRating : null,
+            onTap: onUpdateRating,
           ),
           if (['suggestive', 'erotica', 'pornographic'].contains(series.contentRating.toLowerCase()))
             ContentRatingChip(rating: series.contentRating),

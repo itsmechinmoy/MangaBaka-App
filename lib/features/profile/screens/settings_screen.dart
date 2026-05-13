@@ -58,6 +58,21 @@ class SettingsScreen extends StatelessWidget {
                 bottom: 80, // Padding for system navbar / player etc
               ),
               children: [
+                SettingsSectionHeader(title: l10n.translate('general')),
+                SettingsGroup(
+                  children: [
+                    SettingsSwitchItem(
+                      icon: Icons.search,
+                      title: l10n.translate('auto_suggest_browse'),
+                      subtitle: l10n.translate('auto_suggest_browse_subtitle'),
+                      value: SettingsManager().autoSuggestBrowse,
+                      onChanged: (val) => SettingsManager().setAutoSuggestBrowse(val),
+                      isFirst: true,
+                      isLast: true,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 SettingsSectionHeader(title: l10n.translate('display')),
                 DisplaySettingsGroup(l10n: l10n),
                 const SizedBox(height: 16),
