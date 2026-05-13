@@ -152,10 +152,13 @@ class _NewsScreenState extends State<NewsScreen> {
         final l10n = LocalizationService();
         final settings = SettingsManager();
         final screenWidth = MediaQuery.of(context).size.width;
+        final orientation = MediaQuery.of(context).orientation;
+        final bool isLandscape = orientation == Orientation.landscape;
         
         // Settings/Screen dependent grid logic
+        // 2 column news should only be available for landscape mode not for portrait mode
         final int columns = settings.newsListColumns;
-        final bool isGrid = columns > 1 && screenWidth > 400; // Small grid possible on phones too
+        final bool isGrid = columns > 1 && screenWidth > 400 && isLandscape;
 
         Widget content = _newsList.isEmpty && !_isLoading && !_isBackgroundRefresh
             ? Center(
@@ -234,18 +237,19 @@ class _NewsScreenState extends State<NewsScreen> {
               ),
             ),
             actions: [
-              WidgetUtils.tooltip(
-                message: l10n.translate('toggle_layout'),
-                child: IconButton(
-                  icon: Icon(
-                    settings.newsListColumns == 2 ? Icons.view_agenda_outlined : Icons.grid_view_rounded,
-                    color: AppConstants.textColor,
+              if (isLandscape)
+                WidgetUtils.tooltip(
+                  message: l10n.translate('toggle_layout'),
+                  child: IconButton(
+                    icon: Icon(
+                      settings.newsListColumns == 2 ? Icons.view_agenda_outlined : Icons.grid_view_rounded,
+                      color: AppConstants.textColor,
+                    ),
+                    onPressed: () {
+                      settings.setNewsListColumns(settings.newsListColumns == 1 ? 2 : 1);
+                    },
                   ),
-                  onPressed: () {
-                    settings.setNewsListColumns(settings.newsListColumns == 1 ? 2 : 1);
-                  },
                 ),
-              ),
               if (screenWidth < 600)
                 IconButton(
                   icon: const Icon(Icons.settings),

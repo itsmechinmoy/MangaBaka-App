@@ -68,7 +68,7 @@ class ListSettingsGroup extends StatelessWidget {
           title: l10n.translate('news_columns'),
           subtitle: SettingsManager().newsListColumns == 1
               ? l10n.translate('one_column')
-              : l10n.translate('two_columns'),
+              : '${l10n.translate('two_columns')} (${l10n.translate('landscape_only')})',
           onTap: () {
             SettingsManager().setNewsListColumns(
               SettingsManager().newsListColumns == 1 ? 2 : 1,

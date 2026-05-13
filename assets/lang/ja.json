@@ -301,6 +301,7 @@
         "show_rating": "評価を表示",
         "anime_adaptation": "アニメ化",
         "go_back": "戻る",
-        "share_series": "シリーズを共有"
+        "share_series": "シリーズを共有",
+        "landscape_only": "ランドスケープモードのみ"
     }
 }

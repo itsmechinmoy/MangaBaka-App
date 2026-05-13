@@ -297,6 +297,7 @@
         "show_rating": "Afficher la note",
         "anime_adaptation": "Adaptation en anime",
         "go_back": "Retourner",
-        "share_series": "Partager la série"
+        "share_series": "Partager la série",
+        "landscape_only": "Mode paysage uniquement"
     }
 }
