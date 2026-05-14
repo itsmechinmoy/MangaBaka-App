@@ -6,6 +6,8 @@ import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/features/series/services/series_id_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
 
 class LibraryGridList extends StatelessWidget {
   final List<LibraryEntry> items;
@@ -50,6 +52,7 @@ class LibraryGridList extends StatelessWidget {
 
   Widget _buildList(BuildContext context) {
     final settings = SettingsManager();
+    final seriesService = getIt<SeriesService>();
     final isGrid = settings.separateListStyles
         ? settings.libraryListStyle.isGrid
         : settings.currentListStyle.isGrid;
@@ -68,9 +71,12 @@ class LibraryGridList extends StatelessWidget {
         itemCount: items.length,
         itemBuilder: (context, index) {
           final entry = items[index];
-          return GestureDetector(
-            onTap: () => onItemTap(entry.series),
-            child: EntryListItem(series: entry.series, isLibrary: true),
+          return MouseRegion(
+            onEnter: (_) => seriesService.fetchSeries(entry.series.id),
+            child: GestureDetector(
+              onTap: () => onItemTap(entry.series),
+              child: EntryListItem(series: entry.series, isLibrary: true),
+            ),
           );
         },
       );
@@ -83,9 +89,12 @@ class LibraryGridList extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final entry = items[index];
-        return GestureDetector(
-          onTap: () => onItemTap(entry.series),
-          child: EntryListItem(series: entry.series, isLibrary: true),
+        return MouseRegion(
+          onEnter: (_) => seriesService.fetchSeries(entry.series.id),
+          child: GestureDetector(
+            onTap: () => onItemTap(entry.series),
+            child: EntryListItem(series: entry.series, isLibrary: true),
+          ),
         );
       },
     );

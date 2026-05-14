@@ -7,6 +7,8 @@ import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/features/series/widgets/series_list_skeleton.dart';
+import 'package:mangabaka_app/features/series/services/series_id_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
 
 class BrowseContent extends StatelessWidget {
   final List<Series> searchResults;
@@ -65,6 +67,7 @@ class BrowseContent extends StatelessWidget {
         final activeStyle = settings.separateListStyles ? settings.browseListStyle : settings.currentListStyle;
         final isGrid = activeStyle.isGrid;
 
+        final seriesService = getIt<SeriesService>();
         if (isGrid) {
           return GridView.builder(
             controller: scrollController,
@@ -82,9 +85,12 @@ class BrowseContent extends StatelessWidget {
               }
 
               final series = searchResults[index];
-              return InkWell(
-                onTap: () => onNavigateToDetail(series),
-                child: EntryListItem(key: ValueKey('grid_${series.id}'), series: series),
+              return MouseRegion(
+                onEnter: (_) => seriesService.fetchSeries(series.id),
+                child: InkWell(
+                  onTap: () => onNavigateToDetail(series),
+                  child: EntryListItem(key: ValueKey('grid_${series.id}'), series: series),
+                ),
               );
             },
           );
@@ -102,9 +108,12 @@ class BrowseContent extends StatelessWidget {
             }
 
             final series = searchResults[index];
-            return InkWell(
-              onTap: () => onNavigateToDetail(series),
-              child: EntryListItem(key: ValueKey('list_${series.id}'), series: series),
+            return MouseRegion(
+              onEnter: (_) => seriesService.fetchSeries(series.id),
+              child: InkWell(
+                onTap: () => onNavigateToDetail(series),
+                child: EntryListItem(key: ValueKey('list_${series.id}'), series: series),
+              ),
             );
           },
         );

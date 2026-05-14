@@ -5,6 +5,8 @@ import 'package:mangabaka_app/features/news/widgets/referenced_list_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/series/services/series_id_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
 
 class NewsListItem extends StatelessWidget {
   final News news;
@@ -106,21 +108,26 @@ class NewsListItem extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  physics: const BouncingScrollPhysics(),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: news.series.map((s) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 12.0),
-                        child: ReferencedListItem(
-                          key: ValueKey('ref_${news.id}_${s.id}'),
-                          series: s,
-                          compact: true,
-                        ),
-                      );
-                    }).toList(),
+                RepaintBoundary(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: news.series.map((s) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 12.0),
+                          child: MouseRegion(
+                            onEnter: (_) => getIt<SeriesService>().fetchSeries(s.id),
+                            child: ReferencedListItem(
+                              key: ValueKey('ref_${news.id}_${s.id}'),
+                              series: s,
+                              compact: true,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
                   ),
                 ),
               ],

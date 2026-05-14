@@ -8,6 +8,7 @@ class SearchSuggestionsPanel extends StatelessWidget {
   final ValueChanged<AutocompleteSeriesResult> onResultTapped;
   final bool showSuggestions;
   final int selectedIndex;
+  final ValueChanged<AutocompleteSeriesResult>? onResultHovered;
 
   const SearchSuggestionsPanel({
     super.key,
@@ -15,6 +16,7 @@ class SearchSuggestionsPanel extends StatelessWidget {
     required this.onResultTapped,
     required this.showSuggestions,
     this.selectedIndex = -1,
+    this.onResultHovered,
   });
 
   @override
@@ -72,8 +74,10 @@ class SearchSuggestionsPanel extends StatelessWidget {
       borderRadius: borderRadius,
       child: InkWell(
         onTap: () => onResultTapped(result),
+        onHover: (hovering) {
+          if (hovering) onResultHovered?.call(result);
+        },
         splashColor: AppConstants.accentColor.withValues(alpha: 0.08),
-        highlightColor: AppConstants.accentColor.withValues(alpha: 0.04),
         borderRadius: borderRadius,
         child: Padding(
           padding: EdgeInsets.only(

@@ -10,6 +10,8 @@ import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 import 'package:mangabaka_app/features/browse/widgets/search_suggestions_panel.dart';
 import 'package:mangabaka_app/features/browse/widgets/mb_search_bar_suffix.dart';
+import 'package:mangabaka_app/features/series/services/series_id_service.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
 
 class MBSearchBar extends StatefulWidget {
   final ValueChanged<String> onChanged;
@@ -315,6 +317,7 @@ class _MBSearchBarState extends State<MBSearchBar> {
               onResultTapped: _onResultTapped,
               showSuggestions: true,
               selectedIndex: _selectedIndex,
+              onResultHovered: (result) => getIt<SeriesService>().fetchSeries(result.id.toString()),
             ),
           ),
         ),
