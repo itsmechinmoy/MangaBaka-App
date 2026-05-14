@@ -11,6 +11,8 @@ import 'package:mangabaka_app/features/series/services/series_search_service.dar
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/features/publisher/services/publisher_search_service.dart';
+import 'package:mangabaka_app/features/series/services/series_id_service.dart';
 
 class MockSeriesSearchService extends Fake implements SeriesSearchService {
   @override
@@ -35,6 +37,15 @@ class MockMetadataService extends Fake implements MetadataService {
   String getTagName(int id) => 'Tag $id';
 }
 
+class MockPublisherSearchService extends Fake implements PublisherSearchService {
+  @override
+  Future<PublisherSearchResult> search(Map<String, dynamic> params) async {
+    return PublisherSearchResult(publishers: [], total: 0);
+  }
+}
+
+class MockSeriesService extends Fake implements SeriesService {}
+
 void main() {
   setUp(() async {
     const MethodChannel('plugins.flutter.io/path_provider')
@@ -49,6 +60,8 @@ void main() {
     getIt.registerSingleton<SeriesSearchService>(MockSeriesSearchService());
     getIt.registerSingleton<ProfileAuthService>(MockProfileAuthService());
     getIt.registerSingleton<MetadataService>(MockMetadataService());
+    getIt.registerSingleton<PublisherSearchService>(MockPublisherSearchService());
+    getIt.registerSingleton<SeriesService>(MockSeriesService());
   });
 
   Widget createWidgetUnderTest() {

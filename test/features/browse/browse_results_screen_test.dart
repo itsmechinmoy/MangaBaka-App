@@ -9,11 +9,21 @@ import 'package:mangabaka_app/features/profile/services/profile_auth_service.dar
 import 'package:mangabaka_app/features/series/services/series_id_service.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:flutter/services.dart';
+import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/features/publisher/services/publisher_search_service.dart';
 
 class MockSeriesSearchService extends Fake implements SeriesSearchService {
   List<Series> response = [];
   bool wasCalled = false;
   bool shouldFail = false;
+
+  @override
+  Future<SeriesSearchResult> searchSeries(String query, {String? sortBy, String? type, Map<String, dynamic>? extraParams}) async {
+    wasCalled = true;
+    if (shouldFail) throw Exception('Search failed');
+    return SeriesSearchResult(series: response, total: response.length);
+  }
 
   @override
   Future<List<Series>> searchSeriesByName(String query, {String? sortBy, String? type, Map<String, dynamic>? extraParams}) async {
@@ -33,6 +43,13 @@ class MockSeriesService extends Fake implements SeriesService {
   Future<Series> fetchSeries(String id) async => Series.fromJson({'id': id, 'title': 'Mock'});
 }
 
+class MockPublisherSearchService extends Fake implements PublisherSearchService {
+  @override
+  Future<PublisherSearchResult> search(Map<String, dynamic> params) async {
+    return PublisherSearchResult(publishers: [], total: 0);
+  }
+}
+
 void main() {
   late MockSeriesSearchService mockSearchService;
 
@@ -43,11 +60,14 @@ void main() {
     });
     SharedPreferences.setMockInitialValues({});
     await resetServiceLocator();
+    await SettingsManager().init();
     
+    getIt.registerSingleton<LoggingService>(LoggingService());
     mockSearchService = MockSeriesSearchService();
     getIt.registerSingleton<SeriesSearchService>(mockSearchService);
     getIt.registerSingleton<ProfileAuthService>(MockProfileAuthService());
     getIt.registerSingleton<SeriesService>(MockSeriesService());
+    getIt.registerSingleton<PublisherSearchService>(MockPublisherSearchService());
   });
 
   Widget createWidgetUnderTest() {

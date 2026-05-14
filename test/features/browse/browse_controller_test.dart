@@ -6,10 +6,18 @@ import 'package:mangabaka_app/utils/di/service_locator.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/browse/utils/browse_helpers.dart';
+import 'package:mangabaka_app/features/publisher/services/publisher_search_service.dart';
+import 'package:mangabaka_app/features/profile/models/mb_profile.dart';
 
 class MockSeriesSearchService extends Fake implements SeriesSearchService {
   List<Series> mockResults = [];
   bool throwError = false;
+
+  @override
+  Future<SeriesSearchResult> searchSeries(String query, {String? sortBy, String? type, Map<String, dynamic>? extraParams}) async {
+    if (throwError) throw Exception('Search failed');
+    return SeriesSearchResult(series: mockResults, total: mockResults.length);
+  }
 
   @override
   Future<List<Series>> searchSeriesByName(String query, {String? sortBy, String? type, Map<String, dynamic>? extraParams}) async {
@@ -21,11 +29,20 @@ class MockSeriesSearchService extends Fake implements SeriesSearchService {
 class MockProfileAuthService extends Fake implements ProfileAuthService {
   @override
   bool get isLoggedIn => false;
+  @override
+  MbProfile? get cachedProfile => null;
   
   @override
   void addListener(VoidCallback listener) {}
   @override
   void removeListener(VoidCallback listener) {}
+}
+
+class MockPublisherSearchService extends Fake implements PublisherSearchService {
+  @override
+  Future<PublisherSearchResult> search(Map<String, dynamic> params) async {
+    return PublisherSearchResult(publishers: [], total: 0);
+  }
 }
 
 void main() {
@@ -37,6 +54,7 @@ void main() {
     mockSearchService = MockSeriesSearchService();
     getIt.registerSingleton<SeriesSearchService>(mockSearchService);
     getIt.registerSingleton<ProfileAuthService>(MockProfileAuthService());
+    getIt.registerSingleton<PublisherSearchService>(MockPublisherSearchService());
     
     // We need to initialize SettingsManager if needed, but it's a singleton.
     // In a real test we might want to mock SharedPreferences.

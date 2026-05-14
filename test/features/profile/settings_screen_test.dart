@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
-import 'package:mangabaka_app/features/profile/widgets/settings_section_header.dart';
+import 'package:mangabaka_app/features/profile/widgets/settings_components.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
@@ -45,7 +45,7 @@ void main() {
     ));
     await tester.pumpAndSettle();
 
-    expect(find.byType(SettingsSectionHeader, skipOffstage: false), findsAtLeast(5));
+    expect(find.byType(SettingsGroup, skipOffstage: false), findsAtLeast(5));
     
     tester.view.resetPhysicalSize();
     tester.view.resetDevicePixelRatio();
