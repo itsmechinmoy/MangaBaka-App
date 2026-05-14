@@ -17,10 +17,22 @@ class BrowseShortcuts extends StatelessWidget {
           child: Column(
             children: [
               ShortcutSection(
-                header: l10n.translate('manga_manhwa_manhua'),
+                header: l10n.translate('type_manga'),
                 onMostPopular: () =>
                     onNavigate(l10n.translate('most_popular'), 'popularity_asc', type: 'manga'),
                 onRandom: () => onNavigate(l10n.translate('random'), 'random', type: 'manga'),
+              ),
+              ShortcutSection(
+                header: l10n.translate('type_manhwa'),
+                onMostPopular: () =>
+                    onNavigate(l10n.translate('most_popular'), 'popularity_asc', type: 'manhwa'),
+                onRandom: () => onNavigate(l10n.translate('random'), 'random', type: 'manhwa'),
+              ),
+              ShortcutSection(
+                header: l10n.translate('type_manhua'),
+                onMostPopular: () =>
+                    onNavigate(l10n.translate('most_popular'), 'popularity_asc', type: 'manhua'),
+                onRandom: () => onNavigate(l10n.translate('random'), 'random', type: 'manhua'),
               ),
               ShortcutSection(
                 header: l10n.translate('novels'),
