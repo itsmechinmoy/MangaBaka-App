@@ -55,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
     _libraryService = getIt<LibraryService>();
     _libraryService.syncStatus.addListener(_onSyncStatusChanged);
     _statisticsService = StatisticsService(getIt<AppDatabase>());
-    _snapshotService = SnapshotService();
+    _snapshotService = getIt<SnapshotService>();
 
     profile = _auth.cachedProfile;
     if (profile != null) {

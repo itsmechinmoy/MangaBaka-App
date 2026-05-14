@@ -260,6 +260,8 @@
         "no_works_available": "Aucune œuvre disponible.",
         "pages_count": "{count} pages",
         "copied_to_clipboard": "\"{text}\" copié dans le presse-papiers",
+        "copied_description": "Description copiée dans le presse-papiers",
+        "copied_id": "ID copié dans le presse-papiers : {id}",
         "no_series_found_for": "Aucune série trouvée pour \"{title}\".",
         "barcode_not_found": "Impossible de trouver un titre pour ce code-barres.",
         "barcode_lookup_failed": "Échec de la recherche du code-barres. Veuillez réessayer.",

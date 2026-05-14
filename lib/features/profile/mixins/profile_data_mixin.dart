@@ -110,11 +110,9 @@ mixin ProfileDataMixin<T extends StatefulWidget> on State<T> {
 
       await libraryService.performInitialSyncIfNeeded();
 
-      await Future.wait([
-        fetchStatistics(),
-        fetchRecentlyChanged(initial: true),
-        fetchRecentlyAdded(initial: true),
-      ]);
+      await fetchStatistics();
+      await fetchRecentlyChanged(initial: true);
+      await fetchRecentlyAdded(initial: true);
 
       if (mounted) setState(() => loading = false);
     } catch (e) {

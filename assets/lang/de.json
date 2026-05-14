@@ -260,6 +260,8 @@
         "no_works_available": "Keine Werke verfügbar.",
         "pages_count": "{count} Seiten",
         "copied_to_clipboard": "\"{text}\" in die Zwischenablage kopiert",
+        "copied_description": "Beschreibung in die Zwischenablage kopiert",
+        "copied_id": "ID in die Zwischenablage kopiert: {id}",
         "no_series_found_for": "Keine Serien gefunden für \"{title}\".",
         "barcode_not_found": "Buchtitel für diesen Barcode nicht gefunden.",
         "barcode_lookup_failed": "Barcode-Abfrage fehlgeschlagen. Bitte versuche es erneut.",

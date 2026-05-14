@@ -28,11 +28,25 @@ class SnapshotService {
     _cachedActivities = null;
   }
 
+  // Lock to prevent concurrent requests to the same endpoint
+  static Future<void>? _requestLock;
+
   Future<List<LibraryEntry>> fetchSnapshot({
     required String sortBy,
     int page = 1,
     int limit = 10,
   }) async {
+    // Wait for the previous request to finish
+    final previousLock = _requestLock;
+    final completer = Completer<void>();
+    _requestLock = completer.future;
+
+    if (previousLock != null) {
+      await previousLock;
+      // Add a small cool-down delay between requests to be safe
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+
     try {
       final token = await _auth.getValidAccessToken();
       final uri = Uri.parse(
@@ -73,6 +87,8 @@ class SnapshotService {
         originalError: e,
         stackTrace: st,
       );
+    } finally {
+      completer.complete();
     }
   }
 }
