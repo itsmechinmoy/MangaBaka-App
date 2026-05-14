@@ -2,12 +2,19 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:meta/meta.dart';
 
 class LoggingService {
   static final Logger _logger = Logger('MangaBakaApp');
   static final List<String> _logBuffer = [];
   static const int _maxLogs = 1000;
   static File? _logFile;
+  
+  @visibleForTesting
+  static void resetForTesting() {
+    _logBuffer.clear();
+    _logFile = null;
+  }
 
   static Future<void> setup() async {
     Logger.root.level = Level.ALL;
@@ -62,9 +69,6 @@ class LoggingService {
   }
 
   static Future<String?> getLogFilePath() async {
-    if (_logFile != null && await _logFile!.exists()) {
-      return _logFile!.path;
-    }
-    return null;
+    return _logFile?.path;
   }
 }

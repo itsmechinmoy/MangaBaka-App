@@ -8,6 +8,13 @@ class LocalizationService extends ChangeNotifier {
   static final LocalizationService _instance = LocalizationService._internal();
   factory LocalizationService() => _instance;
   LocalizationService._internal();
+  
+  @visibleForTesting
+  static void resetForTesting() {
+    _instance._manifest = {};
+    _instance._currentStrings = {};
+    _instance._currentLanguage = 'en';
+  }
 
   static const String _languageKey = '${AppConstants.prefixStorageKey}language_pref';
 
