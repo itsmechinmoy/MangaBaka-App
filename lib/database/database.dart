@@ -53,6 +53,11 @@ class AppDatabase extends _$AppDatabase {
           if (!tableNames.contains('library_entries_table')) {
             await m.createTable(libraryEntriesTable);
           }
+          
+          // 2.5. Create indices
+          await m.createIndex(Index('series_title_idx', 'CREATE INDEX IF NOT EXISTS series_title_idx ON series_table (title)'));
+          await m.createIndex(Index('library_series_idx', 'CREATE INDEX IF NOT EXISTS library_series_idx ON library_entries_table (series_id)'));
+          await m.createIndex(Index('library_state_idx', 'CREATE INDEX IF NOT EXISTS library_state_idx ON library_entries_table (state)'));
 
           // 3. Inspect columns for existing tables
           final seriesColumns = await customSelect('PRAGMA table_info("series_table")').get();

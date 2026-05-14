@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class SearchSuggestionsPanel extends StatelessWidget {
   final List<AutocompleteSeriesResult> results;
@@ -89,13 +90,11 @@ class SearchSuggestionsPanel extends StatelessWidget {
                 child: SizedBox(
                   width: 36,
                   height: 52,
-                  child: result.thumbnailUrl.isNotEmpty
-                      ? Image.network(
-                          result.thumbnailUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => _buildThumbnailPlaceholder(),
-                        )
-                      : _buildThumbnailPlaceholder(),
+                  child: WidgetUtils.networkImage(
+                    url: result.thumbnailUrl,
+                    fit: BoxFit.cover,
+                    memCacheWidth: 80,
+                  ),
                 ),
               ),
               const SizedBox(width: 12),

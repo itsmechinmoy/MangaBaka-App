@@ -3,6 +3,7 @@ import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/models/series_work.dart';
 import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class SeriesWorksTab extends StatelessWidget {
   final List<SeriesWork>? works;
@@ -49,13 +50,11 @@ class SeriesWorksTab extends StatelessWidget {
                       height: 90,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: w.imageUrl != null && w.imageUrl!.isNotEmpty
-                            ? Image.network(
-                                w.imageUrl!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (c, e, s) => _buildPlaceholder(),
-                              )
-                            : _buildPlaceholder(),
+                        child: WidgetUtils.networkImage(
+                          url: w.imageUrl ?? '',
+                          fit: BoxFit.cover,
+                          memCacheWidth: 150,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 16),

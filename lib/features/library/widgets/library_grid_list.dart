@@ -44,51 +44,50 @@ class LibraryGridList extends StatelessWidget {
                 ),
               ],
             )
-          : ListenableBuilder(
-              listenable: SettingsManager(),
-              builder: (context, _) {
-                final settings = SettingsManager();
-                final isGrid = settings.separateListStyles
-                    ? settings.libraryListStyle.isGrid
-                    : settings.currentListStyle.isGrid;
+          : _buildList(context),
+    );
+  }
 
-                if (isGrid) {
-                  return GridView.builder(
-                    controller: scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(12),
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 160,
-                      childAspectRatio: 0.65,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final entry = items[index];
-                      return GestureDetector(
-                        onTap: () => onItemTap(entry.series),
-                        child: EntryListItem(series: entry.series, isLibrary: true),
-                      );
-                    },
-                  );
-                }
+  Widget _buildList(BuildContext context) {
+    final settings = SettingsManager();
+    final isGrid = settings.separateListStyles
+        ? settings.libraryListStyle.isGrid
+        : settings.currentListStyle.isGrid;
 
-                return ListView.builder(
-                  controller: scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final entry = items[index];
-                    return GestureDetector(
-                      onTap: () => onItemTap(entry.series),
-                      child: EntryListItem(series: entry.series, isLibrary: true),
-                    );
-                  },
-                );
-              },
-            ),
+    if (isGrid) {
+      return GridView.builder(
+        controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(12),
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 160,
+          childAspectRatio: 0.65,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final entry = items[index];
+          return GestureDetector(
+            onTap: () => onItemTap(entry.series),
+            child: EntryListItem(series: entry.series, isLibrary: true),
+          );
+        },
+      );
+    }
+
+    return ListView.builder(
+      controller: scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final entry = items[index];
+        return GestureDetector(
+          onTap: () => onItemTap(entry.series),
+          child: EntryListItem(series: entry.series, isLibrary: true),
+        );
+      },
     );
   }
 }

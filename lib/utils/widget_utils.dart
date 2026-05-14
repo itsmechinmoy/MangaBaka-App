@@ -4,6 +4,7 @@ import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/widgets/chip.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class WidgetUtils {
   static Widget responsiveConstraint(Widget child, {double maxWidth = 800}) {
@@ -18,6 +19,34 @@ class WidgetUtils {
 
   static Widget tooltip({required String message, required Widget child}) {
     return AppTooltip(message: message, child: child);
+  }
+
+  static Widget networkImage({
+    required String url,
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.cover,
+    Widget? placeholder,
+    Widget? errorWidget,
+    int? memCacheWidth,
+    int? memCacheHeight,
+  }) {
+    if (url.isEmpty) {
+      return errorWidget ?? Icon(Icons.broken_image, size: width ?? 24, color: AppConstants.textMutedColor);
+    }
+    
+    return CachedNetworkImage(
+      imageUrl: url,
+      width: width,
+      height: height,
+      fit: fit,
+      memCacheWidth: memCacheWidth,
+      memCacheHeight: memCacheHeight,
+      placeholder: (context, url) => placeholder ?? Container(color: AppConstants.secondaryBackground),
+      errorWidget: (context, url, error) => errorWidget ?? Icon(Icons.broken_image, size: width ?? 24, color: AppConstants.textMutedColor),
+      fadeOutDuration: const Duration(milliseconds: 300),
+      fadeInDuration: const Duration(milliseconds: 300),
+    );
   }
 
   static Widget chipWrap(String label, List<String> items, {Color? color}) {
@@ -175,12 +204,11 @@ class _HoverableLinkChip extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.network(
-                  faviconUrl,
+                WidgetUtils.networkImage(
+                  url: faviconUrl,
                   width: 18,
                   height: 18,
-                  errorBuilder: (_, __, ___) =>
-                      Icon(Icons.link, size: 18, color: AppConstants.textMutedColor),
+                  errorWidget: Icon(Icons.link, size: 18, color: AppConstants.textMutedColor),
                 ),
                 const SizedBox(width: 10),
                 Text(

@@ -170,11 +170,11 @@ class ExternalRatingsSection extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
-      child: Image.network(
-        'https://www.google.com/s2/favicons?sz=64&domain=$domain',
+      child: WidgetUtils.networkImage(
+        url: 'https://www.google.com/s2/favicons?sz=64&domain=$domain',
         width: 18,
         height: 18,
-        errorBuilder: (context, error, stackTrace) => Icon(Icons.star_rounded, size: 16, color: AppConstants.accentColor),
+        errorWidget: Icon(Icons.star_rounded, size: 16, color: AppConstants.accentColor),
       ),
     );
   }

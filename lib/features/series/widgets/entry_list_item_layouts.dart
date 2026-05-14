@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 
 class EntryListLayoutHelper {
@@ -19,19 +20,13 @@ class EntryListLayoutHelper {
       tag: heroTag,
       child: ClipRRect(
         borderRadius: borderRadius,
-        child: series.coverUrl.isNotEmpty
-            ? Image.network(
-                series.coverUrl,
-                width: width,
-                height: height ?? double.infinity,
-                fit: BoxFit.cover,
-                gaplessPlayback: true,
-                cacheWidth: 300,
-                errorBuilder: (context, error, stackTrace) {
-                  return buildPlaceholder(width, height);
-                },
-              )
-            : buildPlaceholder(width, height),
+        child: WidgetUtils.networkImage(
+        url: series.coverUrl,
+        width: width,
+        height: height ?? double.infinity,
+        fit: BoxFit.cover,
+        memCacheWidth: 300,
+      ),
       ),
     );
   }

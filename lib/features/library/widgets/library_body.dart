@@ -82,30 +82,25 @@ class LibraryBody extends StatelessWidget {
           );
         }
 
-        return ListenableBuilder(
-          listenable: SettingsManager(),
-          builder: (context, _) {
-            final filterHelper = LibraryFilterHelper(
-              allEntries: snapshot.data!,
-              query: query,
-              filters: filters,
-              contentPreferences: SettingsManager().contentPreferences,
-            );
+        final filterHelper = LibraryFilterHelper(
+          allEntries: snapshot.data!,
+          query: query,
+          filters: filters,
+          contentPreferences: SettingsManager().contentPreferences,
+        );
 
-            return TabBarView(
-              controller: tabController,
-              children: LibraryScreenConstants.tabs.map((tab) {
-                final items = filterHelper.getByTab(tab.key);
-                return LibraryGridList(
-                  items: items,
-                  tabKey: tab.key,
-                  scrollController: scrollControllers[tab.key]!,
-                  onRefresh: onRefresh,
-                  onItemTap: onItemTap,
-                );
-              }).toList(),
+        return TabBarView(
+          controller: tabController,
+          children: LibraryScreenConstants.tabs.map((tab) {
+            final items = filterHelper.getByTab(tab.key);
+            return LibraryGridList(
+              items: items,
+              tabKey: tab.key,
+              scrollController: scrollControllers[tab.key]!,
+              onRefresh: onRefresh,
+              onItemTap: onItemTap,
             );
-          },
+          }).toList(),
         );
       },
     );

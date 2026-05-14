@@ -16,7 +16,11 @@ class LibraryFilterHelper {
     this.filters,
   });
 
+  List<LibraryEntry>? _cachedFiltered;
+
   List<LibraryEntry> getFilteredAndSorted() {
+    if (_cachedFiltered != null) return _cachedFiltered!;
+
     List<LibraryEntry> filtered = allEntries.where((entry) {
       // 1. Query Search
       final matchesQuery = query.isEmpty ||
@@ -127,6 +131,7 @@ class LibraryFilterHelper {
       }
     }
 
+    _cachedFiltered = filtered;
     return filtered;
   }
 

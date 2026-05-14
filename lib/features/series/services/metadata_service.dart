@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/services/logging_service.dart';
 
@@ -16,69 +17,109 @@ class MetadataService {
   Future<void> init() async {
     if (_isInitialized) return;
     _logger.info('Initializing MetadataService...');
+    
+    // Load from cache first
+    await _loadFromCache();
+    
     try {
-      await Future.wait([
+      // Fetch fresh data in background
+      _isInitialized = true;
+      _logger.info('MetadataService initialized (cached)');
+      
+      // Still fetch fresh data to ensure we have the latest
+      Future.wait([
         fetchGenres(),
         fetchTags(),
-      ]);
-      _isInitialized = true;
-      _logger.info('MetadataService initialized successfully');
+      ]).then((_) => _logger.info('MetadataService fresh data fetch complete'));
     } catch (e, st) {
       _logger.severe('Failed to initialize MetadataService: $e\n$st');
     }
   }
 
+  Future<void> _loadFromCache() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final genresJson = prefs.getString('cached_genres');
+      final tagsJson = prefs.getString('cached_tags');
+
+      if (genresJson != null) {
+        final json = jsonDecode(genresJson);
+        _genresList = List<Map<String, dynamic>>.from(json);
+        _genreMap = {
+          for (var item in _genresList)
+            item['value'].toString(): item['label'].toString()
+        };
+        _logger.fine('Loaded ${_genresList.length} genres from cache');
+      }
+
+      if (tagsJson != null) {
+        final json = jsonDecode(tagsJson);
+        _tagsList = List<Map<String, dynamic>>.from(json);
+        _tagMap = {
+          for (var item in _tagsList)
+            item['name'].toString(): item
+        };
+        _logger.fine('Loaded ${_tagsList.length} tags from cache');
+      }
+    } catch (e) {
+      _logger.warning('Failed to load metadata from cache: $e');
+    }
+  }
+
   Future<void> fetchGenres() async {
     final url = Uri.parse('${AppConstants.baseApiUrl}/genres');
-    _logger.info('Fetching genres from: $url');
     try {
       final response = await http.get(
         url,
         headers: {'User-Agent': AppConstants.userAgent},
       ).timeout(Duration(seconds: AppConstants.networkTimeoutSeconds));
 
-      _logger.fine('Genres fetch status: ${response.statusCode}');
-
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        _genresList = List<Map<String, dynamic>>.from(json['data'] ?? []);
-        _genreMap = {
-          for (var item in _genresList)
-            item['value'].toString(): item['label'].toString()
-        };
-        _logger.info('Successfully fetched ${_genresList.length} genres');
-      } else {
-        _logger.warning('Failed to fetch genres. Status: ${response.statusCode}, Body: ${response.body}');
+        final newList = List<Map<String, dynamic>>.from(json['data'] ?? []);
+        
+        // Only update and save if data changed
+        if (newList.length != _genresList.length) {
+          _genresList = newList;
+          _genreMap = {
+            for (var item in _genresList)
+              item['value'].toString(): item['label'].toString()
+          };
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('cached_genres', jsonEncode(_genresList));
+          _logger.info('Successfully updated and cached ${_genresList.length} genres');
+        }
       }
-    } catch (e, st) {
-      _logger.warning('Exception occurred while fetching genres: $e\n$st');
+    } catch (e) {
+      _logger.warning('Exception occurred while fetching genres: $e');
     }
   }
 
   Future<void> fetchTags() async {
     final url = Uri.parse('${AppConstants.baseApiUrl}/tags');
-    _logger.info('Fetching tags from: $url');
     try {
       final response = await http.get(
         url,
         headers: {'User-Agent': AppConstants.userAgent},
       ).timeout(Duration(seconds: AppConstants.networkTimeoutSeconds));
 
-      _logger.fine('Tags fetch status: ${response.statusCode}');
-
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
-        _tagsList = List<Map<String, dynamic>>.from(json['data'] ?? []);
-        _tagMap = {
-          for (var item in _tagsList)
-            item['name'].toString(): item
-        };
-        _logger.info('Successfully fetched ${_tagsList.length} tags');
-      } else {
-        _logger.warning('Failed to fetch tags. Status: ${response.statusCode}, Body: ${response.body}');
+        final newList = List<Map<String, dynamic>>.from(json['data'] ?? []);
+
+        if (newList.length != _tagsList.length) {
+          _tagsList = newList;
+          _tagMap = {
+            for (var item in _tagsList)
+              item['name'].toString(): item
+          };
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('cached_tags', jsonEncode(_tagsList));
+          _logger.info('Successfully updated and cached ${_tagsList.length} tags');
+        }
       }
-    } catch (e, st) {
-      _logger.warning('Exception occurred while fetching tags: $e\n$st');
+    } catch (e) {
+      _logger.warning('Exception occurred while fetching tags: $e');
     }
   }
 

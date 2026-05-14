@@ -4,6 +4,7 @@ import 'package:mangabaka_app/features/series/models/series_cover.dart';
 import 'package:mangabaka_app/features/series/screens/full_screen_image_screen.dart';
 import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class SeriesCoversTab extends StatelessWidget {
@@ -202,14 +203,10 @@ class _HoverableCoverItemState extends State<_HoverableCoverItem> {
                   child: widget.url != null
                       ? Hero(
                           tag: widget.url!,
-                          child: Image.network(
-                            widget.url!,
+                          child: WidgetUtils.networkImage(
+                            url: widget.url!,
                             fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) =>
-                                Container(
-                              color: AppConstants.secondaryBackground,
-                              child: const Icon(Icons.broken_image),
-                            ),
+                            memCacheWidth: 300,
                           ),
                         )
                       : Container(

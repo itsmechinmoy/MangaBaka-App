@@ -5,6 +5,7 @@ import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:mangabaka_app/features/news/models/news.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 class NewsService {
   static final _logger = LoggingService.logger;
@@ -19,7 +20,7 @@ class NewsService {
       if (cachedString != null) {
         final json = jsonDecode(cachedString);
         final List data = json['data'] ?? [];
-        return data.map((item) => News.fromJson(item as Map<String, dynamic>)).toList();
+        return await compute(_parseNewsList, data);
       }
     } catch (e) {
       _logger.warning('Failed to load cached news: $e');
@@ -51,9 +52,7 @@ class NewsService {
         final json = jsonDecode(response.body);
         final List data = json['data'] ?? [];
         _logger.info('News fetch page $page completed with ${data.length} items');
-        return data
-            .map((item) => News.fromJson(item as Map<String, dynamic>))
-            .toList();
+        return await compute(_parseNewsList, data);
       } else {
         _logger.severe(
           'Failed to load news (HTTP ${response.statusCode}) for URL: $url. Body: ${response.body}',
@@ -67,5 +66,9 @@ class NewsService {
     } finally {
       _isFetching = false;
     }
+  }
+
+  static List<News> _parseNewsList(List data) {
+    return data.map((item) => News.fromJson(item as Map<String, dynamic>)).toList();
   }
 }

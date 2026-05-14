@@ -133,18 +133,17 @@ class SeriesDetailAppBar extends StatelessWidget {
                 ),
               ),
             ),
-            background: Stack(
-              fit: StackFit.expand,
-              children: [
-                Container(
-                  color: Colors.black.withValues(alpha: 0.2),
-                ),
-                if (series.coverUrl.isNotEmpty)
-                  Image.network(
-                    series.coverUrl,
+            background: RepaintBoundary(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Container(
+                    color: Colors.black.withValues(alpha: 0.2),
+                  ),
+                  WidgetUtils.networkImage(
+                    url: series.coverUrl,
                     fit: BoxFit.cover,
-                    gaplessPlayback: true,
-                    cacheWidth: isWide ? 1200 : 800,
+                    memCacheWidth: isWide ? 1200 : 800,
                   ).animate(target: isLoaded ? 1 : 0)
                    .fadeIn(duration: 1200.ms, curve: Curves.easeOut)
                    .scale(begin: const Offset(1.05, 1.05), end: const Offset(1, 1), curve: Curves.easeOut),
@@ -200,10 +199,11 @@ class SeriesDetailAppBar extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   Widget _buildMainInfo(BuildContext context, bool isDark) {
     final otherTitles = <String>[];

@@ -171,56 +171,47 @@ class _NewsScreenState extends State<NewsScreen> {
               )
             : RefreshIndicator(
                 onRefresh: _onRefresh,
-                child: ListView(
-                  controller: _scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: isGrid 
-                      ? const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0)
-                      : EdgeInsets.zero,
-                  children: [
-                    if (isGrid)
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                for (int i = 0; i < _newsList.length; i += 2)
-                                  NewsListItem(
-                                    key: ValueKey('grid_left_${_newsList[i].id}'),
-                                    news: _newsList[i],
-                                  ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                for (int i = 1; i < _newsList.length; i += 2)
-                                  NewsListItem(
-                                    key: ValueKey('grid_right_${_newsList[i].id}'),
-                                    news: _newsList[i],
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
+                child: isGrid 
+                    ? GridView.builder(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 0.85, // Adjust based on NewsListItem content
+                        ),
+                        itemCount: _newsList.length + (_isLoading ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == _newsList.length) {
+                            return const Center(child: CircularProgressIndicator());
+                          }
+                          return NewsListItem(
+                            key: ValueKey('grid_${_newsList[index].id}'),
+                            news: _newsList[index],
+                          );
+                        },
                       )
-                    else
-                      for (int i = 0; i < _newsList.length; i++)
-                        NewsListItem(
-                          key: ValueKey('list_${_newsList[i].id}'),
-                          news: _newsList[i],
-                        ),
-                    if (_isLoading)
-                      const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: CircularProgressIndicator(),
-                        ),
+                    : ListView.builder(
+                        controller: _scrollController,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: _newsList.length + (_isLoading ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == _newsList.length) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          return NewsListItem(
+                            key: ValueKey('list_${_newsList[index].id}'),
+                            news: _newsList[index],
+                          );
+                        },
                       ),
-                  ],
-                ),
               );
 
         return Scaffold(

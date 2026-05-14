@@ -13,6 +13,7 @@ import 'package:mangabaka_app/features/series/widgets/chips/content_rating_chip.
 import 'package:mangabaka_app/features/series/widgets/id_chip.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class SeriesDetailHeader extends StatelessWidget {
   final Series series;
@@ -55,11 +56,12 @@ class SeriesDetailHeader extends StatelessWidget {
         if (series.coverUrl.isNotEmpty)
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              series.coverUrl,
+            child: WidgetUtils.networkImage(
+              url: series.coverUrl,
               height: 160,
               width: 110,
               fit: BoxFit.cover,
+              memCacheWidth: 220,
             ),
           ),
         const SizedBox(width: 16),

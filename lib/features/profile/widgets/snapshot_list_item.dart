@@ -2,6 +2,7 @@ import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class SnapshotListItem extends StatelessWidget {
   final Series series;
@@ -31,12 +32,11 @@ class SnapshotListItem extends StatelessWidget {
                 Expanded(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      series.coverUrl,
+                    child: WidgetUtils.networkImage(
+                      url: series.coverUrl,
                       fit: BoxFit.cover,
                       width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.error),
+                      memCacheWidth: 240,
                     ),
                   ),
                 ),

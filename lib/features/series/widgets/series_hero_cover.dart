@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/screens/full_screen_image_screen.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class SeriesHeroCover extends StatefulWidget {
   final Series series;
@@ -68,18 +69,13 @@ class _SeriesHeroCoverState extends State<SeriesHeroCover> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(14),
-              child: widget.series.coverUrl.isNotEmpty
-                  ? Image.network(
-                      widget.series.coverUrl,
-                      height: widget.height,
-                      width: widget.width,
-                      fit: BoxFit.cover,
-                      gaplessPlayback: true,
-                      cacheWidth: 400,
-                      errorBuilder: (context, error, stackTrace) =>
-                          _buildPlaceholder(),
-                    )
-                  : _buildPlaceholder(),
+              child: WidgetUtils.networkImage(
+                url: widget.series.coverUrl,
+                height: widget.height,
+                width: widget.width,
+                fit: BoxFit.cover,
+                memCacheWidth: 400,
+              ),
             ),
           ),
         ),

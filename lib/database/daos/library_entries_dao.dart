@@ -140,10 +140,12 @@ class LibraryEntriesDao extends DatabaseAccessor<AppDatabase>
   Future<void> deleteEntriesNotIn(List<String> validIds) async {
     try {
       final validSet = validIds.toSet();
-      final allEntries = await select(libraryEntriesTable).get();
-      final toDelete = allEntries
-          .where((e) => !validSet.contains(e.id))
-          .map((e) => e.id)
+      // Only select IDs to save memory
+      final query = selectOnly(libraryEntriesTable)..addColumns([libraryEntriesTable.id]);
+      final allIds = await query.map((row) => row.read(libraryEntriesTable.id)!).get();
+      
+      final toDelete = allIds
+          .where((id) => !validSet.contains(id))
           .toList();
 
       if (toDelete.isEmpty) return;

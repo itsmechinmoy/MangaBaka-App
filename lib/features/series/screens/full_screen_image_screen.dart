@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class FullScreenImageScreen extends StatelessWidget {
   final String imageUrl;
@@ -42,14 +43,10 @@ class FullScreenImageScreen extends StatelessWidget {
               maxScale: 4.0,
               child: Hero(
                 tag: heroTag ?? imageUrl,
-                child: Image.network(
-                  imageUrl,
+                child: WidgetUtils.networkImage(
+                  url: imageUrl,
                   fit: BoxFit.contain,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return const Center(child: CircularProgressIndicator());
-                  },
-                  errorBuilder: (context, error, stackTrace) => Icon(Icons.error, color: AppConstants.textColor),
+                  placeholder: const Center(child: CircularProgressIndicator()),
                 ),
               ),
             ),

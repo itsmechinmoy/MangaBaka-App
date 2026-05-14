@@ -23,49 +23,41 @@ class EntryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: Listenable.merge([
-        LocalizationService(),
-        SettingsManager(),
-      ]),
-      builder: (context, _) {
-        final l10n = LocalizationService();
-        final settings = SettingsManager();
-        final displayTitle = series.getDisplayTitle(settings.defaultTitleLanguage);
-        final style = settings.separateListStyles 
-            ? (isLibrary ? settings.libraryListStyle : settings.browseListStyle)
-            : settings.currentListStyle;
+    final l10n = LocalizationService();
+    final settings = SettingsManager();
+    final displayTitle = series.getDisplayTitle(settings.defaultTitleLanguage);
+    final style = settings.separateListStyles 
+        ? (isLibrary ? settings.libraryListStyle : settings.browseListStyle)
+        : settings.currentListStyle;
 
-        return Stack(
-          children: [
-            _buildContent(context, style, l10n, displayTitle),
+    return Stack(
+      children: [
+        _buildContent(context, style, l10n, displayTitle),
 
-            if (ranking != null)
-              Positioned(
-                top: 0,
-                left: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppConstants.warningColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      bottomRight: Radius.circular(8),
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  child: Text(
-                    '$ranking',
-                    style: TextStyle(
-                      color: AppConstants.primaryBackground,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
+        if (ranking != null)
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppConstants.warningColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
                 ),
               ),
-          ],
-        );
-      },
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              child: Text(
+                '$ranking',
+                style: TextStyle(
+                  color: AppConstants.primaryBackground,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 

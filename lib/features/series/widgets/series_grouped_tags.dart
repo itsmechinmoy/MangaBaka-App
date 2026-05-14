@@ -22,10 +22,11 @@ class SeriesGroupedTags extends StatefulWidget {
 
 class _SeriesGroupedTagsState extends State<SeriesGroupedTags> {
   bool _tagsExpanded = false;
+  Map<String, Map<String, List<String>>>? _cachedGrouped;
+  List<Widget>? _cachedContent;
 
-  @override
-  Widget build(BuildContext context) {
-    if (widget.series.tags.isEmpty) return const SizedBox.shrink();
+  void _ensureGrouped() {
+    if (_cachedGrouped != null) return;
 
     final metadataService = getIt<MetadataService>();
     final Map<String, Map<String, List<String>>> grouped = {};
@@ -56,17 +57,31 @@ class _SeriesGroupedTagsState extends State<SeriesGroupedTags> {
       grouped[header]![subheader]!.add(tagName);
     }
 
-    final contentWidgets = <Widget>[];
+    _cachedGrouped = grouped;
     final sortedHeaders = grouped.keys.toList()..sort();
 
-    for (var header in sortedHeaders) {
-      contentWidgets.add(
-        SeriesTagGroup(
-          header: header,
-          subGroups: grouped[header]!,
-        ),
+    _cachedContent = sortedHeaders.map((header) {
+      return SeriesTagGroup(
+        header: header,
+        subGroups: grouped[header]!,
       );
+    }).toList();
+  }
+
+  @override
+  void didUpdateWidget(SeriesGroupedTags oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.series.tags != oldWidget.series.tags) {
+      _cachedGrouped = null;
+      _cachedContent = null;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.series.tags.isEmpty) return const SizedBox.shrink();
+
+    _ensureGrouped();
 
     final totalTags = widget.series.tags.length;
     return Column(
@@ -88,7 +103,7 @@ class _SeriesGroupedTagsState extends State<SeriesGroupedTags> {
                     physics: const NeverScrollableScrollPhysics(),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: contentWidgets,
+                      children: _cachedContent!,
                     ),
                   ),
                   if (!_tagsExpanded && totalTags > 15)

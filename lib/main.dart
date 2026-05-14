@@ -76,6 +76,9 @@ class MangaBakaApp extends StatefulWidget {
 }
 
 class _MangaBakaAppState extends State<MangaBakaApp> {
+  ThemeData? _cachedLightTheme;
+  ThemeData? _cachedDarkTheme;
+  bool? _lastShowTooltips;
   bool _showSplash = true;
 
   @override
@@ -91,6 +94,66 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
         final isDark = ThemeManager().isDarkMode;
         final hasCompletedOnboarding = SettingsManager().hasCompletedOnboarding;
         final isLoggedIn = getIt<ProfileAuthService>().isLoggedIn;
+        final showTooltips = SettingsManager().showTooltips;
+
+        if (_cachedLightTheme == null || _cachedDarkTheme == null || _lastShowTooltips != showTooltips) {
+          _lastShowTooltips = showTooltips;
+          
+          _cachedLightTheme = ThemeData(
+            useMaterial3: true,
+            tooltipTheme: TooltipThemeData(
+              triggerMode: showTooltips ? null : TooltipTriggerMode.manual,
+              waitDuration: showTooltips ? null : const Duration(days: 365),
+            ),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: AppConstants.primaryAccent,
+              brightness: Brightness.light,
+              surface: AppConstants.primaryBackground,
+              primary: AppConstants.accentColor,
+              error: AppConstants.errorColor,
+            ),
+            scaffoldBackgroundColor: AppConstants.primaryBackground,
+            cardColor: AppConstants.secondaryBackground,
+            dialogTheme: DialogThemeData(
+              backgroundColor: AppConstants.secondaryBackground,
+            ),
+            dividerColor: AppConstants.borderColor,
+            bottomSheetTheme: BottomSheetThemeData(
+              backgroundColor: AppConstants.secondaryBackground,
+            ),
+            appBarTheme: AppBarTheme(
+              backgroundColor: AppConstants.primaryBackground,
+              surfaceTintColor: Colors.transparent,
+            ),
+          );
+
+          _cachedDarkTheme = ThemeData.dark(useMaterial3: true).copyWith(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: AppConstants.primaryAccent,
+              brightness: Brightness.dark,
+              surface: AppConstants.primaryBackground,
+              primary: AppConstants.accentColor,
+              error: AppConstants.errorColor,
+            ),
+            tooltipTheme: TooltipThemeData(
+              triggerMode: showTooltips ? null : TooltipTriggerMode.manual,
+              waitDuration: showTooltips ? null : const Duration(days: 365),
+            ),
+            scaffoldBackgroundColor: AppConstants.primaryBackground,
+            cardColor: AppConstants.secondaryBackground,
+            dialogTheme: DialogThemeData(
+              backgroundColor: AppConstants.secondaryBackground,
+            ),
+            dividerColor: AppConstants.borderColor,
+            bottomSheetTheme: BottomSheetThemeData(
+              backgroundColor: AppConstants.secondaryBackground,
+            ),
+            appBarTheme: AppBarTheme(
+              backgroundColor: AppConstants.primaryBackground,
+              surfaceTintColor: Colors.transparent,
+            ),
+          );
+        }
 
         final Widget content = (hasCompletedOnboarding || isLoggedIn)
             ? MainScreen()
@@ -105,67 +168,8 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
             builder: (context, child) {
               return AppShortcuts(child: child!);
             },
-            theme: ThemeData(
-              useMaterial3: true,
-              tooltipTheme: TooltipThemeData(
-                triggerMode: SettingsManager().showTooltips 
-                    ? null 
-                    : TooltipTriggerMode.manual,
-                waitDuration: SettingsManager().showTooltips 
-                    ? null 
-                    : const Duration(days: 365),
-              ),
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: AppConstants.primaryAccent,
-                brightness: Brightness.light,
-                surface: AppConstants.primaryBackground,
-                primary: AppConstants.accentColor,
-                error: AppConstants.errorColor,
-              ),
-              scaffoldBackgroundColor: AppConstants.primaryBackground,
-              cardColor: AppConstants.secondaryBackground,
-              dialogTheme: DialogThemeData(
-                backgroundColor: AppConstants.secondaryBackground,
-              ),
-              dividerColor: AppConstants.borderColor,
-              bottomSheetTheme: BottomSheetThemeData(
-                backgroundColor: AppConstants.secondaryBackground,
-              ),
-              appBarTheme: AppBarTheme(
-                backgroundColor: AppConstants.primaryBackground,
-                surfaceTintColor: Colors.transparent,
-              ),
-            ),
-            darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: AppConstants.primaryAccent,
-                brightness: Brightness.dark,
-                surface: AppConstants.primaryBackground,
-                primary: AppConstants.accentColor,
-                error: AppConstants.errorColor,
-              ),
-              tooltipTheme: TooltipThemeData(
-                triggerMode: SettingsManager().showTooltips 
-                    ? null 
-                    : TooltipTriggerMode.manual,
-                waitDuration: SettingsManager().showTooltips 
-                    ? null 
-                    : const Duration(days: 365),
-              ),
-              scaffoldBackgroundColor: AppConstants.primaryBackground,
-              cardColor: AppConstants.secondaryBackground,
-              dialogTheme: DialogThemeData(
-                backgroundColor: AppConstants.secondaryBackground,
-              ),
-              dividerColor: AppConstants.borderColor,
-              bottomSheetTheme: BottomSheetThemeData(
-                backgroundColor: AppConstants.secondaryBackground,
-              ),
-              appBarTheme: AppBarTheme(
-                backgroundColor: AppConstants.primaryBackground,
-                surfaceTintColor: Colors.transparent,
-              ),
-            ),
+            theme: _cachedLightTheme,
+            darkTheme: _cachedDarkTheme,
             themeMode: currentThemeMode,
             home: AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle(
