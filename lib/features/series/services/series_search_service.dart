@@ -91,7 +91,22 @@ class SeriesSearchService {
           final List data = json['data'] ?? [];
           final results = data
               .map((item) => Series.fromJson(item as Map<String, dynamic>))
-              .where((s) => contentPrefs.isEmpty || contentPrefs.contains(s.contentRating.toLowerCase()))
+              .where((s) {
+                if (contentPrefs.isNotEmpty && !contentPrefs.contains(s.contentRating.toLowerCase())) {
+                  return false;
+                }
+
+                // Local rating filtering to ensure it matches our calculated combined average
+                final ratingLower = extraParams?['rating_lower'] as num?;
+                final ratingUpper = extraParams?['rating_upper'] as num?;
+                if (ratingLower != null || ratingUpper != null) {
+                  final rating = double.tryParse(s.rating) ?? 0;
+                  if (ratingLower != null && rating < ratingLower) return false;
+                  if (ratingUpper != null && rating > ratingUpper) return false;
+                }
+                
+                return true;
+              })
               .toList();
           
           _logger.info('Search successful. Found ${results.length} results');
@@ -216,7 +231,22 @@ class SeriesSearchService {
         
         final results = data
             .map((item) => Series.fromJson(item as Map<String, dynamic>))
-            .where((s) => contentPrefs.isEmpty || contentPrefs.contains(s.contentRating.toLowerCase()))
+            .where((s) {
+              if (contentPrefs.isNotEmpty && !contentPrefs.contains(s.contentRating.toLowerCase())) {
+                return false;
+              }
+
+              // Local rating filtering to ensure it matches our calculated combined average
+              final ratingLower = extraParams?['rating_lower'] as num?;
+              final ratingUpper = extraParams?['rating_upper'] as num?;
+              if (ratingLower != null || ratingUpper != null) {
+                final rating = double.tryParse(s.rating) ?? 0;
+                if (ratingLower != null && rating < ratingLower) return false;
+                if (ratingUpper != null && rating > ratingUpper) return false;
+              }
+              
+              return true;
+            })
             .toList();
         
         for (var series in results) {

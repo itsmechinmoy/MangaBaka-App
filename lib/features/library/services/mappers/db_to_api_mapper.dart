@@ -53,6 +53,21 @@ class DbToApiMapper {
       return [];
     }
 
+    final source = decodeJsonObject(dbSeries.source);
+    
+    // Calculate combined average if source data is available
+    String rating = dbSeries.rating ?? '';
+    if (source != null && source.isNotEmpty) {
+      final normalizedRatings = source.values
+          .where((v) => v is Map && v['rating_normalized'] != null)
+          .map((v) => (v['rating_normalized'] as num).toDouble())
+          .toList();
+      if (normalizedRatings.isNotEmpty) {
+        final avg = normalizedRatings.reduce((a, b) => a + b) / normalizedRatings.length;
+        rating = avg.toStringAsFixed(1);
+      }
+    }
+
     return api.Series(
       id: dbSeries.id,
       state: dbSeries.state ?? '',
@@ -74,7 +89,7 @@ class DbToApiMapper {
       anime: decodeJsonObject(dbSeries.anime),
       contentRating: dbSeries.contentRating ?? '',
       type: dbSeries.type ?? '',
-      rating: dbSeries.rating ?? '',
+      rating: rating,
       finalVolume: dbSeries.finalVolume ?? '',
       totalChapters: dbSeries.totalChapters ?? '',
       links: decodeList(dbSeries.links),
@@ -83,7 +98,7 @@ class DbToApiMapper {
       tags: decodeStringArray(dbSeries.tags),
       lastUpdated: dbSeries.lastUpdated ?? '',
       relationships: decodeJsonObject(dbSeries.relationships),
-      source: decodeJsonObject(dbSeries.source),
+      source: source,
     );
   }
 }

@@ -81,6 +81,21 @@ class Series {
 
   //Thanks GPT4.1
   factory Series.fromJson(Map<String, dynamic> json) {
+    final source = (json['source'] as Map?)?.cast<String, dynamic>();
+    
+    // Calculate combined average if source data is available
+    String rating = json['rating']?.toString() ?? '';
+    if (source != null && source.isNotEmpty) {
+      final normalizedRatings = source.values
+          .where((v) => v is Map && v['rating_normalized'] != null)
+          .map((v) => (v['rating_normalized'] as num).toDouble())
+          .toList();
+      if (normalizedRatings.isNotEmpty) {
+        final avg = normalizedRatings.reduce((a, b) => a + b) / normalizedRatings.length;
+        rating = avg.toStringAsFixed(1);
+      }
+    }
+
     return Series(
       id: json['id']?.toString() ?? '',
       state: json['state'] ?? '',
@@ -108,7 +123,7 @@ class Series {
       anime: (json['anime'] as Map?)?.cast<String, dynamic>(),
       contentRating: json['content_rating'] ?? '',
       type: json['type'] ?? '',
-      rating: json['rating']?.toString() ?? '',
+      rating: rating,
       finalVolume: json['final_volume']?.toString() ?? '',
       totalChapters: json['total_chapters']?.toString() ?? '',
       links: (json['links'] as List?) ?? [],
@@ -122,7 +137,17 @@ class Series {
       tags: (json['tags'] as List?)?.cast<String>() ?? [],
       lastUpdated: json['last_updated_at'] ?? '',
       relationships: (json['relationships'] as Map?)?.cast<String, dynamic>(),
-      source: (json['source'] as Map?)?.cast<String, dynamic>(),
+      source: source,
     );
+  }
+
+  double? get combinedAverage {
+    if (source == null || source!.isEmpty) return null;
+    final normalizedRatings = source!.values
+        .where((v) => v is Map && v['rating_normalized'] != null)
+        .map((v) => (v['rating_normalized'] as num).toDouble())
+        .toList();
+    if (normalizedRatings.isEmpty) return null;
+    return normalizedRatings.reduce((a, b) => a + b) / normalizedRatings.length;
   }
 }

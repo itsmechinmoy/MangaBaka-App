@@ -225,15 +225,6 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
                   }(),
                   style: TextStyle(color: AppConstants.textColor, fontSize: 16),
                 ),
-                if (_totalResults != null)
-                  Text(
-                    '$_totalResults ${LocalizationService().translate('series')}',
-                    style: TextStyle(
-                      color: AppConstants.textMutedColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
               ],
             ),
           ),

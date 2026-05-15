@@ -42,6 +42,41 @@ class ExternalRatingsSection extends StatelessWidget {
 
   List<Widget> _buildItems(BuildContext context, List<MapEntry<String, dynamic>> sources) {
     final items = <Widget>[];
+    final l10n = LocalizationService();
+
+    // Add Combined Average first if available
+    final avg = series.combinedAverage;
+    if (avg != null) {
+      items.add(WidgetUtils.tooltip(
+        message: l10n.translate('combined_average'),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.stars_rounded, size: 18, color: AppConstants.accentColor),
+            const SizedBox(width: 8),
+            Text(
+              avg.toStringAsFixed(1),
+              style: TextStyle(
+                color: AppConstants.textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ));
+
+      if (sources.isNotEmpty) {
+        items.add(Text(
+          '•',
+          style: TextStyle(
+            color: AppConstants.textMutedColor.withValues(alpha: 0.5),
+            fontSize: 16,
+          ),
+        ));
+      }
+    }
+
     for (int i = 0; i < sources.length; i++) {
       final entry = sources[i];
       items.add(_buildRatingItem(entry.key, entry.value));
