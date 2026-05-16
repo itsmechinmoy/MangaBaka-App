@@ -92,6 +92,8 @@ class BrowseController extends ChangeNotifier {
   }
 
   void _onScroll() {
+    if (!scrollController.hasClients) return;
+
     final isNearEnd =
         scrollController.position.pixels >=
         scrollController.position.maxScrollExtent -
@@ -113,6 +115,10 @@ class BrowseController extends ChangeNotifier {
       _showBackToTop = showBackToTop;
       notifyListeners();
     }
+  }
+
+  void checkScroll() {
+    _onScroll();
   }
 
   void resetSearchState() {
@@ -294,6 +300,10 @@ class BrowseController extends ChangeNotifier {
       _isLoadingMore = false;
       _seriesResults.addAll(newResults);
       notifyListeners();
+
+      if (_hasMore) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => checkScroll());
+      }
     } catch (e) {
       rethrow;
     }
@@ -320,6 +330,10 @@ class BrowseController extends ChangeNotifier {
       _isLoadingMore = false;
       _publisherResults.addAll(newResults);
       notifyListeners();
+
+      if (_hasMore) {
+        WidgetsBinding.instance.addPostFrameCallback((_) => checkScroll());
+      }
     } catch (e) {
       rethrow;
     }
@@ -418,6 +432,10 @@ class BrowseController extends ChangeNotifier {
     }
 
     notifyListeners();
+
+    if (_hasMore) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => checkScroll());
+    }
   }
 
   static double generateRandomSeed() {

@@ -76,6 +76,8 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
 
 
   void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
     final isNearEnd =
         _scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent -
@@ -141,6 +143,13 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
         _isLoading = false;
         _incrementPageIfNeeded();
       });
+
+      // If we have more but they might fit on screen, check if we need to load more
+      if (_hasMore) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) _onScroll();
+        });
+      }
     } catch (e) {
       _logger.severe('Failed to fetch results for "${widget.sortType}" at page $_currentPage: $e');
       if (!mounted) return;
@@ -238,22 +247,28 @@ class _BrowseResultsScreenState extends State<BrowseResultsScreen> {
                   : settings.currentListStyle;
               final isGrid = activeStyle.isGrid;
 
-              return WidgetUtils.responsiveConstraint(
-                SafeArea(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppConstants.horizontalPadding),
-                    child: BrowseResultsBody(
-                      error: _error,
-                      isLoading: _isLoading,
-                      results: _results,
-                      sortBy: widget.sortBy,
-                      scrollController: _scrollController,
-                      onRetry: () => _fetchResults(initial: true),
-                      onSeriesTap: _navigateToDetail,
+              return NotificationListener<ScrollMetricsNotification>(
+                onNotification: (notification) {
+                  _onScroll();
+                  return false;
+                },
+                child: WidgetUtils.responsiveConstraint(
+                  SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: AppConstants.horizontalPadding),
+                      child: BrowseResultsBody(
+                        error: _error,
+                        isLoading: _isLoading,
+                        results: _results,
+                        sortBy: widget.sortBy,
+                        scrollController: _scrollController,
+                        onRetry: () => _fetchResults(initial: true),
+                        onSeriesTap: _navigateToDetail,
+                      ),
                     ),
                   ),
+                  maxWidth: isGrid ? double.infinity : 800,
                 ),
-                maxWidth: isGrid ? double.infinity : 800,
               );
             },
           ),
