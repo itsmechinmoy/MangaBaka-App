@@ -115,15 +115,22 @@ mixin LibraryCrudMixin on LibraryServiceBase {
   }
 
   Future<void> updateLibraryEntryProgress(String seriesId, {int? progressChapter, int? progressVolume}) async {
-    logger.info('Updating library entry progress for $seriesId - Ch: $progressChapter, Vol: $progressVolume');
-    final token = await auth.getValidAccessToken();
-    final url = Uri.parse('${LibraryConstants.baseUrl}/$seriesId');
+    logger.info('Updating library entry progress for $seriesId - Ch: $progressChapter, Vol: $progressVolume (Optimistic)');
     
-    final body = <String, dynamic>{};
-    if (progressChapter != null) body['progress_chapter'] = progressChapter;
-    if (progressVolume != null) body['progress_volume'] = progressVolume;
-
+    // 1. Store current state for potential rollback
+    final currentEntry = await database.libraryEntriesDao.getEntryBySeriesId(seriesId);
+    
+    // 2. Apply optimistic update to local database
+    await database.libraryEntriesDao.updateEntryProgress(seriesId, progressChapter: progressChapter, progressVolume: progressVolume);
+    
     try {
+      final token = await auth.getValidAccessToken();
+      final url = Uri.parse('${LibraryConstants.baseUrl}/$seriesId');
+      
+      final body = <String, dynamic>{};
+      if (progressChapter != null) body['progress_chapter'] = progressChapter;
+      if (progressVolume != null) body['progress_volume'] = progressVolume;
+
       final response = await http
           .put(
             url,
@@ -143,8 +150,17 @@ mixin LibraryCrudMixin on LibraryServiceBase {
         logger.severe('Unauthorized update progress request for $seriesId');
         throw AuthException(message: 'Authentication failed.', code: 'AUTH_FAILED');
       }
+      
       if (response.statusCode != 200) {
-        logger.severe('Failed to update entry progress for $seriesId. Status: ${response.statusCode}, Body: ${response.body}');
+        logger.severe('Failed to update entry progress for $seriesId on server. Status: ${response.statusCode}');
+        // Rollback on server failure
+        if (currentEntry != null) {
+          await database.libraryEntriesDao.updateEntryProgress(
+            seriesId, 
+            progressChapter: currentEntry.libraryEntry.progressChapter, 
+            progressVolume: currentEntry.libraryEntry.progressVolume
+          );
+        }
         throw ApiException(
           message: 'Failed to update entry progress',
           statusCode: response.statusCode,
@@ -152,22 +168,20 @@ mixin LibraryCrudMixin on LibraryServiceBase {
           code: 'UPDATE_PROGRESS_FAILED',
         );
       }
-
-      await database.libraryEntriesDao.updateEntryProgress(seriesId, progressChapter: progressChapter, progressVolume: progressVolume);
-      logger.info('Successfully updated progress for $seriesId in DB');
-    } on http.ClientException catch (e, st) {
-      logger.severe('ClientException updating entry progress for $seriesId', e, st);
-      throw NetworkException(message: 'Network error.', code: 'NETWORK_ERROR', originalError: e, stackTrace: st);
-    } on SocketException catch (e, st) {
-      logger.severe('SocketException updating entry progress for $seriesId', e, st);
-      throw NetworkException(message: 'Network error.', code: 'NETWORK_ERROR', originalError: e, stackTrace: st);
-    } on TimeoutException catch (e, st) {
-      logger.severe('TimeoutException updating entry progress for $seriesId', e, st);
-      throw NetworkException(message: 'Request timed out.', code: 'TIMEOUT', originalError: e, stackTrace: st);
-    } catch (e, st) {
-      logger.severe('Unexpected error updating entry progress for $seriesId', e, st);
+      
+      logger.info('Successfully updated progress for $seriesId on server');
+    } catch (e) {
+      logger.severe('Error updating entry progress for $seriesId: $e');
+      // Rollback on network/unexpected error
+      if (currentEntry != null) {
+        await database.libraryEntriesDao.updateEntryProgress(
+          seriesId, 
+          progressChapter: currentEntry.libraryEntry.progressChapter, 
+          progressVolume: currentEntry.libraryEntry.progressVolume
+        );
+      }
       if (e is AppException) rethrow;
-      throw AppError(message: 'Failed to update entry progress', originalError: e, stackTrace: st);
+      throw AppError(message: 'Failed to update entry progress', originalError: e);
     }
   }
 

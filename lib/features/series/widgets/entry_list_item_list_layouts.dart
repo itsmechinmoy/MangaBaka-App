@@ -28,7 +28,7 @@ class MinimalListItem extends StatelessWidget {
             EntryListLayoutHelper.buildCoverImage(series: series, heroTagPrefix: heroTagPrefix, width: 48),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.only(left: 12, right: 110),
                 child: Text(
                   displayTitle,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -74,7 +74,7 @@ class CompactListItem extends StatelessWidget {
             EntryListLayoutHelper.buildCoverImage(series: series, heroTagPrefix: heroTagPrefix, width: 60),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.only(left: 12, right: 110, top: 10, bottom: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +139,7 @@ class ComfortableListItem extends StatelessWidget {
             EntryListLayoutHelper.buildCoverImage(series: series, heroTagPrefix: heroTagPrefix, width: 72),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.only(left: 12, right: 115, top: 10, bottom: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,

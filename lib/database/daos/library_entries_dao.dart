@@ -6,6 +6,27 @@ class LibraryEntriesDao extends DatabaseAccessor<AppDatabase>
   final _logger = LoggingService.logger;
   LibraryEntriesDao(super.db);
 
+  Future<LibraryEntryWithSeries?> getEntryBySeriesId(String seriesId) async {
+    try {
+      final query = select(libraryEntriesTable).join([
+        innerJoin(
+          seriesTable,
+          seriesTable.id.equalsExp(libraryEntriesTable.seriesId),
+        ),
+      ])..where(libraryEntriesTable.seriesId.equals(seriesId));
+
+      final row = await query.getSingleOrNull();
+      if (row == null) return null;
+      return LibraryEntryWithSeries(
+        libraryEntry: row.readTable(libraryEntriesTable),
+        series: row.readTable(seriesTable),
+      );
+    } catch (e) {
+      _logger.severe('Failed to get entry by series ID: $e');
+      throw exc.DatabaseException(message: 'Failed to get entry by series ID', originalError: e);
+    }
+  }
+
   Stream<LibraryEntryWithSeries?> watchEntryWithSeries(String seriesId) {
     try {
       final query = select(libraryEntriesTable).join([
