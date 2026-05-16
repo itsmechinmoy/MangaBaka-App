@@ -106,7 +106,6 @@ class SeriesCollectionsTab extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppConstants.secondaryBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppConstants.borderColor.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

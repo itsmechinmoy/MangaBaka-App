@@ -113,7 +113,6 @@ class SeriesWorksTab extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppConstants.secondaryBackground,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppConstants.borderColor.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +191,6 @@ class SeriesWorksTab extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppConstants.borderColor.withValues(alpha: 0.3)),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12),
