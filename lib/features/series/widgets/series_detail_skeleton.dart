@@ -27,12 +27,12 @@ class SeriesDetailSkeleton extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Metadata Chips placeholder
-        Row(
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
           children: [
             _skeletonBox(width: 80, height: 24),
-            const SizedBox(width: 8),
             _skeletonBox(width: 60, height: 24),
-            const SizedBox(width: 8),
             _skeletonBox(width: 100, height: 24),
           ],
         ),
