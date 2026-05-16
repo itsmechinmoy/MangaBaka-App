@@ -35,8 +35,12 @@ class _TrackpadNavigationListenerState extends State<TrackpadNavigationListener>
     return Listener(
       onPointerPanZoomUpdate: (event) {
         // macOS trackpad 2-finger horizontal swipe is reported as panDelta
-        if (event.panDelta.dx != 0) {
-          _cumulativeDelta += event.panDelta.dx;
+        final dx = event.panDelta.dx;
+        final dy = event.panDelta.dy;
+        
+        // Only accumulate if the movement is primarily horizontal
+        if (dx.abs() > dy.abs()) {
+          _cumulativeDelta += dx;
           
           // Swipe from left to right (dx > 0) is "Back"
           if (_cumulativeDelta > _threshold) {
@@ -62,6 +66,10 @@ class _TrackpadNavigationListenerState extends State<TrackpadNavigationListener>
             // Forward navigation could be here, but we focus on back
             _cumulativeDelta = 0;
           }
+        } else if (dy.abs() > dx.abs() * 2) {
+          // If the movement is clearly vertical, reset cumulative horizontal delta
+          // to prevent accidental triggers from diagonal scrolling
+          _cumulativeDelta = 0;
         }
       },
       onPointerPanZoomEnd: (event) {
