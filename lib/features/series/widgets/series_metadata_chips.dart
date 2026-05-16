@@ -38,17 +38,17 @@ class SeriesMetadataChips extends StatelessWidget {
       listenable: SettingsManager(),
       builder: (context, _) {
         final List<Widget> children = [
-          TypeChip(type: series.type),
-          StatusChip(status: series.status),
+          if (series.type.isNotEmpty) TypeChip(type: series.type),
+          if (series.status.isNotEmpty) StatusChip(status: series.status),
           if (series.isLicensed == 'true') const LicensedChip(),
-          if (series.finalVolume.isNotEmpty && series.finalVolume != 'null')
+          if (series.finalVolume.isNotEmpty && series.finalVolume != 'null' && entry == null)
             VolumeChip(
               volume: series.finalVolume,
               progress: entry?.progressVolume,
               inLibrary: entry != null,
               onTap: onUpdateVolume,
             ),
-          if (series.totalChapters.isNotEmpty && series.totalChapters != 'null')
+          if (series.totalChapters.isNotEmpty && series.totalChapters != 'null' && entry == null)
             ChaptersChip(
               chapters: series.totalChapters,
               progress: entry?.progressChapter,
@@ -62,11 +62,12 @@ class SeriesMetadataChips extends StatelessWidget {
               end: series.published?['end_date']?.toString() ?? '',
             ),
           if (series.hasAnime == 'true') const HasAnimeChip(),
-          RatingChip(
-            sources: (series.source?.values.toList() ?? []),
-            entry: entry,
-            onTap: onUpdateRating,
-          ),
+          if ((entry?.rating ?? 0) > 0)
+            RatingChip(
+              sources: (series.source?.values.toList() ?? []),
+              entry: entry,
+              onTap: onUpdateRating,
+            ),
           if (['suggestive', 'erotica', 'pornographic'].contains(series.contentRating.toLowerCase()))
             ContentRatingChip(rating: series.contentRating),
           IdChip(id: series.id),
