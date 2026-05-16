@@ -21,17 +21,7 @@ class ChaptersChip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (chapters.isEmpty || chapters == 'null') return const SizedBox.shrink();
 
-    if (inLibrary) {
-      final progressValue = progress ?? 0;
-      return MiniBadge(
-        text: '$progressValue / $chapters Ch.',
-        icon: Icons.format_list_bulleted,
-        color: AppConstants.successColor,
-        backgroundColor: AppConstants.successColor.withValues(alpha: 0.1),
-        onTap: onTap,
-        tooltip: onTap != null ? LocalizationService().translate('update_progress') : null,
-      );
-    }
+    if (inLibrary) return const SizedBox.shrink();
 
     return MiniBadge(
       text: '$chapters Ch.',

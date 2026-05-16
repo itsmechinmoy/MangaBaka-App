@@ -53,7 +53,7 @@ class SeriesActionBar extends StatelessWidget {
             ],
           ],
         ),
-        if (isLandscape && (hasChapters || hasVolumes)) ...[
+        if (hasChapters || hasVolumes) ...[
           const SizedBox(height: 12),
           Row(
             children: [

@@ -21,17 +21,7 @@ class VolumeChip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (volume.isEmpty || volume == 'null') return const SizedBox.shrink();
 
-    if (inLibrary) {
-      final progressValue = progress ?? 0;
-      return MiniBadge(
-        text: '$progressValue / $volume Vol.',
-        icon: Icons.shelves,
-        color: AppConstants.successColor,
-        backgroundColor: AppConstants.successColor.withValues(alpha: 0.1),
-        onTap: onTap,
-        tooltip: onTap != null ? LocalizationService().translate('update_progress') : null,
-      );
-    }
+    if (inLibrary) return const SizedBox.shrink();
 
     return MiniBadge(
       text: '$volume Vol.',
