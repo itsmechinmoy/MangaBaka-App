@@ -31,6 +31,7 @@ class SettingsManager extends ChangeNotifier {
     _instance._libraryGridColumnCount = 0;
     _instance._browseGridColumnCount = 0;
     _instance._collectionsListColumns = 0;
+    _instance._worksListStyle = AppListStyle.comfortable;
   }
 
   AppListStyle _currentListStyle = AppListStyle.compactGrid;
@@ -98,6 +99,9 @@ class SettingsManager extends ChangeNotifier {
   int _collectionsListColumns = 0; // 0 means default/automatic
   int get collectionsListColumns => _collectionsListColumns;
 
+  AppListStyle _worksListStyle = AppListStyle.comfortable;
+  AppListStyle get worksListStyle => _worksListStyle;
+
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
     
@@ -158,6 +162,10 @@ class SettingsManager extends ChangeNotifier {
     _libraryGridColumnCount = prefs.getInt(SettingsKeys.libraryGridColumnCount) ?? 0;
     _browseGridColumnCount = prefs.getInt(SettingsKeys.browseGridColumnCount) ?? 0;
     _collectionsListColumns = prefs.getInt(SettingsKeys.collectionsGridColumns) ?? 0;
+    final worksStyleIndex = prefs.getInt(SettingsKeys.worksListStyle);
+    if (worksStyleIndex != null && worksStyleIndex >= 0 && worksStyleIndex < AppListStyle.values.length) {
+      _worksListStyle = AppListStyle.values[worksStyleIndex];
+    }
 
     notifyListeners();
   }
@@ -327,6 +335,14 @@ class SettingsManager extends ChangeNotifier {
     _collectionsListColumns = value;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(SettingsKeys.collectionsGridColumns, value);
+    notifyListeners();
+  }
+
+  Future<void> setWorksListStyle(AppListStyle style) async {
+    if (_worksListStyle == style) return;
+    _worksListStyle = style;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(SettingsKeys.worksListStyle, style.index);
     notifyListeners();
   }
 }
