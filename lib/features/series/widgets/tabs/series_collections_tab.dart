@@ -41,7 +41,8 @@ class SeriesCollectionsTab extends StatelessWidget {
                       bottomPadding: 0,
                     ),
                   ),
-                  _buildColumnSwitch(context, settings),
+                  if (MediaQuery.of(context).orientation == Orientation.landscape)
+                    _buildColumnSwitch(context, settings),
                 ],
               ),
               const SizedBox(height: 16),
@@ -49,8 +50,13 @@ class SeriesCollectionsTab extends StatelessWidget {
                 builder: (context, constraints) {
                   final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
                   final prefColumns = settings.collectionsListColumns;
-                  // If prefColumns is 0 (default), use 2 for landscape, 1 for portrait
-                  final columns = prefColumns == 0 ? (isLandscape ? 2 : 1) : prefColumns;
+                  
+                  // Double column support is only for landscape mode.
+                  // In portrait, we always use 1 column.
+                  // In landscape, we use 2 unless the user specifically chose 1.
+                  final columns = isLandscape 
+                      ? (prefColumns == 1 ? 1 : 2)
+                      : 1;
 
                   final spacing = 12.0;
                   final itemWidth = columns > 1 
