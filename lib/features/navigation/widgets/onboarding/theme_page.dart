@@ -51,98 +51,111 @@ class ThemePage extends StatelessWidget {
           isActuallyDark = currentMode == ThemeMode.dark;
         }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-              Text(
-                localization.translate('onboarding_theme_title'),
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppConstants.textColor,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                localization.translate('onboarding_theme_subtitle'),
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppConstants.textMutedColor,
-                ),
-              ),
-              const SizedBox(height: 32),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final isShort = constraints.maxHeight < 600;
+            final themeScale = isShort ? 1.5 : 2.1;
 
-              // Theme Mode Selector
-              Container(
-                padding: const EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: AppConstants.secondaryBackground,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppConstants.borderColor.withValues(alpha: 0.5)),
-                ),
-                child: Row(
-                  children: ThemeMode.values.map((mode) {
-                    final isSelected = mode == currentMode;
-                    return Expanded(
-                      child: InkWell(
-                        onTap: () => ThemeManager().setThemeMode(mode),
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 32),
+                        Text(
+                          localization.translate('onboarding_theme_title'),
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: AppConstants.textColor,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          localization.translate('onboarding_theme_subtitle'),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: AppConstants.textMutedColor,
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Theme Mode Selector
+                        Container(
+                          padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
-                            color: isSelected ? AppConstants.accentColor : Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
+                            color: AppConstants.secondaryBackground,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: AppConstants.borderColor.withValues(alpha: 0.5)),
                           ),
-                          child: Text(
-                            _getThemeModeName(mode, localization),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: isSelected ? AppConstants.primaryBackground : AppConstants.textColor,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          child: Row(
+                            children: ThemeMode.values.map((mode) {
+                              final isSelected = mode == currentMode;
+                              return Expanded(
+                                child: InkWell(
+                                  onTap: () => ThemeManager().setThemeMode(mode),
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? AppConstants.accentColor : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      _getThemeModeName(mode, localization),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: isSelected ? AppConstants.primaryBackground : AppConstants.textColor,
+                                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                      ],
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: 200 * themeScale,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        itemCount: AppTheme.values.length,
+                        itemBuilder: (context, index) {
+                          final theme = AppTheme.values[index];
+                          final isSelected = theme == currentTheme;
+                          final themeName = _getThemeName(theme, localization);
+                      
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 32),
+                            child: Center(
+                              child: ThemePreviewItem(
+                                theme: theme,
+                                isDark: isActuallyDark,
+                                isSelected: isSelected,
+                                onTap: () => ThemeManager().setTheme(theme),
+                                label: themeName,
+                                scale: themeScale,
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  }).toList(),
-                ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(child: SizedBox(height: 32)),
+                ],
               ),
-              const SizedBox(height: 32),
-              // Big Horizontal Theme List
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  itemCount: AppTheme.values.length,
-                  itemBuilder: (context, index) {
-                    final theme = AppTheme.values[index];
-                    final isSelected = theme == currentTheme;
-                    final themeName = _getThemeName(theme, localization);
-                
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        left: index == 0 ? 0 : 0,
-                        right: 32,
-                      ),
-                      child: Center(
-                        child: ThemePreviewItem(
-                          theme: theme,
-                          isDark: isActuallyDark,
-                          isSelected: isSelected,
-                          onTap: () => ThemeManager().setTheme(theme),
-                          label: themeName,
-                          scale: 2.1,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

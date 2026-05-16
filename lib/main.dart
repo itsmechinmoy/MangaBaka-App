@@ -16,9 +16,18 @@ import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/app_shortcuts.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  
+  if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+    await windowManager.ensureInitialized();
+    windowManager.waitUntilReadyToShow(null, () async {
+      await windowManager.setMinimumSize(const Size(500, 700));
+    });
+  }
+
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   await LoggingService.setup();

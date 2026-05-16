@@ -181,9 +181,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildBottomControls() {
     final isLastPage = _currentPage == _totalPages - 1;
     final localization = LocalizationService();
+    final screenHeight = MediaQuery.of(context).size.height;
     
+    // Scale down spacing if height is small
+    final isShort = screenHeight < 600;
+    final bottomPadding = isShort ? 16.0 : 32.0;
+    final spacingHeight = isShort ? 16.0 : 32.0;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+      padding: EdgeInsets.fromLTRB(24, 0, 24, bottomPadding),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -208,7 +214,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               },
             ),
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: spacingHeight),
           Row(
             children: [
               if (_currentPage > 0)
@@ -217,7 +223,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     onPressed: _previousPage,
                     style: TextButton.styleFrom(
                       foregroundColor: AppConstants.textMutedColor,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: isShort ? 12 : 16),
                     ),
                     child: Text(localization.translate('onboarding_back')),
                   ),
@@ -228,7 +234,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     onPressed: _finishOnboarding,
                     style: TextButton.styleFrom(
                       foregroundColor: AppConstants.textMutedColor,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: EdgeInsets.symmetric(vertical: isShort ? 12 : 16),
                     ),
                     child: Text(localization.translate('onboarding_skip')),
                   ),
@@ -244,7 +250,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(vertical: isShort ? 12 : 16),
                   ),
                   child: Text(
                     isLastPage 

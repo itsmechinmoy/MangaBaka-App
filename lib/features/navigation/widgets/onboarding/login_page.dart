@@ -21,94 +21,102 @@ class LoginPage extends StatelessWidget {
       listenable: Listenable.merge([ThemeManager(), LocalizationService()]),
       builder: (context, _) {
         final localization = LocalizationService();
-        return Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: AppConstants.accentColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Icon(
-                  Icons.account_circle_rounded,
-                  size: 64,
-                  color: AppConstants.accentColor,
-                ),
-              ),
-              const SizedBox(height: 40),
-              Text(
-                localization.translate('onboarding_login_title'),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppConstants.textColor,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                localization.translate('onboarding_login_subtitle'),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppConstants.textMutedColor,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 40),
-              if (isLoggedIn)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  decoration: BoxDecoration(
-                    color: AppConstants.successColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: AppConstants.successColor.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.check_circle_rounded, color: AppConstants.successColor, size: 20),
-                      const SizedBox(width: 12),
-                      Text(
-                        localization.translate('onboarding_connected'),
-                        style: TextStyle(
-                          color: AppConstants.successColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final isShort = constraints.maxHeight < 500;
+
+            return Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(isShort ? 16 : 24),
+                      decoration: BoxDecoration(
+                        color: AppConstants.accentColor.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                    ],
-                  ),
-                )
-              else
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: isLoggingIn ? null : onLogin,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: AppConstants.accentColor,
-                      foregroundColor: AppConstants.primaryBackground,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                      child: Icon(
+                        Icons.account_circle_rounded,
+                        size: isShort ? 48 : 64,
+                        color: AppConstants.accentColor,
                       ),
                     ),
-                    child: isLoggingIn
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(AppConstants.primaryBackground),
+                    SizedBox(height: isShort ? 24 : 40),
+                    Text(
+                      localization.translate('onboarding_login_title'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: isShort ? 24 : 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppConstants.textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      localization.translate('onboarding_login_subtitle'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: isShort ? 14 : 16,
+                        color: AppConstants.textMutedColor,
+                        height: 1.5,
+                      ),
+                    ),
+                    SizedBox(height: isShort ? 24 : 40),
+                    if (isLoggedIn)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        decoration: BoxDecoration(
+                          color: AppConstants.successColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppConstants.successColor.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.check_circle_rounded, color: AppConstants.successColor, size: 20),
+                            const SizedBox(width: 12),
+                            Text(
+                              localization.translate('onboarding_connected'),
+                              style: TextStyle(
+                                color: AppConstants.successColor,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          )
-                        : Text(localization.translate('onboarding_login_button')),
-                  ),
+                          ],
+                        ),
+                      )
+                    else
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton(
+                          onPressed: isLoggingIn ? null : onLogin,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppConstants.accentColor,
+                            foregroundColor: AppConstants.primaryBackground,
+                            padding: EdgeInsets.symmetric(vertical: isShort ? 12 : 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: isLoggingIn
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(AppConstants.primaryBackground),
+                                  ),
+                                )
+                              : Text(localization.translate('onboarding_login_button')),
+                        ),
+                      ),
+                  ],
                 ),
-            ],
-          ),
+              ),
+            );
+          },
         );
       },
     );

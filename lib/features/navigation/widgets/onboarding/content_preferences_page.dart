@@ -25,31 +25,38 @@ class ContentPreferencesPage extends StatelessWidget {
         };
 
         return Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 16),
-              Text(
-                localization.translate('onboarding_content_title'),
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppConstants.textColor,
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 32),
+                    Text(
+                      localization.translate('onboarding_content_title'),
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppConstants.textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      localization.translate('onboarding_content_subtitle'),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppConstants.textMutedColor,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                localization.translate('onboarding_content_subtitle'),
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppConstants.textMutedColor,
-                ),
-              ),
-              const SizedBox(height: 32),
-              Expanded(
-                child: ListView(
-                  children: options.map((option) {
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final option = options[index];
                     final currentPrefs = SettingsManager().contentPreferences;
                     final isSelected = currentPrefs.contains(option);
                     
@@ -113,9 +120,11 @@ class ContentPreferencesPage extends StatelessWidget {
                         ),
                       ),
                     );
-                  }).toList(),
+                  },
+                  childCount: options.length,
                 ),
               ),
+              const SliverToBoxAdapter(child: SizedBox(height: 32)),
             ],
           ),
         );

@@ -16,6 +16,7 @@ import 'package:mangabaka_app/features/profile/widgets/dialogs/list_style_dialog
 import 'package:mangabaka_app/features/profile/widgets/dialogs/content_preferences_dialog.dart';
 import 'package:mangabaka_app/features/profile/screens/logs_screen.dart';
 import 'package:mangabaka_app/features/profile/screens/translation_credits_screen.dart';
+import 'package:mangabaka_app/features/navigation/screens/onboarding_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -426,13 +427,13 @@ class SettingsScreen extends StatelessWidget {
                     icon: Icons.restart_alt,
                     title: l10n.translate('redo_onboarding'),
                     subtitle: l10n.translate('redo_onboarding_subtitle'),
-                    onTap: () async {
-                       await SettingsManager().setHasCompletedOnboarding(false);
-                       if (context.mounted) {
-                         ScaffoldMessenger.of(context).showSnackBar(
-                           const SnackBar(content: Text('Onboarding will show on next restart')),
-                         );
-                       }
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const OnboardingScreen(isRedoing: true),
+                        ),
+                      );
                     },
                     isFirst: true,
                   ),
