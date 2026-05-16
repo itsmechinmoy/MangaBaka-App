@@ -22,12 +22,12 @@ class ShortcutButton extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Icon(icon, color: AppConstants.textColor, size: 22),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   label,

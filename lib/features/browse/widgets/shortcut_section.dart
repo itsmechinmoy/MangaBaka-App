@@ -39,40 +39,45 @@ class ShortcutSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 14),
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 3.0),
-                      child: ShortcutButton(
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  // Determine column count based on available width
+                  int crossAxisCount = 3;
+                  if (constraints.maxWidth < 450) {
+                    crossAxisCount = 1;
+                  } else if (constraints.maxWidth < 750) {
+                    crossAxisCount = 2;
+                  }
+
+                  return GridView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                      mainAxisExtent: 72,
+                    ),
+                    children: [
+                      ShortcutButton(
                         icon: Icons.trending_up_rounded,
                         label: l10n.translate('most_popular'),
                         onPressed: onMostPopular,
                       ),
-                    ),
-                  ),
-                  if (onTopRated != null)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                        child: ShortcutButton(
+                      if (onTopRated != null)
+                        ShortcutButton(
                           icon: Icons.star_outline,
                           label: l10n.translate('top_rated'),
                           onPressed: onTopRated!,
                         ),
-                      ),
-                    ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 3.0),
-                      child: ShortcutButton(
+                      ShortcutButton(
                         icon: Icons.casino_outlined,
                         label: l10n.translate('random'),
                         onPressed: onRandom,
                       ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               ),
             ],
           ),

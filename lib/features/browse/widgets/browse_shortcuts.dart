@@ -14,6 +14,7 @@ class BrowseShortcuts extends StatelessWidget {
       listenable: l10n,
       builder: (context, _) {
         return SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: Column(
             children: [
               ShortcutSection(
