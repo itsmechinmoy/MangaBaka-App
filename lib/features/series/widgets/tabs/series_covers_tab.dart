@@ -57,9 +57,12 @@ class SeriesCoversTab extends StatelessWidget {
               
               return _HoverableCoverItem(
                 cover: cover,
+                allCovers: covers!,
                 url: url,
                 title: title,
                 contentRating: contentRating,
+                allTitles: covers!.map((c) => _formatCoverTitle(c)).toList(),
+                allNotes: covers!.map((c) => c.note).toList(),
               );
             },
           ),
@@ -151,15 +154,21 @@ class SeriesCoversTab extends StatelessWidget {
 /// A cover grid item that shows an accent border on hover.
 class _HoverableCoverItem extends StatefulWidget {
   final SeriesCover cover;
+  final List<SeriesCover> allCovers;
   final String? url;
   final String title;
   final String? contentRating;
+  final List<String> allTitles;
+  final List<String?> allNotes;
 
   const _HoverableCoverItem({
     required this.cover,
+    required this.allCovers,
     required this.url,
     required this.title,
     this.contentRating,
+    required this.allTitles,
+    required this.allNotes,
   });
 
   @override
@@ -180,14 +189,22 @@ class _HoverableCoverItemState extends State<_HoverableCoverItem> {
       child: GestureDetector(
         onTap: () {
           if (widget.url != null) {
+            final allUrls = widget.allCovers
+                .map((c) => c.url ?? c.urlX350 ?? c.urlX250 ?? c.urlX150)
+                .whereType<String>()
+                .toList();
+            
+            final initialIndex = widget.allCovers.indexOf(widget.cover);
+
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => FullScreenImageScreen(
-                  imageUrl: widget.url!,
+                  imageUrls: allUrls,
+                  initialIndex: initialIndex,
                   heroTag: widget.url!,
-                  title: widget.title,
-                  note: widget.cover.note,
+                  titles: widget.allTitles,
+                  notes: widget.allNotes,
                 ),
               ),
             );

@@ -42,7 +42,7 @@ class _SeriesHeroCoverState extends State<SeriesHeroCover> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => FullScreenImageScreen(
-                    imageUrl: imageUrl,
+                    imageUrls: [imageUrl],
                     heroTag: 'series_cover_${widget.series.id}',
                   ),
                 ),
