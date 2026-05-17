@@ -49,6 +49,7 @@ dev_dependencies:
   drift_dev: ^2.32.1
   build_runner: ^2.13.1
   flutter_launcher_icons: ^0.14.4
+  msix: ^3.16.9
 
 
 
@@ -70,3 +71,10 @@ flutter:
     - assets/lang/
     - assets/mangabaka512.png
   uses-material-design: true
+
+msix_config:
+  display_name: MangaBaka
+  publisher_display_name: Oazzies
+  identity_name: dev.oazzies.mangabaka
+  logo_path: assets/mangabaka512.png
+  capabilities: internetClient
