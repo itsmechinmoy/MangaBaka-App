@@ -10,25 +10,39 @@ import 'package:mangabaka_app/utils/widget_utils.dart';
 class SeriesQuickActionButton extends StatefulWidget {
   final Series series;
   final LibraryEntry? entry;
+  final ValueChanged<int?>? onOptimisticProgressChanged;
 
   const SeriesQuickActionButton({
-    super.key, 
-    required this.series, 
+    super.key,
+    required this.series,
     this.entry,
+    this.onOptimisticProgressChanged,
   });
 
   @override
-  State<SeriesQuickActionButton> createState() => _SeriesQuickActionButtonState();
+  State<SeriesQuickActionButton> createState() =>
+      _SeriesQuickActionButtonState();
 }
 
 class _SeriesQuickActionButtonState extends State<SeriesQuickActionButton> {
+  int? _optimisticProgress;
+
+  @override
+  void didUpdateWidget(covariant SeriesQuickActionButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.entry?.progressChapter != widget.entry?.progressChapter) {
+      _optimisticProgress = null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Only show for series already in the library
     if (widget.entry == null) return const SizedBox.shrink();
 
     final totalChapters = int.tryParse(widget.series.totalChapters) ?? 0;
-    final currentProgress = widget.entry?.progressChapter ?? 0;
+    final currentProgress =
+        _optimisticProgress ?? widget.entry?.progressChapter ?? 0;
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -78,14 +92,26 @@ class _SeriesQuickActionButtonState extends State<SeriesQuickActionButton> {
 
   Future<void> _handlePress(BuildContext context, LibraryEntry entry) async {
     final libraryService = getIt<LibraryService>();
+
+    final currentProgress = _optimisticProgress ?? entry.progressChapter ?? 0;
+    final newProgress = currentProgress + 1;
+
+    setState(() {
+      _optimisticProgress = newProgress;
+    });
+    widget.onOptimisticProgressChanged?.call(newProgress);
+
     try {
-      final currentProgress = entry.progressChapter ?? 0;
       await libraryService.updateLibraryEntryProgress(
-        widget.series.id, 
-        progressChapter: currentProgress + 1,
+        widget.series.id,
+        progressChapter: newProgress,
       );
     } catch (e) {
-      if (context.mounted) {
+      if (mounted) {
+        setState(() {
+          _optimisticProgress = null;
+        });
+        widget.onOptimisticProgressChanged?.call(null);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(LocalizationService().translate('an_error_occurred')),

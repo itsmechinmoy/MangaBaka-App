@@ -12,37 +12,57 @@ import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
 
-class EntryListItem extends StatelessWidget {
+class EntryListItem extends StatefulWidget {
   final Series series;
   final int? ranking;
   final bool isLibrary;
   final String? heroTagPrefix;
 
   const EntryListItem({
-    super.key, 
-    required this.series, 
-    this.ranking, 
+    super.key,
+    required this.series,
+    this.ranking,
     this.isLibrary = false,
     this.heroTagPrefix,
   });
 
   @override
+  State<EntryListItem> createState() => _EntryListItemState();
+}
+
+class _EntryListItemState extends State<EntryListItem> {
+  int? _optimisticProgress;
+
+  @override
   Widget build(BuildContext context) {
     final l10n = LocalizationService();
     final settings = SettingsManager();
-    final displayTitle = series.getDisplayTitle(settings.defaultTitleLanguage);
-    final style = settings.separateListStyles 
-        ? (isLibrary ? settings.libraryListStyle : settings.browseListStyle)
+    final displayTitle = widget.series.getDisplayTitle(
+      settings.defaultTitleLanguage,
+    );
+    final style = settings.separateListStyles
+        ? (widget.isLibrary
+              ? settings.libraryListStyle
+              : settings.browseListStyle)
         : settings.currentListStyle;
 
     final auth = getIt<ProfileAuthService>();
     final libraryService = getIt<LibraryService>();
 
     return StreamBuilder<LibraryEntry?>(
-      stream: auth.isLoggedIn ? libraryService.watchEntryFromDb(series.id) : Stream.value(null),
+      stream: auth.isLoggedIn
+          ? libraryService.watchEntryFromDb(widget.series.id)
+          : Stream.value(null),
       builder: (context, snapshot) {
         final entry = snapshot.data;
         final isInLibrary = entry != null;
+
+        // Reset optimistic progress if the DB entry catches up
+        if (entry != null &&
+            _optimisticProgress != null &&
+            entry.progressChapter == _optimisticProgress) {
+          _optimisticProgress = null;
+        }
 
         return Stack(
           children: [
@@ -51,7 +71,11 @@ class EntryListItem extends StatelessWidget {
             if (!style.isGrid && isInLibrary)
               Positioned(
                 bottom: style == AppListStyle.comfortable ? 6 : 4,
-                left: (style == AppListStyle.minimalList ? 48.0 : (style == AppListStyle.compact ? 60.0 : 72.0)) + 12,
+                left:
+                    (style == AppListStyle.minimalList
+                        ? 48.0
+                        : (style == AppListStyle.compact ? 60.0 : 72.0)) +
+                    12,
                 right: 12,
                 child: _buildProgressBar(context, entry, style),
               ),
@@ -60,10 +84,18 @@ class EntryListItem extends StatelessWidget {
               Positioned(
                 bottom: style == AppListStyle.comfortable ? 12 : 8,
                 right: style == AppListStyle.comfortable ? 12 : 10,
-                child: SeriesQuickActionButton(series: series, entry: entry),
+                child: SeriesQuickActionButton(
+                  series: widget.series,
+                  entry: entry,
+                  onOptimisticProgressChanged: (val) {
+                    setState(() {
+                      _optimisticProgress = val;
+                    });
+                  },
+                ),
               ),
 
-            if (ranking != null)
+            if (widget.ranking != null)
               Positioned(
                 top: 0,
                 left: 0,
@@ -75,9 +107,12 @@ class EntryListItem extends StatelessWidget {
                       bottomRight: Radius.circular(8),
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                   child: Text(
-                    '$ranking',
+                    '${widget.ranking}',
                     style: TextStyle(
                       color: AppConstants.primaryBackground,
                       fontWeight: FontWeight.bold,
@@ -92,11 +127,15 @@ class EntryListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressBar(BuildContext context, LibraryEntry entry, AppListStyle style) {
-    final totalChapters = int.tryParse(series.totalChapters) ?? 0;
+  Widget _buildProgressBar(
+    BuildContext context,
+    LibraryEntry entry,
+    AppListStyle style,
+  ) {
+    final totalChapters = int.tryParse(widget.series.totalChapters) ?? 0;
     if (totalChapters <= 0) return const SizedBox.shrink();
 
-    final progress = entry.progressChapter ?? 0;
+    final progress = _optimisticProgress ?? entry.progressChapter ?? 0;
     final percentage = (progress / totalChapters).clamp(0.0, 1.0);
 
     return ClipRRect(
@@ -104,24 +143,52 @@ class EntryListItem extends StatelessWidget {
       child: LinearProgressIndicator(
         value: percentage,
         backgroundColor: AppConstants.accentColor.withValues(alpha: 0.1),
-        valueColor: AlwaysStoppedAnimation<Color>(AppConstants.accentColor.withValues(alpha: 0.6)),
+        valueColor: AlwaysStoppedAnimation<Color>(
+          AppConstants.accentColor.withValues(alpha: 0.6),
+        ),
         minHeight: 3,
       ),
     );
   }
 
-  Widget _buildContent(BuildContext context, AppListStyle style, LocalizationService l10n, String displayTitle) {
+  Widget _buildContent(
+    BuildContext context,
+    AppListStyle style,
+    LocalizationService l10n,
+    String displayTitle,
+  ) {
     switch (style) {
       case AppListStyle.coverOnlyGrid:
-        return CoverOnlyGridItem(series: series, heroTagPrefix: heroTagPrefix);
+        return CoverOnlyGridItem(
+          series: widget.series,
+          heroTagPrefix: widget.heroTagPrefix,
+        );
       case AppListStyle.compactGrid:
-        return CompactGridItem(series: series, heroTagPrefix: heroTagPrefix, displayTitle: displayTitle);
+        return CompactGridItem(
+          series: widget.series,
+          heroTagPrefix: widget.heroTagPrefix,
+          displayTitle: displayTitle,
+        );
       case AppListStyle.minimalList:
-        return MinimalListItem(series: series, heroTagPrefix: heroTagPrefix, displayTitle: displayTitle);
+        return MinimalListItem(
+          series: widget.series,
+          heroTagPrefix: widget.heroTagPrefix,
+          displayTitle: displayTitle,
+        );
       case AppListStyle.compact:
-        return CompactListItem(series: series, heroTagPrefix: heroTagPrefix, displayTitle: displayTitle, l10n: l10n);
+        return CompactListItem(
+          series: widget.series,
+          heroTagPrefix: widget.heroTagPrefix,
+          displayTitle: displayTitle,
+          l10n: l10n,
+        );
       case AppListStyle.comfortable:
-        return ComfortableListItem(series: series, heroTagPrefix: heroTagPrefix, displayTitle: displayTitle, l10n: l10n);
+        return ComfortableListItem(
+          series: widget.series,
+          heroTagPrefix: widget.heroTagPrefix,
+          displayTitle: displayTitle,
+          l10n: l10n,
+        );
     }
   }
 }
