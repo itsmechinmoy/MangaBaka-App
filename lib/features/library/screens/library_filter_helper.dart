@@ -70,7 +70,8 @@ class LibraryFilterHelper {
         }
 
         // 6. Rating (0-100)
-        final seriesRating = double.tryParse(entry.series.rating) ?? 0.0;
+        final rawRating = double.tryParse(entry.series.rating) ?? 0.0;
+        final seriesRating = rawRating <= 10.0 ? rawRating * 10 : rawRating;
         if (seriesRating < f.ratingLower || seriesRating > f.ratingUpper) return false;
 
         // 7. Year
@@ -110,11 +111,13 @@ class LibraryFilterHelper {
               return b.series.title.compareTo(a.series.title);
             case 'popularity_desc':
             case 'rating_desc':
+            case 'score_desc':
               final ra = double.tryParse(a.series.rating) ?? 0.0;
               final rb = double.tryParse(b.series.rating) ?? 0.0;
               return rb.compareTo(ra);
             case 'popularity_asc':
             case 'rating_asc':
+            case 'score_asc':
               final ra = double.tryParse(a.series.rating) ?? 0.0;
               final rb = double.tryParse(b.series.rating) ?? 0.0;
               return ra.compareTo(rb);

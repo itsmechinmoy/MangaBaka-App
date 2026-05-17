@@ -33,7 +33,7 @@ class TriStateChip extends StatelessWidget {
         icon = Icons.close;
         break;
       case TriState.off:
-        backgroundColor = Colors.transparent;
+        backgroundColor = AppConstants.borderColor.withValues(alpha: 0.25);
         textColor = AppConstants.textMutedColor;
         icon = null;
         break;
@@ -42,9 +42,7 @@ class TriStateChip extends StatelessWidget {
     return ActionChip(
       label: Text(label, style: TextStyle(color: textColor)),
       backgroundColor: backgroundColor,
-      side: BorderSide(
-        color: state == TriState.off ? AppConstants.borderColor : Colors.transparent,
-      ),
+      side: BorderSide.none,
       avatar: icon != null ? Icon(icon, size: 16, color: textColor) : null,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppConstants.cardRadius),

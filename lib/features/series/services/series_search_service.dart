@@ -108,7 +108,8 @@ class SeriesSearchService {
                 final ratingLower = extraParams?['rating_lower'] as num?;
                 final ratingUpper = extraParams?['rating_upper'] as num?;
                 if (ratingLower != null || ratingUpper != null) {
-                  final rating = double.tryParse(s.rating) ?? 0;
+                  final rawRating = double.tryParse(s.rating) ?? 0.0;
+                  final rating = rawRating <= 10.0 ? rawRating * 10 : rawRating;
                   if (ratingLower != null && rating < ratingLower) return false;
                   if (ratingUpper != null && rating > ratingUpper) return false;
                 } else if (sortBy != null && sortBy.startsWith('score_')) {
@@ -257,7 +258,8 @@ class SeriesSearchService {
               final ratingLower = extraParams?['rating_lower'] as num?;
               final ratingUpper = extraParams?['rating_upper'] as num?;
               if (ratingLower != null || ratingUpper != null) {
-                final rating = double.tryParse(s.rating) ?? 0;
+                final rawRating = double.tryParse(s.rating) ?? 0.0;
+                final rating = rawRating <= 10.0 ? rawRating * 10 : rawRating;
                 if (ratingLower != null && rating < ratingLower) return false;
                 if (ratingUpper != null && rating > ratingUpper) return false;
               } else if (sortBy != null && sortBy.startsWith('score_')) {

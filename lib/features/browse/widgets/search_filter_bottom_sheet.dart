@@ -46,8 +46,10 @@ class _SearchFilterBottomSheetState extends State<SearchFilterBottomSheet> {
     final options = {
       'name_asc': l10n.translate('title_asc'),
       'name_desc': l10n.translate('title_desc'),
-      'popularity_asc': l10n.translate('popularity_asc'),
-      'popularity_desc': l10n.translate('popularity_desc'),
+      if (!widget.showLibrarySorts) ...{
+        'popularity_asc': l10n.translate('popularity_asc'),
+        'popularity_desc': l10n.translate('popularity_desc'),
+      },
       'score_desc': l10n.translate('rating_desc'),
       'score_asc': l10n.translate('rating_asc'),
       'chapters_desc': l10n.translate('chapters_desc'),
