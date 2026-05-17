@@ -172,26 +172,50 @@ class _NewsScreenState extends State<NewsScreen> {
             : RefreshIndicator(
                 onRefresh: _onRefresh,
                 child: isGrid 
-                    ? GridView.builder(
+                    ? SingleChildScrollView(
                         controller: _scrollController,
                         physics: const AlwaysScrollableScrollPhysics(),
                         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                          childAspectRatio: 0.85, // Adjust based on NewsListItem content
+                        child: Column(
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      for (int i = 0; i < _newsList.length; i += 2)
+                                        NewsListItem(
+                                          key: ValueKey('grid_${_newsList[i].id}'),
+                                          news: _newsList[i],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      for (int i = 1; i < _newsList.length; i += 2)
+                                        NewsListItem(
+                                          key: ValueKey('grid_${_newsList[i].id}'),
+                                          news: _newsList[i],
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (_isLoading)
+                              const Padding(
+                                padding: EdgeInsets.all(24.0),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                          ],
                         ),
-                        itemCount: _newsList.length + (_isLoading ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index == _newsList.length) {
-                            return const Center(child: CircularProgressIndicator());
-                          }
-                          return NewsListItem(
-                            key: ValueKey('grid_${_newsList[index].id}'),
-                            news: _newsList[index],
-                          );
-                        },
                       )
                     : ListView.builder(
                         controller: _scrollController,
