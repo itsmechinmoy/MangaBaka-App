@@ -351,3 +351,8 @@ jobs:
       - name: Create Draft Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${VERSION_CLEAN}" release-artifacts/* \
+            --title "MangaBaka App v${VERSION_CLEAN}" \
+            --draft \
+            --notes "Draft release for version v${VERSION_CLEAN}."
