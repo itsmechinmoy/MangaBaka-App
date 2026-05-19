@@ -203,9 +203,9 @@ jobs:
           # Find the built .app bundle
           APP_PATH=$(find build/macos/Build/Products/Release -name "*.app" -maxdepth 1)
           
-          # Compress the relative .app bundle directory to keep zip structure clean
+          # Compress the relative .app bundle directory into workspace root
           cd "$(dirname "$APP_PATH")"
-          zip -r "../../../../macos-mangabaka-app-v${VERSION_CLEAN}.zip" "$(basename "$APP_PATH")"
+          zip -r "$GITHUB_WORKSPACE/macos-mangabaka-app-v${VERSION_CLEAN}.zip" "$(basename "$APP_PATH")"
           cd -
 
       - name: Upload Artifact
@@ -263,14 +263,14 @@ jobs:
           if [ -d "build/ios/ipa" ]; then
             ipa_file=$(find build/ios/ipa -name "*.ipa" | head -n 1)
             if [ -n "$ipa_file" ]; then
-              cp "$ipa_file" "ios-mangabaka-app-v${VERSION_CLEAN}.ipa"
+              cp "$ipa_file" "$GITHUB_WORKSPACE/ios-mangabaka-app-v${VERSION_CLEAN}.ipa"
               echo "Packaged IPA"
             fi
           else
             xcarchive_path=$(find build/ios/archive -name "*.xcarchive" | head -n 1)
             if [ -n "$xcarchive_path" ]; then
               cd "$(dirname "$xcarchive_path")"
-              zip -r "../../../ios-mangabaka-app-v${VERSION_CLEAN}.xcarchive.zip" "$(basename "$xcarchive_path")"
+              zip -r "$GITHUB_WORKSPACE/ios-mangabaka-app-v${VERSION_CLEAN}.xcarchive.zip" "$(basename "$xcarchive_path")"
               cd -
               echo "Packaged Unsigned xcarchive zip"
             fi
@@ -310,7 +310,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Use GitHub's native CLI to create the release draft and attach all files
-          gh release create "${VERSION_CLEAN}" release-artifacts/* \
+          gh release create "v${VERSION_CLEAN}" release-artifacts/* \
             --title "v${VERSION_CLEAN}" \
             --draft \
             --notes "Manual draft release for version ${VERSION_CLEAN} compiled via GitHub Actions."
