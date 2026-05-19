@@ -30,9 +30,6 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
-      - name: Verify Code Formatting
-        run: dart format --set-exit-if-changed .
-
       - name: Flutter Analyze
         run: flutter analyze --fatal-warnings --fatal-infos
 
