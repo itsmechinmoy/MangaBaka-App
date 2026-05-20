@@ -1,3 +1,4 @@
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/features/profile/widgets/snapshot_list_item.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,11 @@ class _SnapshotListState extends State<SnapshotList> {
       children: [
         Text(
           widget.title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: AppConstants.textColor,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         const SizedBox(height: 8),
         SizedBox(

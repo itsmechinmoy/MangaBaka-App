@@ -24,7 +24,7 @@ class StandoutPickCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppConstants.secondaryBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppConstants.largeRadius),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,10 +33,7 @@ class StandoutPickCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             label,
-            style: TextStyle(
-              color: AppConstants.textMutedColor,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: AppConstants.textMutedColor, fontSize: 14),
           ),
           const SizedBox(height: 8),
           GestureDetector(

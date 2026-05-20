@@ -23,12 +23,14 @@ class SettingsCategoryScreen extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: TextStyle(color: AppConstants.textColor),
+          style: TextStyle(
+            color: AppConstants.textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            letterSpacing: -0.5,
+          ),
         ),
-        backgroundColor: AppConstants.primaryBackground,
-        iconTheme: IconThemeData(color: AppConstants.textColor),
         centerTitle: true,
-        elevation: 0,
       ),
       body: WidgetUtils.responsiveConstraint(
         ListView(

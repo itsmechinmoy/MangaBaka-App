@@ -59,23 +59,30 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
 
     profile = _auth.cachedProfile;
     if (profile != null) {
-      _logger.info('Using cached profile for username: ${profile!.preferredUsername ?? profile!.id}');
+      _logger.info(
+        'Using cached profile for username: ${profile!.preferredUsername ?? profile!.id}',
+      );
       loading = false;
       // Fire all data fetches in parallel
       fetchStatistics();
       fetchRecentlyChanged(initial: true);
       fetchRecentlyAdded(initial: true);
       _logger.fine('Silently refreshing profile data in background');
-      _auth.fetchProfile(forceRefresh: true).then((p) {
-        if (mounted) {
-          _logger.fine('Background profile refresh complete');
-          setState(() => profile = p);
-        }
-      }).catchError((e) {
-        _logger.warning('Silently refreshing profile data failed: $e');
-      });
+      _auth
+          .fetchProfile(forceRefresh: true)
+          .then((p) {
+            if (mounted) {
+              _logger.fine('Background profile refresh complete');
+              setState(() => profile = p);
+            }
+          })
+          .catchError((e) {
+            _logger.warning('Silently refreshing profile data failed: $e');
+          });
     } else if (_auth.isLoggedIn) {
-      _logger.info('User logged in but no cached profile found. Triggering full bootstrap.');
+      _logger.info(
+        'User logged in but no cached profile found. Triggering full bootstrap.',
+      );
       bootstrap();
     } else {
       _logger.info('User not logged in. Displaying login prompt.');
@@ -94,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
   void _onSyncStatusChanged() {
     if (!mounted) return;
     final isSyncing = _libraryService.syncStatus.value.isSyncing;
-    
+
     // Only trigger refresh when sync transitions from true -> false
     if (_wasSyncing && !isSyncing && _auth.isLoggedIn) {
       _logger.info('Library sync completed. Refreshing profile statistics.');
@@ -102,13 +109,15 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
       fetchRecentlyChanged(initial: true);
       fetchRecentlyAdded(initial: true);
     }
-    
+
     _wasSyncing = isSyncing;
   }
 
   void _onAuthStateChanged() {
     if (!mounted) return;
-    _logger.info('Auth state changed in ProfileScreen. LoggedIn: ${_auth.isLoggedIn}');
+    _logger.info(
+      'Auth state changed in ProfileScreen. LoggedIn: ${_auth.isLoggedIn}',
+    );
     setState(() {
       profile = _auth.cachedProfile;
       if (!_auth.isLoggedIn) {
@@ -149,14 +158,12 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
         return Scaffold(
           backgroundColor: AppConstants.primaryBackground,
           appBar: AppBar(
-            backgroundColor: AppConstants.primaryBackground,
-            elevation: 0,
             centerTitle: true,
             title: Text(
               () {
                 if (profile == null) return l10n.translate('profile');
                 if (username == null) return l10n.translate('your_profile');
-                
+
                 final suffix = l10n.translate('profile_title_suffix');
                 switch (l10n.currentLanguage) {
                   case 'es':
@@ -168,9 +175,11 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
                     return '${_getPossessiveName(username)} $suffix';
                 }
               }(),
-              style: const TextStyle(
+              style: TextStyle(
+                color: AppConstants.textColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 24,
+                fontSize: 22,
+                letterSpacing: -0.5,
               ),
             ),
             actions: [
@@ -209,28 +218,28 @@ class _ProfileScreenState extends State<ProfileScreen> with ProfileDataMixin {
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 16),
-                                ProfileStatisticsSection(
-                                  totalSeries: totalSeries,
-                                  chaptersRead: chaptersRead,
-                                  volumesRead: volumesRead,
-                                  meanScore: meanScore,
-                                ),
-                                const SizedBox(height: 24),
-                                ProfileSnapshotSection(
-                                  recentlyChanged: recentlyChanged,
-                                  hasMoreChanged: hasMoreChanged,
-                                  onFetchMoreChanged: () => fetchRecentlyChanged(),
-                                  recentlyAdded: recentlyAdded,
-                                  hasMoreAdded: hasMoreAdded,
-                                  onFetchMoreAdded: () => fetchRecentlyAdded(),
-                                ),
-                              ],
-                          ),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 16),
+                            ProfileStatisticsSection(
+                              totalSeries: totalSeries,
+                              chaptersRead: chaptersRead,
+                              volumesRead: volumesRead,
+                              meanScore: meanScore,
+                            ),
+                            const SizedBox(height: 24),
+                            ProfileSnapshotSection(
+                              recentlyChanged: recentlyChanged,
+                              hasMoreChanged: hasMoreChanged,
+                              onFetchMoreChanged: () => fetchRecentlyChanged(),
+                              recentlyAdded: recentlyAdded,
+                              hasMoreAdded: hasMoreAdded,
+                              onFetchMoreAdded: () => fetchRecentlyAdded(),
+                            ),
+                          ],
                         ),
-              ),
+                      ),
+                    ),
             ),
           ),
         );

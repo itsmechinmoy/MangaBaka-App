@@ -31,23 +31,31 @@ class ListStylePreviewItem extends StatelessWidget {
               height: 160,
               decoration: BoxDecoration(
                 color: AppConstants.primaryBackground,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppConstants.denseRadius),
                 border: Border.all(
-                  color: isSelected ? AppConstants.accentColor : AppConstants.borderColor.withValues(alpha: 0.5),
+                  color: isSelected
+                      ? AppConstants.accentColor
+                      : AppConstants.borderColor.withValues(alpha: 0.5),
                   width: isSelected ? 3 : 1,
                 ),
                 boxShadow: isSelected
                     ? [
                         BoxShadow(
-                          color: AppConstants.accentColor.withValues(alpha: 0.3),
+                          color: AppConstants.accentColor.withValues(
+                            alpha: 0.3,
+                          ),
                           blurRadius: 8,
                           spreadRadius: 2,
-                        )
+                        ),
                       ]
                     : null,
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(isSelected ? 13 : 15),
+                borderRadius: BorderRadius.circular(
+                  isSelected
+                      ? (AppConstants.denseRadius - 3)
+                      : (AppConstants.denseRadius - 1),
+                ),
                 child: Container(
                   padding: EdgeInsets.all(isSelected ? 6 : 8),
                   child: ListStylePreviewThumbnails(style: style),
@@ -58,7 +66,9 @@ class ListStylePreviewItem extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? AppConstants.textColor : AppConstants.textMutedColor,
+                color: isSelected
+                    ? AppConstants.textColor
+                    : AppConstants.textMutedColor,
                 fontSize: 11,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),

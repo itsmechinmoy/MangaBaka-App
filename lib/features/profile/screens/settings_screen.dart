@@ -34,7 +34,7 @@ class SettingsScreen extends StatelessWidget {
       builder: (context, _) {
         final l10n = LocalizationService();
         final auth = getIt<ProfileAuthService>();
-        
+
         return Scaffold(
           backgroundColor: AppConstants.primaryBackground,
           appBar: AppBar(
@@ -44,12 +44,14 @@ class SettingsScreen extends StatelessWidget {
             ),
             title: Text(
               l10n.translate('settings'),
-              style: TextStyle(color: AppConstants.textColor),
+              style: TextStyle(
+                color: AppConstants.textColor,
+                fontWeight: FontWeight.bold,
+                fontSize: 22,
+                letterSpacing: -0.5,
+              ),
             ),
-            backgroundColor: AppConstants.primaryBackground,
-            iconTheme: IconThemeData(color: AppConstants.textColor),
             centerTitle: true,
-            elevation: 0,
           ),
           body: WidgetUtils.responsiveConstraint(
             ListView(
@@ -68,8 +70,12 @@ class SettingsScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppConstants.accentColor.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(24),
+                          color: AppConstants.accentColor.withValues(
+                            alpha: 0.1,
+                          ),
+                          borderRadius: BorderRadius.circular(
+                            AppConstants.largeRadius,
+                          ),
                         ),
                         child: Image.asset(
                           'assets/mangabaka512.png',
@@ -170,27 +176,46 @@ class SettingsScreen extends StatelessWidget {
                     SettingsItem(
                       icon: Icons.discord,
                       title: l10n.translate('discord'),
-                      onTap: () => launchUrl(Uri.parse('https://discord.gg/mangabaka'), mode: LaunchMode.externalApplication),
-                      trailing: Icon(Icons.open_in_new, color: AppConstants.textMutedColor, size: 18),
+                      onTap: () => launchUrl(
+                        Uri.parse('https://discord.gg/mangabaka'),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                      trailing: Icon(
+                        Icons.open_in_new,
+                        color: AppConstants.textMutedColor,
+                        size: 18,
+                      ),
                       isFirst: true,
                     ),
                     const SettingsDivider(),
                     SettingsItem(
                       icon: Icons.code,
                       title: l10n.translate('github'),
-                      onTap: () => launchUrl(Uri.parse('https://github.com/oazzies/MangaBaka-App'), mode: LaunchMode.externalApplication),
-                      trailing: Icon(Icons.open_in_new, color: AppConstants.textMutedColor, size: 18),
+                      onTap: () => launchUrl(
+                        Uri.parse('https://github.com/oazzies/MangaBaka-App'),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                      trailing: Icon(
+                        Icons.open_in_new,
+                        color: AppConstants.textMutedColor,
+                        size: 18,
+                      ),
                     ),
                     const SettingsDivider(),
                     SettingsItem(
                       icon: Icons.info_outline,
                       title: l10n.translate('translation_credits'),
-                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const TranslationCreditsScreen())),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const TranslationCreditsScreen(),
+                        ),
+                      ),
                       isLast: true,
                     ),
                   ],
                 ),
-
               ],
             ),
           ),
@@ -211,23 +236,38 @@ class SettingsScreen extends StatelessWidget {
                 SettingsItem(
                   icon: Icons.language,
                   title: l10n.translate('language'),
-                  subtitle: GeneralSettingsDialogs.getLanguageName(l10n.currentLanguage),
-                  onTap: () => GeneralSettingsDialogs.showLanguageSelectionDialog(context),
+                  subtitle: GeneralSettingsDialogs.getLanguageName(
+                    l10n.currentLanguage,
+                  ),
+                  onTap: () =>
+                      GeneralSettingsDialogs.showLanguageSelectionDialog(
+                        context,
+                      ),
                   isFirst: true,
                 ),
                 const SettingsDivider(),
                 SettingsItem(
                   icon: Icons.start,
                   title: l10n.translate('start_page'),
-                  subtitle: GeneralSettingsDialogs.getAppStartPageName(SettingsManager().defaultStartPage),
-                  onTap: () => GeneralSettingsDialogs.showAppStartPageSelectionDialog(context),
+                  subtitle: GeneralSettingsDialogs.getAppStartPageName(
+                    SettingsManager().defaultStartPage,
+                  ),
+                  onTap: () =>
+                      GeneralSettingsDialogs.showAppStartPageSelectionDialog(
+                        context,
+                      ),
                 ),
                 const SettingsDivider(),
                 SettingsItem(
                   icon: Icons.translate,
                   title: l10n.translate('title_language'),
-                  subtitle: GeneralSettingsDialogs.getTitleLanguageName(SettingsManager().defaultTitleLanguage),
-                  onTap: () => GeneralSettingsDialogs.showTitleLanguageSelectionDialog(context),
+                  subtitle: GeneralSettingsDialogs.getTitleLanguageName(
+                    SettingsManager().defaultTitleLanguage,
+                  ),
+                  onTap: () =>
+                      GeneralSettingsDialogs.showTitleLanguageSelectionDialog(
+                        context,
+                      ),
                 ),
                 const SettingsDivider(),
                 SettingsSwitchItem(
@@ -243,7 +283,8 @@ class SettingsScreen extends StatelessWidget {
                   title: l10n.translate('auto_suggest_browse'),
                   subtitle: l10n.translate('auto_suggest_browse_subtitle'),
                   value: SettingsManager().autoSuggestBrowse,
-                  onChanged: (val) => SettingsManager().setAutoSuggestBrowse(val),
+                  onChanged: (val) =>
+                      SettingsManager().setAutoSuggestBrowse(val),
                   isLast: true,
                 ),
               ],
@@ -268,23 +309,31 @@ class SettingsScreen extends StatelessWidget {
                   SettingsItem(
                     icon: Icons.brightness_6_outlined,
                     title: l10n.translate('theme_mode'),
-                    subtitle: ThemeDialogs.getThemeModeName(ThemeManager().currentThemeMode),
-                    onTap: () => ThemeDialogs.showThemeModeSelectionDialog(context),
+                    subtitle: ThemeDialogs.getThemeModeName(
+                      ThemeManager().currentThemeMode,
+                    ),
+                    onTap: () =>
+                        ThemeDialogs.showThemeModeSelectionDialog(context),
                     isFirst: true,
                   ),
                   const SettingsDivider(),
                   SettingsItem(
                     icon: Icons.palette_outlined,
                     title: l10n.translate('app_theme'),
-                    subtitle: ThemeDialogs.getThemeName(ThemeManager().currentTheme),
+                    subtitle: ThemeDialogs.getThemeName(
+                      ThemeManager().currentTheme,
+                    ),
                     onTap: () => ThemeDialogs.showThemeSelectionDialog(context),
                   ),
                   const SettingsDivider(),
                   SettingsItem(
                     icon: Icons.grid_view,
                     title: l10n.translate('list_style'),
-                    subtitle: ListStyleDialogs.getListStyleName(SettingsManager().currentListStyle),
-                    onTap: () => ListStyleDialogs.showListStyleSelectionDialog(context),
+                    subtitle: ListStyleDialogs.getListStyleName(
+                      SettingsManager().currentListStyle,
+                    ),
+                    onTap: () =>
+                        ListStyleDialogs.showListStyleSelectionDialog(context),
                   ),
                   const SettingsDivider(),
                   SettingsSwitchItem(
@@ -292,7 +341,8 @@ class SettingsScreen extends StatelessWidget {
                     title: l10n.translate('separate_list'),
                     subtitle: l10n.translate('separate_list_subtext'),
                     value: SettingsManager().separateListStyles,
-                    onChanged: (val) => SettingsManager().setSeparateListStyles(val),
+                    onChanged: (val) =>
+                        SettingsManager().setSeparateListStyles(val),
                     isLast: !SettingsManager().separateListStyles,
                   ),
 
@@ -301,23 +351,36 @@ class SettingsScreen extends StatelessWidget {
                     SettingsItem(
                       icon: Icons.library_books_outlined,
                       title: l10n.translate('library_list_style'),
-                      subtitle: ListStyleDialogs.getListStyleName(SettingsManager().libraryListStyle),
-                      onTap: () => ListStyleDialogs.showLibraryListStyleSelectionDialog(context),
+                      subtitle: ListStyleDialogs.getListStyleName(
+                        SettingsManager().libraryListStyle,
+                      ),
+                      onTap: () =>
+                          ListStyleDialogs.showLibraryListStyleSelectionDialog(
+                            context,
+                          ),
                     ),
                     const SettingsDivider(),
                     SettingsItem(
                       icon: Icons.explore_outlined,
                       title: l10n.translate('browse_list_style'),
-                      subtitle: ListStyleDialogs.getListStyleName(SettingsManager().browseListStyle),
-                      onTap: () => ListStyleDialogs.showBrowseListStyleSelectionDialog(context),
+                      subtitle: ListStyleDialogs.getListStyleName(
+                        SettingsManager().browseListStyle,
+                      ),
+                      onTap: () =>
+                          ListStyleDialogs.showBrowseListStyleSelectionDialog(
+                            context,
+                          ),
                     ),
                   ],
                   const SettingsDivider(),
                   SettingsItem(
                     icon: Icons.view_column_outlined,
                     title: l10n.translate('grid_columns'),
-                    subtitle: GridColumnDialogs.getGridColumnLabel(SettingsManager().gridColumnCount),
-                    onTap: () => GridColumnDialogs.showGridColumnCountDialog(context),
+                    subtitle: GridColumnDialogs.getGridColumnLabel(
+                      SettingsManager().gridColumnCount,
+                    ),
+                    onTap: () =>
+                        GridColumnDialogs.showGridColumnCountDialog(context),
                   ),
                   const SettingsDivider(),
                   SettingsSwitchItem(
@@ -325,7 +388,8 @@ class SettingsScreen extends StatelessWidget {
                     title: l10n.translate('separate_grid_columns'),
                     subtitle: l10n.translate('separate_grid_columns_subtitle'),
                     value: SettingsManager().separateGridColumnCounts,
-                    onChanged: (val) => SettingsManager().setSeparateGridColumnCounts(val),
+                    onChanged: (val) =>
+                        SettingsManager().setSeparateGridColumnCounts(val),
                     isLast: !SettingsManager().separateGridColumnCounts,
                   ),
                   if (SettingsManager().separateGridColumnCounts) ...[
@@ -333,15 +397,25 @@ class SettingsScreen extends StatelessWidget {
                     SettingsItem(
                       icon: Icons.library_books_outlined,
                       title: l10n.translate('library_grid_columns'),
-                      subtitle: GridColumnDialogs.getGridColumnLabel(SettingsManager().libraryGridColumnCount),
-                      onTap: () => GridColumnDialogs.showLibraryGridColumnCountDialog(context),
+                      subtitle: GridColumnDialogs.getGridColumnLabel(
+                        SettingsManager().libraryGridColumnCount,
+                      ),
+                      onTap: () =>
+                          GridColumnDialogs.showLibraryGridColumnCountDialog(
+                            context,
+                          ),
                     ),
                     const SettingsDivider(),
                     SettingsItem(
                       icon: Icons.explore_outlined,
                       title: l10n.translate('browse_grid_columns'),
-                      subtitle: GridColumnDialogs.getGridColumnLabel(SettingsManager().browseGridColumnCount),
-                      onTap: () => GridColumnDialogs.showBrowseGridColumnCountDialog(context),
+                      subtitle: GridColumnDialogs.getGridColumnLabel(
+                        SettingsManager().browseGridColumnCount,
+                      ),
+                      onTap: () =>
+                          GridColumnDialogs.showBrowseGridColumnCountDialog(
+                            context,
+                          ),
                       isLast: true,
                     ),
                   ],
@@ -368,23 +442,39 @@ class SettingsScreen extends StatelessWidget {
                   SettingsItem(
                     icon: Icons.star_outline,
                     title: l10n.translate('rating_step'),
-                    subtitle: GeneralSettingsDialogs.getRatingSliderStepName(SettingsManager().ratingSliderStep),
-                    onTap: () => GeneralSettingsDialogs.showRatingSliderStepSelectionDialog(context),
+                    subtitle: GeneralSettingsDialogs.getRatingSliderStepName(
+                      SettingsManager().ratingSliderStep,
+                    ),
+                    onTap: () =>
+                        GeneralSettingsDialogs.showRatingSliderStepSelectionDialog(
+                          context,
+                        ),
                     isFirst: true,
                   ),
                   const SettingsDivider(),
                   SettingsItem(
                     icon: Icons.tab,
                     title: l10n.translate('library_default'),
-                    subtitle: GeneralSettingsDialogs.getLibraryTabName(SettingsManager().addLibraryDefaultTab),
-                    onTap: () => GeneralSettingsDialogs.showAddLibraryDefaultTabSelectionDialog(context),
+                    subtitle: GeneralSettingsDialogs.getLibraryTabName(
+                      SettingsManager().addLibraryDefaultTab,
+                    ),
+                    onTap: () =>
+                        GeneralSettingsDialogs.showAddLibraryDefaultTabSelectionDialog(
+                          context,
+                        ),
                   ),
                   const SettingsDivider(),
                   SettingsItem(
                     icon: Icons.filter_alt_outlined,
                     title: l10n.translate('content_preferences'),
-                    subtitle: ContentPreferencesDialogs.getContentPreferencesText(SettingsManager().contentPreferences),
-                    onTap: () => ContentPreferencesDialogs.showContentPreferencesDialog(context),
+                    subtitle:
+                        ContentPreferencesDialogs.getContentPreferencesText(
+                          SettingsManager().contentPreferences,
+                        ),
+                    onTap: () =>
+                        ContentPreferencesDialogs.showContentPreferencesDialog(
+                          context,
+                        ),
                   ),
                   const SettingsDivider(),
                   SettingsSwitchItem(
@@ -392,7 +482,8 @@ class SettingsScreen extends StatelessWidget {
                     title: l10n.translate('hide_library'),
                     subtitle: l10n.translate('hide_library_subtext'),
                     value: SettingsManager().hideLibrarySeriesInBrowse,
-                    onChanged: (val) => SettingsManager().setHideLibrarySeriesInBrowse(val),
+                    onChanged: (val) =>
+                        SettingsManager().setHideLibrarySeriesInBrowse(val),
                     isLast: true,
                   ),
                 ],
@@ -404,7 +495,11 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _navigateToAccount(BuildContext context, LocalizationService l10n, ProfileAuthService auth) {
+  void _navigateToAccount(
+    BuildContext context,
+    LocalizationService l10n,
+    ProfileAuthService auth,
+  ) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -417,8 +512,15 @@ class SettingsScreen extends StatelessWidget {
                   icon: Icons.manage_accounts_outlined,
                   title: l10n.translate('account_settings'),
                   subtitle: l10n.translate('account_settings_subtext'),
-                  onTap: () => launchUrl(Uri.parse('https://mangabaka.org/my/settings/profile'), mode: LaunchMode.externalApplication),
-                  trailing: Icon(Icons.open_in_new, color: AppConstants.textMutedColor, size: 20),
+                  onTap: () => launchUrl(
+                    Uri.parse('https://mangabaka.org/my/settings/profile'),
+                    mode: LaunchMode.externalApplication,
+                  ),
+                  trailing: Icon(
+                    Icons.open_in_new,
+                    color: AppConstants.textMutedColor,
+                    size: 20,
+                  ),
                   isFirst: true,
                 ),
                 const SettingsDivider(),
@@ -427,7 +529,10 @@ class SettingsScreen extends StatelessWidget {
                   title: l10n.translate('logout'),
                   subtitle: l10n.translate('logout_subtext'),
                   onTap: () async {
-                    final shouldLogout = await LogoutDialog.showLogoutConfirmationDialog(context);
+                    final shouldLogout =
+                        await LogoutDialog.showLogoutConfirmationDialog(
+                          context,
+                        );
                     if (shouldLogout == true) {
                       await auth.logout();
                       if (context.mounted) {
@@ -465,7 +570,8 @@ class SettingsScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const OnboardingScreen(isRedoing: true),
+                          builder: (context) =>
+                              const OnboardingScreen(isRedoing: true),
                         ),
                       );
                     },
@@ -476,7 +582,12 @@ class SettingsScreen extends StatelessWidget {
                     icon: Icons.list_alt,
                     title: l10n.translate('logs'),
                     subtitle: l10n.translate('view_logs_subtitle'),
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const LogsScreen())),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LogsScreen(),
+                      ),
+                    ),
                     isLast: true,
                   ),
                 ],

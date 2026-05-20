@@ -6,16 +6,12 @@ class MBLoginButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
 
-  const MBLoginButton({
-    super.key,
-    this.onPressed,
-    this.isLoading = false,
-  });
+  const MBLoginButton({super.key, this.onPressed, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
     final l10n = LocalizationService();
-    
+
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
@@ -23,7 +19,7 @@ class MBLoginButton extends StatelessWidget {
         foregroundColor: AppConstants.textColor,
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+          borderRadius: BorderRadius.circular(AppConstants.pillRadius),
         ),
         elevation: 0,
       ),

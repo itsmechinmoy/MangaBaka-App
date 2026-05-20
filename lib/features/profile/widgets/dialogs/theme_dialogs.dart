@@ -3,7 +3,6 @@ import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 
-
 import 'package:mangabaka_app/features/profile/widgets/theme_preview_item.dart';
 import 'selection_bottom_sheet.dart';
 
@@ -19,24 +18,39 @@ class ThemeDialogs {
         return l10n.translate('theme_mode_system');
     }
   }
+
   static String getThemeName(AppTheme theme) {
     final l10n = LocalizationService();
     switch (theme) {
-      case AppTheme.defaultTheme: return l10n.translate('theme_default');
-      case AppTheme.catppuccin: return l10n.translate('theme_catppuccin');
-      case AppTheme.greenApple: return l10n.translate('theme_green_apple');
-      case AppTheme.lavender: return l10n.translate('theme_lavender');
-      case AppTheme.midnightDusk: return l10n.translate('theme_midnight_dusk');
-      case AppTheme.nord: return l10n.translate('theme_nord');
-      case AppTheme.strawberryDaiquiri: return l10n.translate('theme_strawberry_daiquiri');
-      case AppTheme.tako: return l10n.translate('theme_tako');
-      case AppTheme.tealTurquoise: return l10n.translate('theme_teal_turquoise');
-      case AppTheme.tidalWave: return l10n.translate('theme_tidal_wave');
-      case AppTheme.yinYang: return l10n.translate('theme_yin_yang');
-      case AppTheme.yotsuba: return l10n.translate('theme_yotsuba');
-      case AppTheme.monochrome: return l10n.translate('theme_monochrome');
+      case AppTheme.defaultTheme:
+        return l10n.translate('theme_default');
+      case AppTheme.catppuccin:
+        return l10n.translate('theme_catppuccin');
+      case AppTheme.greenApple:
+        return l10n.translate('theme_green_apple');
+      case AppTheme.lavender:
+        return l10n.translate('theme_lavender');
+      case AppTheme.midnightDusk:
+        return l10n.translate('theme_midnight_dusk');
+      case AppTheme.nord:
+        return l10n.translate('theme_nord');
+      case AppTheme.strawberryDaiquiri:
+        return l10n.translate('theme_strawberry_daiquiri');
+      case AppTheme.tako:
+        return l10n.translate('theme_tako');
+      case AppTheme.tealTurquoise:
+        return l10n.translate('theme_teal_turquoise');
+      case AppTheme.tidalWave:
+        return l10n.translate('theme_tidal_wave');
+      case AppTheme.yinYang:
+        return l10n.translate('theme_yin_yang');
+      case AppTheme.yotsuba:
+        return l10n.translate('theme_yotsuba');
+      case AppTheme.monochrome:
+        return l10n.translate('theme_monochrome');
     }
   }
+
   static void showThemeModeSelectionDialog(BuildContext context) {
     final l10n = LocalizationService();
     SelectionBottomSheet.showSelectionBottomSheet<ThemeMode>(
@@ -53,6 +67,7 @@ class ThemeDialogs {
       },
     );
   }
+
   static void showThemeSelectionDialog(BuildContext context) {
     final l10n = LocalizationService();
     final themeManager = ThemeManager();
@@ -71,7 +86,9 @@ class ThemeDialogs {
             return Container(
               decoration: BoxDecoration(
                 color: AppConstants.secondaryBackground,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(AppConstants.largeRadius),
+                ),
               ),
               padding: const EdgeInsets.fromLTRB(0, 12, 0, 40),
               child: Column(
@@ -118,7 +135,8 @@ class ThemeDialogs {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       scrollDirection: Axis.horizontal,
                       itemCount: AppTheme.values.length,
-                      separatorBuilder: (context, index) => const SizedBox(width: 8),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 8),
                       itemBuilder: (context, index) {
                         final theme = AppTheme.values[index];
                         final isSelected = currentTheme == theme;

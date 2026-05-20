@@ -20,12 +20,14 @@ class TranslationCreditsScreen extends StatelessWidget {
         ),
         title: Text(
           l10n.translate('translation_credits'),
-          style: TextStyle(color: AppConstants.textColor),
+          style: TextStyle(
+            color: AppConstants.textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            letterSpacing: -0.5,
+          ),
         ),
-        backgroundColor: AppConstants.primaryBackground,
-        iconTheme: IconThemeData(color: AppConstants.textColor),
         centerTitle: true,
-        elevation: 0,
       ),
       body: WidgetUtils.responsiveConstraint(
         ListView.builder(
@@ -39,7 +41,7 @@ class TranslationCreditsScreen extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 16),
               decoration: BoxDecoration(
                 color: AppConstants.secondaryBackground,
-                borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+                borderRadius: BorderRadius.circular(AppConstants.largeRadius),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

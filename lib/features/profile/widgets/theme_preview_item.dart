@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/theme/app_theme_colors.dart';
 
 class ThemePreviewItem extends StatelessWidget {
@@ -41,14 +42,16 @@ class ThemePreviewItem extends StatelessWidget {
                     width: 100,
                     height: 160,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.denseRadius,
+                      ),
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
                                 color: palette.accent.withValues(alpha: 0.3),
                                 blurRadius: 8,
                                 spreadRadius: 2,
-                              )
+                              ),
                             ]
                           : null,
                     ),
@@ -56,7 +59,9 @@ class ThemePreviewItem extends StatelessWidget {
                       fit: StackFit.expand,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(
+                            AppConstants.denseRadius,
+                          ),
                           child: Container(
                             color: palette.primaryBackground,
                             child: Column(
@@ -64,7 +69,9 @@ class ThemePreviewItem extends StatelessWidget {
                                 // Mock App Bar
                                 Container(
                                   height: 24,
-                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                  ),
                                   color: palette.secondaryBackground,
                                   child: Row(
                                     children: [
@@ -72,8 +79,12 @@ class ThemePreviewItem extends StatelessWidget {
                                         width: 40,
                                         height: 6,
                                         decoration: BoxDecoration(
-                                          color: palette.text.withValues(alpha: 0.5),
-                                          borderRadius: BorderRadius.circular(3),
+                                          color: palette.text.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            3,
+                                          ),
                                         ),
                                       ),
                                       const Spacer(),
@@ -91,18 +102,22 @@ class ThemePreviewItem extends StatelessWidget {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: double.infinity,
                                           height: 50,
                                           decoration: BoxDecoration(
                                             color: palette.tertiaryBackground,
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
                                           child: Center(
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 Container(
                                                   width: 10,
@@ -117,8 +132,12 @@ class ThemePreviewItem extends StatelessWidget {
                                                   width: 20,
                                                   height: 4,
                                                   decoration: BoxDecoration(
-                                                    color: palette.text.withValues(alpha: 0.3),
-                                                    borderRadius: BorderRadius.circular(2),
+                                                    color: palette.text
+                                                        .withValues(alpha: 0.3),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          2,
+                                                        ),
                                                   ),
                                                 ),
                                               ],
@@ -130,8 +149,12 @@ class ThemePreviewItem extends StatelessWidget {
                                           width: 50,
                                           height: 6,
                                           decoration: BoxDecoration(
-                                            color: palette.text.withValues(alpha: 0.2),
-                                            borderRadius: BorderRadius.circular(3),
+                                            color: palette.text.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              3,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(height: 4),
@@ -139,8 +162,12 @@ class ThemePreviewItem extends StatelessWidget {
                                           width: 30,
                                           height: 6,
                                           decoration: BoxDecoration(
-                                            color: palette.text.withValues(alpha: 0.1),
-                                            borderRadius: BorderRadius.circular(3),
+                                            color: palette.text.withValues(
+                                              alpha: 0.1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              3,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -152,14 +179,19 @@ class ThemePreviewItem extends StatelessWidget {
                                   height: 20,
                                   color: palette.secondaryBackground,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: List.generate(
                                       3,
                                       (index) => Container(
                                         width: 12,
                                         height: 12,
                                         decoration: BoxDecoration(
-                                          color: index == 0 ? palette.accent : palette.text.withValues(alpha: 0.1),
+                                          color: index == 0
+                                              ? palette.accent
+                                              : palette.text.withValues(
+                                                  alpha: 0.1,
+                                                ),
                                           shape: BoxShape.circle,
                                         ),
                                       ),
@@ -172,9 +204,13 @@ class ThemePreviewItem extends StatelessWidget {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(
+                              AppConstants.denseRadius,
+                            ),
                             border: Border.all(
-                              color: isSelected ? palette.accent : palette.border.withValues(alpha: 0.5),
+                              color: isSelected
+                                  ? palette.accent
+                                  : palette.border.withValues(alpha: 0.5),
                               width: isSelected ? 3 : 1,
                             ),
                           ),
@@ -188,7 +224,9 @@ class ThemePreviewItem extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? palette.text : palette.text.withValues(alpha: 0.6),
+                  color: isSelected
+                      ? palette.text
+                      : palette.text.withValues(alpha: 0.6),
                   fontSize: 11,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),

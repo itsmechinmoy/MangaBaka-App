@@ -29,9 +29,11 @@ class ProfileStatisticsSection extends StatelessWidget {
           children: [
             Text(
               l10n.translate('at_a_glance'),
-              style: const TextStyle(
-                fontSize: 20,
+              style: TextStyle(
+                color: AppConstants.textColor,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
+                letterSpacing: -0.5,
               ),
             ),
             TextButton(

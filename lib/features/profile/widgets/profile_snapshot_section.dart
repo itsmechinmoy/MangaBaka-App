@@ -30,9 +30,11 @@ class ProfileSnapshotSection extends StatelessWidget {
       children: [
         Text(
           l10n.translate('library_snapshot'),
-          style: const TextStyle(
-            fontSize: 20,
+          style: TextStyle(
+            color: AppConstants.textColor,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
+            letterSpacing: -0.5,
           ),
         ),
         const SizedBox(height: 8),

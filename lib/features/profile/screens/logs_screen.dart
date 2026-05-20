@@ -56,18 +56,15 @@ class _LogsScreenState extends State<LogsScreen> {
       final directory = await getTemporaryDirectory();
       final file = File('${directory.path}/mangabaka_logs.txt');
       await file.writeAsString(text);
-      
+
       await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile(file.path)],
-          subject: 'MangaBaka Logs',
-        ),
+        ShareParams(files: [XFile(file.path)], subject: 'MangaBaka Logs'),
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save logs: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to save logs: $e')));
       }
     }
   }
@@ -78,14 +75,14 @@ class _LogsScreenState extends State<LogsScreen> {
     return Scaffold(
       backgroundColor: AppConstants.primaryBackground,
       appBar: AppBar(
-        backgroundColor: AppConstants.primaryBackground,
-        elevation: 0,
         centerTitle: true,
         title: Text(
           l10n.translate('logs'),
           style: TextStyle(
             color: AppConstants.textColor,
             fontWeight: FontWeight.bold,
+            fontSize: 22,
+            letterSpacing: -0.5,
           ),
         ),
         leading: IconButton(
@@ -111,8 +108,7 @@ class _LogsScreenState extends State<LogsScreen> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: AppConstants.secondaryBackground,
-                  borderRadius: BorderRadius.circular(AppConstants.cardRadius),
-                  border: Border.all(color: AppConstants.borderColor.withValues(alpha: 0.5)),
+                  borderRadius: BorderRadius.circular(AppConstants.largeRadius),
                 ),
                 child: _logs.isEmpty
                     ? Center(
@@ -130,7 +126,9 @@ class _LogsScreenState extends State<LogsScreen> {
                             child: Text(
                               _logs[index],
                               style: TextStyle(
-                                color: AppConstants.textColor.withValues(alpha: 0.8),
+                                color: AppConstants.textColor.withValues(
+                                  alpha: 0.8,
+                                ),
                                 fontFamily: 'monospace',
                                 fontSize: 11,
                               ),
@@ -155,7 +153,9 @@ class _LogsScreenState extends State<LogsScreen> {
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+                          borderRadius: BorderRadius.circular(
+                            AppConstants.pillRadius,
+                          ),
                         ),
                       ),
                     ),
@@ -168,11 +168,13 @@ class _LogsScreenState extends State<LogsScreen> {
                       label: Text(l10n.translate('save_logs')),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppConstants.accentColor,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                        foregroundColor: AppConstants.primaryBackground,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+                          borderRadius: BorderRadius.circular(
+                            AppConstants.pillRadius,
+                          ),
                         ),
                       ),
                     ),

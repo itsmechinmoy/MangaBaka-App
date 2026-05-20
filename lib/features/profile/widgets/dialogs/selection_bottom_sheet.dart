@@ -23,7 +23,9 @@ class SelectionBottomSheet {
           ),
           decoration: BoxDecoration(
             color: AppConstants.secondaryBackground,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(AppConstants.largeRadius),
+            ),
           ),
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 60),
           child: Column(
@@ -77,13 +79,15 @@ class SelectionBottomSheet {
                           ),
                         )
                       else
-                        ...options.map((option) => buildOptionRow(
-                              option,
-                              currentValue,
-                              getLabel,
-                              onSelected,
-                              dialogContext,
-                            )),
+                        ...options.map(
+                          (option) => buildOptionRow(
+                            option,
+                            currentValue,
+                            getLabel,
+                            onSelected,
+                            dialogContext,
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -124,7 +128,9 @@ class SelectionBottomSheet {
             Text(
               getLabel(option),
               style: TextStyle(
-                color: isSelected ? AppConstants.textColor : AppConstants.textMutedColor,
+                color: isSelected
+                    ? AppConstants.textColor
+                    : AppConstants.textMutedColor,
                 fontSize: 16,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),

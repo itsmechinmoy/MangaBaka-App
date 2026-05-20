@@ -19,7 +19,7 @@ class StatisticCard extends StatelessWidget {
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppConstants.secondaryBackground,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppConstants.largeRadius),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

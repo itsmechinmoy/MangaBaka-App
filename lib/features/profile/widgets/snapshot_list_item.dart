@@ -2,6 +2,7 @@ import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/widget_utils.dart';
 
 class SnapshotListItem extends StatelessWidget {
@@ -14,7 +15,9 @@ class SnapshotListItem extends StatelessWidget {
     return ListenableBuilder(
       listenable: SettingsManager(),
       builder: (context, _) {
-        final displayTitle = series.getDisplayTitle(SettingsManager().defaultTitleLanguage);
+        final displayTitle = series.getDisplayTitle(
+          SettingsManager().defaultTitleLanguage,
+        );
         return GestureDetector(
           onTap: () {
             Navigator.push(
@@ -31,7 +34,9 @@ class SnapshotListItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(
+                      AppConstants.denseRadius,
+                    ),
                     child: WidgetUtils.networkImage(
                       url: series.coverUrl,
                       fit: BoxFit.cover,
@@ -58,4 +63,3 @@ class SnapshotListItem extends StatelessWidget {
     );
   }
 }
-

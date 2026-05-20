@@ -32,7 +32,7 @@ class ListStyleDialogs {
       onSelected: (style) => SettingsManager().setListStyle(style),
     );
   }
-  
+
   static void showLibraryListStyleSelectionDialog(BuildContext context) {
     final l10n = LocalizationService();
     _showListStyleSelectionBottomSheet(
@@ -63,7 +63,7 @@ class ListStyleDialogs {
     required void Function(AppListStyle) onSelected,
   }) {
     final settingsManager = SettingsManager();
-    
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -77,7 +77,9 @@ class ListStyleDialogs {
             return Container(
               decoration: BoxDecoration(
                 color: AppConstants.secondaryBackground,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(AppConstants.largeRadius),
+                ),
               ),
               padding: const EdgeInsets.fromLTRB(0, 12, 0, 40),
               child: Column(
@@ -124,7 +126,8 @@ class ListStyleDialogs {
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       scrollDirection: Axis.horizontal,
                       itemCount: AppListStyle.values.length,
-                      separatorBuilder: (context, index) => const SizedBox(width: 8),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(width: 8),
                       itemBuilder: (context, index) {
                         final style = AppListStyle.values[index];
                         final isSelected = currentValue == style;
