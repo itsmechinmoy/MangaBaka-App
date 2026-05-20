@@ -46,10 +46,10 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
   int _selectedIndex = -1;
   String _originalQuery = '';
   bool _isNavigatingWithArrows = false;
-  
+
   String _suppressedQuery = '';
   bool _isAutocompleteSuppressed = false;
-  
+
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
 
@@ -68,7 +68,8 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
   }
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent && event is! KeyRepeatEvent) return KeyEventResult.ignored;
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent)
+      return KeyEventResult.ignored;
 
     final query = _controller.text;
     final hasSuggestions = _suggestions.isNotEmpty && _showSuggestions;
@@ -80,7 +81,9 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
         setState(() {
           _selectedIndex = (_selectedIndex + 1) % _suggestions.length;
           _controller.text = _suggestions[_selectedIndex].title;
-          _controller.selection = TextSelection.fromPosition(TextPosition(offset: _controller.text.length));
+          _controller.selection = TextSelection.fromPosition(
+            TextPosition(offset: _controller.text.length),
+          );
           _ghostSuffix = '';
           _controller.ghostSuffix = '';
         });
@@ -98,7 +101,9 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
             _selectedIndex--;
             _controller.text = _suggestions[_selectedIndex].title;
           }
-          _controller.selection = TextSelection.fromPosition(TextPosition(offset: _controller.text.length));
+          _controller.selection = TextSelection.fromPosition(
+            TextPosition(offset: _controller.text.length),
+          );
           _ghostSuffix = '';
           _controller.ghostSuffix = '';
         });
@@ -123,12 +128,14 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
     }
 
     // 2. Selection handled by onSubmitted
-    if (event.logicalKey == LogicalKeyboardKey.enter || event.logicalKey == LogicalKeyboardKey.numpadEnter) {
+    if (event.logicalKey == LogicalKeyboardKey.enter ||
+        event.logicalKey == LogicalKeyboardKey.numpadEnter) {
       return KeyEventResult.ignored;
     }
 
     // 3. Rejection (Backspace)
-    if (event.logicalKey == LogicalKeyboardKey.backspace && (_ghostSuffix.isNotEmpty || _selectedIndex != -1)) {
+    if (event.logicalKey == LogicalKeyboardKey.backspace &&
+        (_ghostSuffix.isNotEmpty || _selectedIndex != -1)) {
       setState(() {
         _isAutocompleteSuppressed = true;
         _suppressedQuery = _originalQuery;
@@ -161,7 +168,8 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
   @override
   void didUpdateWidget(LibrarySearchBar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.initialFilters != oldWidget.initialFilters && widget.initialFilters != null) {
+    if (widget.initialFilters != oldWidget.initialFilters &&
+        widget.initialFilters != null) {
       setState(() => _currentFilters = widget.initialFilters!);
     }
   }
@@ -185,7 +193,7 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
 
     _originalQuery = query;
     widget.onChanged(query);
-    
+
     if (query.isEmpty) {
       _isAutocompleteSuppressed = false;
       _suppressedQuery = '';
@@ -211,17 +219,17 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
     }
 
     final results = _autocomplete.search(query, _allEntries);
-    
+
     final queryLower = query.toLowerCase();
     results.sort((a, b) {
       final aLower = a.title.toLowerCase();
       final bLower = b.title.toLowerCase();
-      
+
       bool aExact = aLower == queryLower;
       bool bExact = bLower == queryLower;
       if (aExact && !bExact) return -1;
       if (!aExact && bExact) return 1;
-      
+
       return a.title.length.compareTo(b.title.length);
     });
 
@@ -245,7 +253,9 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
       _showSuggestions = results.isNotEmpty && _focusNode.hasFocus;
       _ghostSuffix = ghost ?? '';
       _controller.ghostSuffix = ghost ?? '';
-      _controller.ghostColor = AppConstants.textMutedColor.withValues(alpha: 0.5);
+      _controller.ghostColor = AppConstants.textMutedColor.withValues(
+        alpha: 0.5,
+      );
       _selectedIndex = -1;
     });
     _updateOverlay();
@@ -315,14 +325,15 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
 
   void _acceptGhostText() {
     if (_ghostSuffix.isEmpty || _suggestions.isEmpty) return;
-    
+
     AutocompleteSeriesResult? matchedResult;
     String? matchedTitle;
-    
+
     final query = _controller.text;
     for (var result in _suggestions) {
       for (var t in result.allTitles) {
-        if (t.toLowerCase().startsWith(query.toLowerCase()) && t.substring(query.length) == _ghostSuffix) {
+        if (t.toLowerCase().startsWith(query.toLowerCase()) &&
+            t.substring(query.length) == _ghostSuffix) {
           matchedResult = result;
           matchedTitle = t;
           break;
@@ -408,17 +419,19 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
   Widget _buildTextField() {
     final l10n = LocalizationService();
 
-    final baseStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
-      color: AppConstants.textColor,
-      fontSize: 16,
-      letterSpacing: 0,
-      fontFeatures: const [FontFeature.disable('kern')],
-    ) ?? TextStyle(
-      color: AppConstants.textColor, 
-      fontSize: 16, 
-      letterSpacing: 0,
-      fontFeatures: const [FontFeature.disable('kern')],
-    );
+    final baseStyle =
+        Theme.of(context).textTheme.bodyLarge?.copyWith(
+          color: AppConstants.textColor,
+          fontSize: 16,
+          letterSpacing: 0,
+          fontFeatures: const [FontFeature.disable('kern')],
+        ) ??
+        TextStyle(
+          color: AppConstants.textColor,
+          fontSize: 16,
+          letterSpacing: 0,
+          fontFeatures: const [FontFeature.disable('kern')],
+        );
 
     return TextField(
       controller: _controller,
@@ -427,7 +440,10 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
         hintText: l10n.translate('search_hint'),
         hintStyle: TextStyle(color: AppConstants.textMutedColor, fontSize: 16),
         prefixIcon: Icon(Icons.search, color: AppConstants.textColor),
-        prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+        prefixIconConstraints: const BoxConstraints(
+          minWidth: 48,
+          minHeight: 48,
+        ),
         suffixIcon: MBSearchBarSuffix(
           controllerText: _controller.text,
           onClear: _clear,
@@ -436,20 +452,23 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
           currentFilters: _currentFilters,
         ),
         filled: true,
-        fillColor: AppConstants.secondaryBackground,
+        fillColor: AppConstants.tertiaryBackground,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(AppConstants.pillRadius),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(AppConstants.pillRadius),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(40),
+          borderRadius: BorderRadius.circular(AppConstants.pillRadius),
           borderSide: BorderSide.none,
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 14,
+          horizontal: 20,
+        ),
       ),
       style: baseStyle,
       onChanged: _onTextChanged,
@@ -474,14 +493,18 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
   }
 
   void _openFilterSheet() {
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     if (isLandscape) {
       showDialog(
         context: context,
         builder: (context) => Dialog(
           backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 20,
+          ),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 600),
             child: SearchFilterBottomSheet(
@@ -504,8 +527,10 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: AppConstants.secondaryBackground,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppConstants.largeRadius),
+        ),
       ),
       builder: (context) {
         return SearchFilterBottomSheet(

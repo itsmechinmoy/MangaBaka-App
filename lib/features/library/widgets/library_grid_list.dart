@@ -38,9 +38,23 @@ class LibraryGridList extends StatelessWidget {
               slivers: [
                 SliverFillRemaining(
                   child: Center(
-                    child: Text(
-                      l10n.translate('no_results'),
-                      style: TextStyle(color: AppConstants.textMutedColor),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.search_off_rounded,
+                          size: 48,
+                          color: AppConstants.textMutedColor,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          l10n.translate('no_results'),
+                          style: TextStyle(
+                            color: AppConstants.textMutedColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/library/screens/library_screen_constants.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/features/library/screens/library_filter_helper.dart';
-import 'package:mangabaka_app/features/library/screens/library_screen_constants.dart';
 import 'package:mangabaka_app/features/library/widgets/library_grid_list.dart';
 import 'package:mangabaka_app/features/profile/widgets/mb_login_prompt.dart';
 import 'package:mangabaka_app/features/series/widgets/series_list_skeleton.dart';
@@ -44,7 +45,7 @@ class LibraryBody extends StatelessWidget {
         message: l10n.translate('login_prompt_library'),
       );
     }
-    
+
     if (entriesStream == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -52,7 +53,8 @@ class LibraryBody extends StatelessWidget {
     return StreamBuilder<List<LibraryEntry>>(
       stream: entriesStream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
           final settings = SettingsManager();
           final isGrid = settings.separateListStyles
               ? settings.libraryListStyle.isGrid
@@ -61,9 +63,24 @@ class LibraryBody extends StatelessWidget {
         }
         if (snapshot.hasError) {
           return Center(
-            child: Text(
-              '${l10n.translate('failed_to_load')}: ${snapshot.error}',
-              style: TextStyle(color: LibraryScreenConstants.errorColor),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    color: AppConstants.errorColor,
+                    size: 40,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '${l10n.translate('failed_to_load')}: ${snapshot.error}',
+                    style: TextStyle(color: AppConstants.errorColor),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           );
         }
@@ -75,7 +92,26 @@ class LibraryBody extends StatelessWidget {
               children: [
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.6,
-                  child: Center(child: Text(l10n.translate('empty_library'))),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.library_books_outlined,
+                          size: 48,
+                          color: AppConstants.textMutedColor,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          l10n.translate('empty_library'),
+                          style: TextStyle(
+                            color: AppConstants.textMutedColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),

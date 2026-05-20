@@ -23,20 +23,29 @@ class SyncProgressOverlay extends StatelessWidget {
         }
 
         return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: _buildCard(context, libraryService, status),
-          ),
-        )
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: _buildCard(context, libraryService, status),
+              ),
+            )
             .animate(target: status.isSyncing ? 1 : 0)
-            .slideY(begin: 1, end: 0, curve: Curves.easeOutBack, duration: 400.ms)
+            .slideY(
+              begin: 1,
+              end: 0,
+              curve: Curves.easeOutBack,
+              duration: 400.ms,
+            )
             .fadeIn(duration: 400.ms);
       },
     );
   }
 
-  Widget _buildCard(BuildContext context, LibraryService libraryService, LibrarySyncStatus status) {
+  Widget _buildCard(
+    BuildContext context,
+    LibraryService libraryService,
+    LibrarySyncStatus status,
+  ) {
     final hasError = status.error != null;
     final l10n = LocalizationService();
 
@@ -45,15 +54,8 @@ class SyncProgressOverlay extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: AppConstants.secondaryBackground,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppConstants.borderColor.withValues(alpha: 0.5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(AppConstants.largeRadius),
+        boxShadow: AppConstants.softShadow,
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -73,7 +75,9 @@ class SyncProgressOverlay extends StatelessWidget {
                         width: 42,
                         height: 42,
                         decoration: BoxDecoration(
-                          color: AppConstants.accentColor.withValues(alpha: 0.15),
+                          color: AppConstants.accentColor.withValues(
+                            alpha: 0.15,
+                          ),
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -93,7 +97,8 @@ class SyncProgressOverlay extends StatelessWidget {
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                AppConstants.accentColor),
+                              AppConstants.accentColor,
+                            ),
                           ),
                         ),
                     ],
@@ -109,7 +114,12 @@ class SyncProgressOverlay extends StatelessWidget {
                         Text(
                           hasError
                               ? l10n.translate('sync_interrupted')
-                              : l10n.translate('entries_synced').replaceAll('{count}', status.currentEntries.toString()),
+                              : l10n
+                                    .translate('entries_synced')
+                                    .replaceAll(
+                                      '{count}',
+                                      status.currentEntries.toString(),
+                                    ),
                           style: TextStyle(
                             color: hasError
                                 ? AppConstants.errorColor
@@ -121,11 +131,14 @@ class SyncProgressOverlay extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           hasError
-                              ? (status.error ?? l10n.translate('an_error_occurred'))
+                              ? (status.error ??
+                                    l10n.translate('an_error_occurred'))
                               : l10n.translate('keep_app_open'),
                           style: TextStyle(
                             color: hasError
-                                ? AppConstants.errorColor.withValues(alpha: 0.85)
+                                ? AppConstants.errorColor.withValues(
+                                    alpha: 0.85,
+                                  )
                                 : AppConstants.textMutedColor,
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
@@ -146,14 +159,16 @@ class SyncProgressOverlay extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => libraryService.cancelSync(),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(AppConstants.pillRadius),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
-                    color: AppConstants.errorColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppConstants.errorColor.withValues(alpha: 0.3),
+                    color: AppConstants.errorColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(
+                      AppConstants.pillRadius,
                     ),
                   ),
                   child: Row(

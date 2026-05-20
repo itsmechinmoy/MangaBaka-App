@@ -28,7 +28,6 @@ import 'package:mangabaka_app/features/library/screens/library_filter_helper.dar
 import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
 import 'package:mangabaka_app/features/browse/utils/browse_helpers.dart';
 
-
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
 
@@ -110,7 +109,9 @@ class _LibraryScreenState extends State<LibraryScreen>
 
   void _onAuthStateChanged() {
     if (!mounted) return;
-    _logger.info('Auth state changed in LibraryScreen. LoggedIn: ${_auth.isLoggedIn}');
+    _logger.info(
+      'Auth state changed in LibraryScreen. LoggedIn: ${_auth.isLoggedIn}',
+    );
     setState(() {
       _loggedIn = _auth.isLoggedIn;
       if (!_loggedIn) {
@@ -136,21 +137,26 @@ class _LibraryScreenState extends State<LibraryScreen>
   }
 
   void _performAutoTabSwitching() {
-    if (!mounted || (_query.isEmpty && _filters.isEmpty) || _tabController.indexIsChanging) return;
+    if (!mounted ||
+        (_query.isEmpty && _filters.isEmpty) ||
+        _tabController.indexIsChanging)
+      return;
 
     final currentTabKey = LibraryScreenConstants.tabs[_tabController.index].key;
-    
+
     final filterHelper = LibraryFilterHelper(
       allEntries: _lastEntries,
       query: _query,
       contentPreferences: SettingsManager().contentPreferences,
       filters: _filters,
     );
-    
+
     final resultsInCurrentTab = filterHelper.getByTab(currentTabKey);
-    
+
     if (resultsInCurrentTab.isEmpty) {
-      _logger.info('Current tab ($currentTabKey) is empty while searching. Looking for other tabs...');
+      _logger.info(
+        'Current tab ($currentTabKey) is empty while searching. Looking for other tabs...',
+      );
       // Try to find first tab with results
       for (int i = 0; i < LibraryScreenConstants.tabs.length; i++) {
         final tabKey = LibraryScreenConstants.tabs[i].key;
@@ -171,13 +177,16 @@ class _LibraryScreenState extends State<LibraryScreen>
       _entriesSubscription = _entriesStream?.listen(_onEntriesUpdate);
     });
     // Full import only on first load; recents sync on subsequent ones.
-    _libraryService.performInitialSyncIfNeeded().then((_) async {
-      _logger.info('Initial sync task completed');
-      final incomplete = await _libraryService.isLibraryIncomplete();
-      if (mounted) setState(() => _isLibraryIncomplete = incomplete);
-    }).catchError((e) {
-      _logger.severe('Initial sync task failed: $e');
-    });
+    _libraryService
+        .performInitialSyncIfNeeded()
+        .then((_) async {
+          _logger.info('Initial sync task completed');
+          final incomplete = await _libraryService.isLibraryIncomplete();
+          if (mounted) setState(() => _isLibraryIncomplete = incomplete);
+        })
+        .catchError((e) {
+          _logger.severe('Initial sync task failed: $e');
+        });
   }
 
   Future<void> _loginAndReload() async {
@@ -196,7 +205,9 @@ class _LibraryScreenState extends State<LibraryScreen>
       _logger.severe('Login failed in library screen: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(LocalizationService().translate('login_failed_retry'))),
+        SnackBar(
+          content: Text(LocalizationService().translate('login_failed_retry')),
+        ),
       );
     }
   }
@@ -230,37 +241,54 @@ class _LibraryScreenState extends State<LibraryScreen>
             builder: (context, status, _) {
               final content = Column(
                 children: [
-                  if (status.isServerDown) 
+                  if (status.isServerDown)
                     LibraryStatusBanner(
-                      message: LocalizationService().translate('server_unreachable_warning'),
+                      message: LocalizationService().translate(
+                        'server_unreachable_warning',
+                      ),
                       icon: Icons.cloud_off_rounded,
                       color: AppConstants.errorColor,
                       action: TextButton(
                         onPressed: _onRefresh,
                         child: Text(
                           LocalizationService().translate('retry'),
-                          style: TextStyle(color: AppConstants.errorColor, fontSize: 12, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: AppConstants.errorColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   if (!status.isServerDown && status.error != null)
                     LibraryStatusBanner(
-                      message: LocalizationService().translate('sync_failed').replaceAll('{message}', status.error!),
+                      message: LocalizationService()
+                          .translate('sync_failed')
+                          .replaceAll('{message}', status.error!),
                       icon: Icons.error_outline_rounded,
                       color: AppConstants.errorColor,
-                      onClose: () => _libraryService.syncStatus.value = 
-                          _libraryService.syncStatus.value.copyWith(clearError: true),
+                      onClose: () =>
+                          _libraryService.syncStatus.value = _libraryService
+                              .syncStatus
+                              .value
+                              .copyWith(clearError: true),
                     ),
                   if (_isLibraryIncomplete)
                     LibraryStatusBanner(
-                      message: LocalizationService().translate('library_limit_warning'),
+                      message: LocalizationService().translate(
+                        'library_limit_warning',
+                      ),
                       icon: Icons.warning_amber_rounded,
                       color: AppConstants.warningColor,
                       action: TextButton(
                         onPressed: () => _libraryService.importFullLibrary(),
                         child: Text(
                           LocalizationService().translate('re_import'),
-                          style: TextStyle(color: AppConstants.warningColor, fontSize: 12, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: AppConstants.warningColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -317,7 +345,6 @@ class _LibraryScreenState extends State<LibraryScreen>
     );
   }
 
-
   PreferredSizeWidget _buildAppBar() {
     final orientation = MediaQuery.of(context).orientation;
     final isLandscape = orientation == Orientation.landscape;
@@ -329,8 +356,6 @@ class _LibraryScreenState extends State<LibraryScreen>
         : settings.currentListStyle;
 
     return AppBar(
-      backgroundColor: LibraryScreenConstants.backgroundColor,
-      elevation: 0,
       centerTitle: isLandscape,
       title: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 800),
@@ -380,7 +405,7 @@ class _LibraryScreenState extends State<LibraryScreen>
         stream: _entriesStream,
         builder: (context, snapshot) {
           final entries = snapshot.data ?? [];
-          
+
           final settings = SettingsManager();
           final filterHelper = LibraryFilterHelper(
             allEntries: entries,
@@ -398,11 +423,13 @@ class _LibraryScreenState extends State<LibraryScreen>
           return TabBar(
             controller: _tabController,
             isScrollable: true,
-            tabAlignment: isLandscape ? TabAlignment.center : TabAlignment.start,
+            tabAlignment: isLandscape
+                ? TabAlignment.center
+                : TabAlignment.start,
             tabs: LibraryScreenConstants.tabs.map((tab) {
               final count = counts[tab.key] ?? 0;
               final label = l10n.translate(tab.key);
-              
+
               return Tab(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -410,17 +437,22 @@ class _LibraryScreenState extends State<LibraryScreen>
                     Text(label),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
-                        borderRadius: BorderRadius.circular(10),
+                        color: AppConstants.tertiaryBackground,
+                        borderRadius: BorderRadius.circular(
+                          AppConstants.pillRadius,
+                        ),
                       ),
                       child: Text(
                         NumberUtils.formatCount(count),
                         style: TextStyle(
                           fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                          fontWeight: FontWeight.bold,
+                          color: AppConstants.textMutedColor,
                         ),
                       ),
                     ),
@@ -435,8 +467,8 @@ class _LibraryScreenState extends State<LibraryScreen>
   }
 
   void _navigateToSeriesDetail(api.Series series) {
-    Navigator.of(context).push(
-      AppTransitions.slideUp(SeriesDetailScreen(series: series)),
-    );
+    Navigator.of(
+      context,
+    ).push(AppTransitions.slideUp(SeriesDetailScreen(series: series)));
   }
 }

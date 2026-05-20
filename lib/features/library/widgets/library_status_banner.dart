@@ -25,9 +25,6 @@ class LibraryStatusBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         color: color.withValues(alpha: isDark ? 0.12 : 0.18),
-        border: Border(
-          bottom: BorderSide(color: color.withValues(alpha: 0.25)),
-        ),
       ),
       child: Row(
         children: [
@@ -39,7 +36,7 @@ class LibraryStatusBanner extends StatelessWidget {
               style: TextStyle(
                 color: color,
                 fontSize: 12,
-                fontWeight: isDark ? FontWeight.normal : FontWeight.w600,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
