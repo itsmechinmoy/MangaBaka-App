@@ -14,8 +14,6 @@ import 'package:mangabaka_app/utils/services/logging_service.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
 
-
-
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
 
@@ -65,9 +63,12 @@ class _NewsScreenState extends State<NewsScreen> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - AppConstants.scrollThresholdPx) {
+        _scrollController.position.maxScrollExtent -
+            AppConstants.scrollThresholdPx) {
       if (_hasMore && !_isLoading) {
-        _logger.fine('Scroll reached bottom, fetching more news (page $_currentPage)');
+        _logger.fine(
+          'Scroll reached bottom, fetching more news (page $_currentPage)',
+        );
         _fetchNews(initial: false);
       }
     }
@@ -80,10 +81,15 @@ class _NewsScreenState extends State<NewsScreen> {
     }
   }
 
-  Future<void> _fetchNews({bool initial = false, bool isBackground = false}) async {
+  Future<void> _fetchNews({
+    bool initial = false,
+    bool isBackground = false,
+  }) async {
     if (_isLoading || _isBackgroundRefresh) return;
-    
-    _logger.info('Fetching news: initial=$initial, isBackground=$isBackground, page=$_currentPage');
+
+    _logger.info(
+      'Fetching news: initial=$initial, isBackground=$isBackground, page=$_currentPage',
+    );
     setState(() {
       if (isBackground) {
         _isBackgroundRefresh = true;
@@ -101,7 +107,9 @@ class _NewsScreenState extends State<NewsScreen> {
       );
       if (!mounted) return;
 
-      _logger.info('Received ${newNews.length} news items for page $pageToFetch');
+      _logger.info(
+        'Received ${newNews.length} news items for page $pageToFetch',
+      );
 
       setState(() {
         if (initial) {
@@ -132,7 +140,7 @@ class _NewsScreenState extends State<NewsScreen> {
       _currentPage = 1;
       _hasMore = true;
     });
-    
+
     // Ensure the spinner is visible for at least 800ms for visual feedback
     await Future.wait([
       _fetchNews(initial: true),
@@ -154,13 +162,14 @@ class _NewsScreenState extends State<NewsScreen> {
         final screenWidth = MediaQuery.of(context).size.width;
         final orientation = MediaQuery.of(context).orientation;
         final bool isLandscape = orientation == Orientation.landscape;
-        
+
         // Settings/Screen dependent grid logic
         // 2 column news should only be available for landscape mode not for portrait mode
         final int columns = settings.newsListColumns;
         final bool isGrid = columns > 1 && screenWidth > 400 && isLandscape;
 
-        Widget content = _newsList.isEmpty && !_isLoading && !_isBackgroundRefresh
+        Widget content =
+            _newsList.isEmpty && !_isLoading && !_isBackgroundRefresh
             ? Center(
                 child: Text(
                   _error != null
@@ -171,11 +180,14 @@ class _NewsScreenState extends State<NewsScreen> {
               )
             : RefreshIndicator(
                 onRefresh: _onRefresh,
-                child: isGrid 
+                child: isGrid
                     ? SingleChildScrollView(
                         controller: _scrollController,
                         physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 8.0,
+                        ),
                         child: Column(
                           children: [
                             Row(
@@ -183,11 +195,18 @@ class _NewsScreenState extends State<NewsScreen> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      for (int i = 0; i < _newsList.length; i += 2)
+                                      for (
+                                        int i = 0;
+                                        i < _newsList.length;
+                                        i += 2
+                                      )
                                         NewsListItem(
-                                          key: ValueKey('grid_${_newsList[i].id}'),
+                                          key: ValueKey(
+                                            'grid_${_newsList[i].id}',
+                                          ),
                                           news: _newsList[i],
                                         ),
                                     ],
@@ -195,11 +214,18 @@ class _NewsScreenState extends State<NewsScreen> {
                                 ),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      for (int i = 1; i < _newsList.length; i += 2)
+                                      for (
+                                        int i = 1;
+                                        i < _newsList.length;
+                                        i += 2
+                                      )
                                         NewsListItem(
-                                          key: ValueKey('grid_${_newsList[i].id}'),
+                                          key: ValueKey(
+                                            'grid_${_newsList[i].id}',
+                                          ),
                                           news: _newsList[i],
                                         ),
                                     ],
@@ -241,14 +267,14 @@ class _NewsScreenState extends State<NewsScreen> {
         return Scaffold(
           backgroundColor: AppConstants.primaryBackground,
           appBar: AppBar(
-            backgroundColor: AppConstants.primaryBackground,
-            elevation: 0,
             centerTitle: true,
             title: Text(
               l10n.translate('news'),
               style: TextStyle(
                 color: AppConstants.textColor,
                 fontWeight: FontWeight.bold,
+                fontSize: 22,
+                letterSpacing: -0.5,
               ),
             ),
             actions: [
@@ -257,11 +283,15 @@ class _NewsScreenState extends State<NewsScreen> {
                   message: l10n.translate('toggle_layout'),
                   child: IconButton(
                     icon: Icon(
-                      settings.newsListColumns == 2 ? Icons.view_agenda_outlined : Icons.grid_view_rounded,
+                      settings.newsListColumns == 2
+                          ? Icons.view_agenda_outlined
+                          : Icons.grid_view_rounded,
                       color: AppConstants.textColor,
                     ),
                     onPressed: () {
-                      settings.setNewsListColumns(settings.newsListColumns == 1 ? 2 : 1);
+                      settings.setNewsListColumns(
+                        settings.newsListColumns == 1 ? 2 : 1,
+                      );
                     },
                   ),
                 ),
@@ -271,9 +301,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => SettingsScreen(),
-                      ),
+                      MaterialPageRoute(builder: (context) => SettingsScreen()),
                     );
                   },
                 ),
@@ -305,7 +333,15 @@ class _NewsScreenState extends State<NewsScreen> {
                       );
                     },
                     backgroundColor: AppConstants.accentColor,
-                    child: Icon(Icons.arrow_upward, color: AppConstants.primaryBackground),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.pillRadius,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.arrow_upward,
+                      color: AppConstants.primaryBackground,
+                    ),
                   ),
                 )
               : null,

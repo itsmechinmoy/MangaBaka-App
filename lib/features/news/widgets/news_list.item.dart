@@ -35,13 +35,14 @@ class NewsListItem extends StatelessWidget {
 
     return Card(
       color: AppConstants.secondaryBackground,
-      elevation: 2,
-      shadowColor: Colors.black.withValues(alpha: 0.2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      margin: const EdgeInsets.all(8.0),
+      elevation: 0,
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.largeRadius),
+      ),
       child: InkWell(
         onTap: () => launchUrl(Uri.parse(news.url)),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppConstants.largeRadius),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -51,18 +52,18 @@ class NewsListItem extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppConstants.accentColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
+                      color: AppConstants.tertiaryBackground,
+                      borderRadius: BorderRadius.circular(AppConstants.pillRadius),
                     ),
                     child: Text(
                       news.source.toUpperCase(),
                       style: TextStyle(
-                        color: AppConstants.accentColor,
+                        color: AppConstants.textColor,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
+                        letterSpacing: 1.0,
                       ),
                     ),
                   ),
@@ -72,6 +73,7 @@ class NewsListItem extends StatelessWidget {
                     style: TextStyle(
                       color: AppConstants.textMutedColor,
                       fontSize: 11,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -79,21 +81,23 @@ class NewsListItem extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 news.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: AppConstants.textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  height: 1.3,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  height: 1.2,
                 ),
               ),
               if (news.author.isNotEmpty) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   '${l10n.translate('by_author')} ${news.author}',
                   style: TextStyle(
                     color: AppConstants.textMutedColor,
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
+                    fontSize: 14,
+                    height: 1.6,
                   ),
                 ),
               ],
@@ -102,12 +106,13 @@ class NewsListItem extends StatelessWidget {
                 Text(
                   '${l10n.translate('series_referenced')} (${news.series.length})',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: AppConstants.textColor.withValues(alpha: 0.8),
+                    letterSpacing: 1.0,
+                    color: AppConstants.textMutedColor,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
                 RepaintBoundary(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -116,7 +121,7 @@ class NewsListItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: news.series.map((s) {
                         return Padding(
-                          padding: const EdgeInsets.only(right: 12.0),
+                          padding: const EdgeInsets.only(right: 10.0),
                           child: MouseRegion(
                             onEnter: (_) => getIt<SeriesService>().fetchSeries(s.id),
                             child: ReferencedListItem(
@@ -138,5 +143,3 @@ class NewsListItem extends StatelessWidget {
     );
   }
 }
-
-
