@@ -151,8 +151,6 @@ class ExternalRatingsSection extends StatelessWidget {
   }
 
   String? _getUrl(String key, dynamic data) {
-    if (data['url'] != null) return data['url'].toString();
-    
     final id = data['id']?.toString();
     if (id != null && id.isNotEmpty) {
       switch (key) {
@@ -161,9 +159,11 @@ class ExternalRatingsSection extends StatelessWidget {
         case 'kitsu': return 'https://kitsu.io/manga/$id';
         case 'anime_planet': return 'https://www.anime-planet.com/manga/$id';
         case 'shikimori': return 'https://shikimori.one/mangas/$id';
-        case 'manga_updates': return 'https://www.mangaupdates.com/series.html?id=$id';
+        case 'manga_updates': return 'https://www.mangaupdates.com/series/$id';
       }
     }
+
+    if (data['url'] != null) return data['url'].toString();
 
     // Fallback to series links
     final domain = _getDomain(key);
