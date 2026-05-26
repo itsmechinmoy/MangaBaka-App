@@ -3,6 +3,12 @@ import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/widget_utils.dart';
+import 'package:mangabaka_app/features/library/models/library_entry.dart';
+import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/features/series/widgets/progress_update_dialog.dart';
+import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/features/library/services/library_service.dart';
+import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 
 
 class EntryListLayoutHelper {
@@ -51,18 +57,202 @@ class EntryListLayoutHelper {
       ),
     );
   }
+  static Widget buildTopOverlays({
+    required BuildContext context,
+    required double cardWidth,
+    required Series series,
+    required LibraryEntry? entry,
+    required int? progressOverride,
+    required SettingsManager settings,
+    required LocalizationService l10n,
+  }) {
+    if (entry == null) return const SizedBox.shrink();
+
+    final showProgress = settings.showLibraryProgress;
+    final showRemaining = settings.showRemainingProgress;
+
+    if (!showProgress && !showRemaining) return const SizedBox.shrink();
+
+    final isChapter = settings.libraryProgressType == LibraryProgressType.chapters;
+    final total = isChapter
+        ? (int.tryParse(series.totalChapters) ?? 0)
+        : (int.tryParse(series.finalVolume) ?? 0);
+    final progress = progressOverride ?? (isChapter ? entry.progressChapter : entry.progressVolume) ?? 0;
+
+    int remaining = 0;
+    if (total > 0) {
+      remaining = total - progress;
+    }
+
+    final hasRemainingBadge = showRemaining && total > 0 && remaining > 0;
+    final hasProgressBadge = showProgress;
+
+    if (!hasRemainingBadge && !hasProgressBadge) return const SizedBox.shrink();
+
+    // Solid dark color
+    final chipBgColor = const Color(0xFF121214);
+
+    Widget buildProgressContent() {
+      final prefix = isChapter ? 'Ch. ' : 'Vol. ';
+      return Text(
+        '$prefix$progress${total > 0 ? '/$total' : ''}',
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 11,
+        ),
+      );
+    }
+
+    Widget buildRemainingContent() {
+      return Text(
+        remaining.toString(),
+        style: TextStyle(
+          color: AppConstants.warningColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 11,
+        ),
+      );
+    }
+
+    void openUpdateDialog() {
+      showDialog(
+        context: context,
+        builder: (context) => ProgressUpdateDialog(
+          initialValue: progress,
+          title: isChapter ? l10n.translate('update_chapters') : l10n.translate('update_volumes'),
+          maxValue: isChapter ? series.totalChapters : series.finalVolume,
+          onUpdate: (value) {
+            final libraryService = getIt<LibraryService>();
+            if (isChapter) {
+              libraryService.updateLibraryEntryProgress(series.id, progressChapter: value);
+            } else {
+              libraryService.updateLibraryEntryProgress(series.id, progressVolume: value);
+            }
+          },
+        ),
+      );
+    }
+
+    // Determine if we should combine them based on card width
+    final shouldCombine = hasRemainingBadge && hasProgressBadge && cardWidth < 145;
+
+    if (shouldCombine) {
+      return Positioned(
+        top: 8,
+        left: 8,
+        right: 8,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: openUpdateDialog,
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: chipBgColor,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    buildRemainingContent(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Container(
+                        width: 1,
+                        height: 10,
+                        color: Colors.white.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    buildProgressContent(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Stack(
+      children: [
+        if (hasRemainingBadge)
+          Positioned(
+            top: 8,
+            left: 8,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: chipBgColor,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: buildRemainingContent(),
+            ),
+          ),
+        if (hasProgressBadge)
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: openUpdateDialog,
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: chipBgColor,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: buildProgressContent(),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
 }
 
 class CoverOnlyGridItem extends StatelessWidget {
   final Series series;
   final String? heroTagPrefix;
   final Widget? trailing;
+  final LibraryEntry? entry;
+  final int? progressOverride;
 
   const CoverOnlyGridItem({
     super.key,
     required this.series,
     this.heroTagPrefix,
     this.trailing,
+    this.entry,
+    this.progressOverride,
   });
 
   @override
@@ -71,22 +261,38 @@ class CoverOnlyGridItem extends StatelessWidget {
       color: AppConstants.secondaryBackground,
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          EntryListLayoutHelper.buildCoverImage(
-            series: series,
-            heroTagPrefix: heroTagPrefix,
-            width: double.infinity,
-            borderRadius: BorderRadius.zero,
-          ),
-          if (trailing != null)
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: trailing!,
-            ),
-        ],
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final l10n = LocalizationService();
+          final settings = SettingsManager();
+
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              EntryListLayoutHelper.buildCoverImage(
+                series: series,
+                heroTagPrefix: heroTagPrefix,
+                width: double.infinity,
+                borderRadius: BorderRadius.zero,
+              ),
+              if (trailing != null)
+                Positioned(
+                  bottom: 8,
+                  right: 8,
+                  child: trailing!,
+                ),
+              EntryListLayoutHelper.buildTopOverlays(
+                context: context,
+                cardWidth: constraints.maxWidth,
+                series: series,
+                entry: entry,
+                progressOverride: progressOverride,
+                settings: settings,
+                l10n: l10n,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -97,6 +303,8 @@ class CompactGridItem extends StatelessWidget {
   final String? heroTagPrefix;
   final String displayTitle;
   final Widget? trailing;
+  final LibraryEntry? entry;
+  final int? progressOverride;
 
   const CompactGridItem({
     super.key,
@@ -104,6 +312,8 @@ class CompactGridItem extends StatelessWidget {
     this.heroTagPrefix,
     required this.displayTitle,
     this.trailing,
+    this.entry,
+    this.progressOverride,
   });
 
   @override
@@ -117,22 +327,38 @@ class CompactGridItem extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             margin: EdgeInsets.zero,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                EntryListLayoutHelper.buildCoverImage(
-                  series: series,
-                  heroTagPrefix: heroTagPrefix,
-                  width: double.infinity,
-                  borderRadius: BorderRadius.zero,
-                ),
-                if (trailing != null)
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: trailing!,
-                  ),
-              ],
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final l10n = LocalizationService();
+                final settings = SettingsManager();
+
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    EntryListLayoutHelper.buildCoverImage(
+                      series: series,
+                      heroTagPrefix: heroTagPrefix,
+                      width: double.infinity,
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    if (trailing != null)
+                      Positioned(
+                        bottom: 8,
+                        right: 8,
+                        child: trailing!,
+                      ),
+                    EntryListLayoutHelper.buildTopOverlays(
+                      context: context,
+                      cardWidth: constraints.maxWidth,
+                      series: series,
+                      entry: entry,
+                      progressOverride: progressOverride,
+                      settings: settings,
+                      l10n: l10n,
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

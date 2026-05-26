@@ -106,4 +106,27 @@ class GeneralSettingsDialogs {
       },
     );
   }
+
+  static String getLibraryProgressTypeName(LibraryProgressType type) {
+    final l10n = LocalizationService();
+    switch (type) {
+      case LibraryProgressType.chapters:
+        return l10n.translate('library_progress_type_chapters');
+      case LibraryProgressType.volumes:
+        return l10n.translate('library_progress_type_volumes');
+    }
+  }
+
+  static void showLibraryProgressTypeSelectionDialog(BuildContext context) {
+    final l10n = LocalizationService();
+    SelectionBottomSheet.showSelectionBottomSheet<LibraryProgressType>(
+      context: context,
+      title: l10n.translate('library_progress_type'),
+      subtitle: l10n.translate('library_progress_type_subtitle'),
+      options: LibraryProgressType.values,
+      currentValue: SettingsManager().libraryProgressType,
+      getLabel: getLibraryProgressTypeName,
+      onSelected: (type) => SettingsManager().setLibraryProgressType(type),
+    );
+  }
 }

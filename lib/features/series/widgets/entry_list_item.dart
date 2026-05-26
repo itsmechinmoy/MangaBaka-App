@@ -11,6 +11,7 @@ import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/features/series/widgets/progress_update_dialog.dart';
 
 class EntryListItem extends StatefulWidget {
   final Series series;
@@ -32,6 +33,45 @@ class EntryListItem extends StatefulWidget {
 
 class _EntryListItemState extends State<EntryListItem> {
   int? _optimisticProgress;
+
+
+
+  Widget? _buildRemainingChip(LibraryEntry? entry, SettingsManager settings, LocalizationService l10n) {
+    if (entry == null || !settings.showRemainingProgress) return null;
+
+    final isChapter = settings.libraryProgressType == LibraryProgressType.chapters;
+    final total = isChapter
+        ? (int.tryParse(widget.series.totalChapters) ?? 0)
+        : (int.tryParse(widget.series.finalVolume) ?? 0);
+    final progress = _optimisticProgress ?? (isChapter ? entry.progressChapter : entry.progressVolume) ?? 0;
+
+    if (total <= 0) return null;
+    final remaining = total - progress;
+    if (remaining <= 0) return null;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.8),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Text(
+        remaining.toString(),
+        style: TextStyle(
+          color: AppConstants.warningColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 11,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +100,17 @@ class _EntryListItemState extends State<EntryListItem> {
         // Reset optimistic progress if the DB entry catches up
         if (entry != null &&
             _optimisticProgress != null &&
-            entry.progressChapter == _optimisticProgress) {
+            (settings.libraryProgressType == LibraryProgressType.chapters
+                ? entry.progressChapter == _optimisticProgress
+                : entry.progressVolume == _optimisticProgress)) {
           _optimisticProgress = null;
         }
 
+        final remainingChip = _buildRemainingChip(entry, settings, l10n);
+
         return Stack(
           children: [
-            _buildContent(context, style, l10n, displayTitle, entry, settings),
+            _buildContent(context, style, l10n, displayTitle, entry, settings, remainingChip),
 
             if (!style.isGrid && isInLibrary)
               Positioned(
@@ -77,10 +121,10 @@ class _EntryListItemState extends State<EntryListItem> {
                         : (style == AppListStyle.compact ? 60.0 : 72.0)) +
                     12,
                 right: 12,
-                child: _buildProgressBar(context, entry, style),
+                child: _buildProgressBar(context, entry, style, settings),
               ),
 
-            if (!style.isGrid && settings.showQuickProgress)
+            if (!style.isGrid && (settings.showQuickProgress || settings.showLibraryProgress) && isInLibrary)
               Positioned(
                 bottom: style == AppListStyle.comfortable ? 12 : 8,
                 right: style == AppListStyle.comfortable ? 12 : 10,
@@ -93,6 +137,13 @@ class _EntryListItemState extends State<EntryListItem> {
                     });
                   },
                 ),
+              ),
+
+            if (!style.isGrid && settings.showRemainingProgress && remainingChip != null)
+              Positioned(
+                top: style == AppListStyle.comfortable ? 12 : 8,
+                right: style == AppListStyle.comfortable ? 12 : 10,
+                child: remainingChip,
               ),
 
             if (widget.ranking != null)
@@ -131,12 +182,17 @@ class _EntryListItemState extends State<EntryListItem> {
     BuildContext context,
     LibraryEntry entry,
     AppListStyle style,
+    SettingsManager settings,
   ) {
-    final totalChapters = int.tryParse(widget.series.totalChapters) ?? 0;
-    if (totalChapters <= 0) return const SizedBox.shrink();
+    final isChapter = settings.libraryProgressType == LibraryProgressType.chapters;
+    final total = isChapter
+        ? (int.tryParse(widget.series.totalChapters) ?? 0)
+        : (int.tryParse(widget.series.finalVolume) ?? 0);
+    if (total <= 0) return const SizedBox.shrink();
 
-    final progress = _optimisticProgress ?? entry.progressChapter ?? 0;
-    final percentage = (progress / totalChapters).clamp(0.0, 1.0);
+    final progress = _optimisticProgress ?? 
+        (isChapter ? entry.progressChapter : entry.progressVolume) ?? 0;
+    final percentage = (progress / total).clamp(0.0, 1.0);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
@@ -158,6 +214,7 @@ class _EntryListItemState extends State<EntryListItem> {
     String displayTitle,
     LibraryEntry? entry,
     SettingsManager settings,
+    Widget? remainingChip,
   ) {
     final trailingChip = (settings.showQuickProgress && entry != null)
         ? SeriesQuickActionButton(
@@ -178,6 +235,8 @@ class _EntryListItemState extends State<EntryListItem> {
           series: widget.series,
           heroTagPrefix: widget.heroTagPrefix,
           trailing: trailingChip,
+          entry: entry,
+          progressOverride: _optimisticProgress,
         );
       case AppListStyle.compactGrid:
         return CompactGridItem(
@@ -185,6 +244,8 @@ class _EntryListItemState extends State<EntryListItem> {
           heroTagPrefix: widget.heroTagPrefix,
           displayTitle: displayTitle,
           trailing: trailingChip,
+          entry: entry,
+          progressOverride: _optimisticProgress,
         );
       case AppListStyle.minimalList:
         return MinimalListItem(

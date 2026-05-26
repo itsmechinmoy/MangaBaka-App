@@ -310,6 +310,8 @@ class SettingsScreen extends StatelessWidget {
           builder: (context, _) => SettingsCategoryScreen(
             title: l10n.translate('display'),
             children: [
+              // Theme & Colors Section
+              SettingsSectionHeader(title: l10n.translate('theme_colors')),
               SettingsGroup(
                 children: [
                   SettingsItem(
@@ -330,8 +332,16 @@ class SettingsScreen extends StatelessWidget {
                       ThemeManager().currentTheme,
                     ),
                     onTap: () => ThemeDialogs.showThemeSelectionDialog(context),
+                    isLast: true,
                   ),
-                  const SettingsDivider(),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Layout & Columns Section
+              SettingsSectionHeader(title: l10n.translate('layout_columns')),
+              SettingsGroup(
+                children: [
                   SettingsItem(
                     icon: Icons.grid_view,
                     title: l10n.translate('list_style'),
@@ -340,53 +350,8 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     onTap: () =>
                         ListStyleDialogs.showListStyleSelectionDialog(context),
+                    isFirst: true,
                   ),
-                  const SettingsDivider(),
-                  SettingsSwitchItem(
-                    icon: Icons.add_circle_outline,
-                    title: l10n.translate('show_quick_progress'),
-                    subtitle: l10n.translate('show_quick_progress_subtitle'),
-                    value: SettingsManager().showQuickProgress,
-                    onChanged: (val) =>
-                        SettingsManager().setShowQuickProgress(val),
-                  ),
-                  const SettingsDivider(),
-                  SettingsSwitchItem(
-                    icon: Icons.layers_outlined,
-                    title: l10n.translate('separate_list'),
-                    subtitle: l10n.translate('separate_list_subtext'),
-                    value: SettingsManager().separateListStyles,
-                    onChanged: (val) =>
-                        SettingsManager().setSeparateListStyles(val),
-                    isLast: !SettingsManager().separateListStyles,
-                  ),
-
-                  if (SettingsManager().separateListStyles) ...[
-                    const SettingsDivider(),
-                    SettingsItem(
-                      icon: Icons.library_books_outlined,
-                      title: l10n.translate('library_list_style'),
-                      subtitle: ListStyleDialogs.getListStyleName(
-                        SettingsManager().libraryListStyle,
-                      ),
-                      onTap: () =>
-                          ListStyleDialogs.showLibraryListStyleSelectionDialog(
-                            context,
-                          ),
-                    ),
-                    const SettingsDivider(),
-                    SettingsItem(
-                      icon: Icons.explore_outlined,
-                      title: l10n.translate('browse_list_style'),
-                      subtitle: ListStyleDialogs.getListStyleName(
-                        SettingsManager().browseListStyle,
-                      ),
-                      onTap: () =>
-                          ListStyleDialogs.showBrowseListStyleSelectionDialog(
-                            context,
-                          ),
-                    ),
-                  ],
                   const SettingsDivider(),
                   SettingsItem(
                     icon: Icons.view_column_outlined,
@@ -407,33 +372,161 @@ class SettingsScreen extends StatelessWidget {
                         SettingsManager().setSeparateGridColumnCounts(val),
                     isLast: !SettingsManager().separateGridColumnCounts,
                   ),
-                  if (SettingsManager().separateGridColumnCounts) ...[
-                    const SettingsDivider(),
-                    SettingsItem(
-                      icon: Icons.library_books_outlined,
-                      title: l10n.translate('library_grid_columns'),
-                      subtitle: GridColumnDialogs.getGridColumnLabel(
-                        SettingsManager().libraryGridColumnCount,
+                  ClipRect(
+                    child: AnimatedSize(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (SettingsManager().separateGridColumnCounts) ...[
+                            const SettingsDivider(),
+                            SettingsItem(
+                              icon: Icons.library_books_outlined,
+                              title: l10n.translate('library_grid_columns'),
+                              subtitle: GridColumnDialogs.getGridColumnLabel(
+                                SettingsManager().libraryGridColumnCount,
+                              ),
+                              onTap: () =>
+                                  GridColumnDialogs.showLibraryGridColumnCountDialog(
+                                    context,
+                                  ),
+                            ),
+                            const SettingsDivider(),
+                            SettingsItem(
+                              icon: Icons.explore_outlined,
+                              title: l10n.translate('browse_grid_columns'),
+                              subtitle: GridColumnDialogs.getGridColumnLabel(
+                                SettingsManager().browseGridColumnCount,
+                              ),
+                              onTap: () =>
+                                  GridColumnDialogs.showBrowseGridColumnCountDialog(
+                                    context,
+                                  ),
+                              isLast: true,
+                            ),
+                          ],
+                        ],
                       ),
-                      onTap: () =>
-                          GridColumnDialogs.showLibraryGridColumnCountDialog(
-                            context,
-                          ),
                     ),
-                    const SettingsDivider(),
-                    SettingsItem(
-                      icon: Icons.explore_outlined,
-                      title: l10n.translate('browse_grid_columns'),
-                      subtitle: GridColumnDialogs.getGridColumnLabel(
-                        SettingsManager().browseGridColumnCount,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Progress Tracking Section
+              SettingsSectionHeader(title: l10n.translate('progress_tracking')),
+              SettingsGroup(
+                children: [
+                  SettingsSwitchItem(
+                    icon: Icons.analytics_outlined,
+                    title: l10n.translate('show_library_progress'),
+                    subtitle: l10n.translate('show_library_progress_subtitle'),
+                    value: SettingsManager().showLibraryProgress,
+                    onChanged: (val) =>
+                        SettingsManager().setShowLibraryProgress(val),
+                    isFirst: true,
+                  ),
+                  ClipRect(
+                    child: AnimatedSize(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (SettingsManager().showLibraryProgress) ...[
+                            const SettingsDivider(),
+                            SettingsItem(
+                              icon: Icons.menu_book_outlined,
+                              title: l10n.translate('library_progress_type'),
+                              subtitle: GeneralSettingsDialogs.getLibraryProgressTypeName(
+                                SettingsManager().libraryProgressType,
+                              ),
+                              onTap: () =>
+                                  GeneralSettingsDialogs.showLibraryProgressTypeSelectionDialog(
+                                    context,
+                                  ),
+                            ),
+                          ],
+                        ],
                       ),
-                      onTap: () =>
-                          GridColumnDialogs.showBrowseGridColumnCountDialog(
-                            context,
-                          ),
-                      isLast: true,
                     ),
-                  ],
+                  ),
+                  const SettingsDivider(),
+                  SettingsSwitchItem(
+                    icon: Icons.hourglass_empty,
+                    title: l10n.translate('show_remaining_progress'),
+                    subtitle: l10n.translate('show_remaining_progress_subtitle'),
+                    value: SettingsManager().showRemainingProgress,
+                    onChanged: (val) =>
+                        SettingsManager().setShowRemainingProgress(val),
+                  ),
+                  const SettingsDivider(),
+                  SettingsSwitchItem(
+                    icon: Icons.add_circle_outline,
+                    title: l10n.translate('show_quick_progress'),
+                    subtitle: l10n.translate('show_quick_progress_subtitle'),
+                    value: SettingsManager().showQuickProgress,
+                    onChanged: (val) =>
+                        SettingsManager().setShowQuickProgress(val),
+                    isLast: true,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // List Customization Section
+              SettingsSectionHeader(title: l10n.translate('list_customization')),
+              SettingsGroup(
+                children: [
+                  SettingsSwitchItem(
+                    icon: Icons.layers_outlined,
+                    title: l10n.translate('separate_list'),
+                    subtitle: l10n.translate('separate_list_subtext'),
+                    value: SettingsManager().separateListStyles,
+                    onChanged: (val) =>
+                        SettingsManager().setSeparateListStyles(val),
+                    isFirst: true,
+                    isLast: !SettingsManager().separateListStyles,
+                  ),
+                  ClipRect(
+                    child: AnimatedSize(
+                      duration: const Duration(milliseconds: 250),
+                      curve: Curves.easeInOut,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (SettingsManager().separateListStyles) ...[
+                            const SettingsDivider(),
+                            SettingsItem(
+                              icon: Icons.library_books_outlined,
+                              title: l10n.translate('library_list_style'),
+                              subtitle: ListStyleDialogs.getListStyleName(
+                                SettingsManager().libraryListStyle,
+                              ),
+                              onTap: () =>
+                                  ListStyleDialogs.showLibraryListStyleSelectionDialog(
+                                    context,
+                                  ),
+                            ),
+                            const SettingsDivider(),
+                            SettingsItem(
+                              icon: Icons.explore_outlined,
+                              title: l10n.translate('browse_list_style'),
+                              subtitle: ListStyleDialogs.getListStyleName(
+                                SettingsManager().browseListStyle,
+                              ),
+                              onTap: () =>
+                                  ListStyleDialogs.showBrowseListStyleSelectionDialog(
+                                    context,
+                                  ),
+                              isLast: true,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],

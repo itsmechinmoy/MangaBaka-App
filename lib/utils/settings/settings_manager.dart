@@ -33,10 +33,22 @@ class SettingsManager extends ChangeNotifier {
     _instance._collectionsListColumns = 0;
     _instance._worksListStyle = AppListStyle.comfortable;
     _instance._showQuickProgress = true;
+    _instance._showLibraryProgress = true;
+    _instance._libraryProgressType = LibraryProgressType.chapters;
+    _instance._showRemainingProgress = false;
   }
 
   bool _showQuickProgress = true;
   bool get showQuickProgress => _showQuickProgress;
+
+  bool _showLibraryProgress = true;
+  bool get showLibraryProgress => _showLibraryProgress;
+
+  LibraryProgressType _libraryProgressType = LibraryProgressType.chapters;
+  LibraryProgressType get libraryProgressType => _libraryProgressType;
+
+  bool _showRemainingProgress = false;
+  bool get showRemainingProgress => _showRemainingProgress;
 
   AppListStyle _currentListStyle = AppListStyle.compactGrid;
   AppListStyle get currentListStyle => _currentListStyle;
@@ -171,6 +183,12 @@ class SettingsManager extends ChangeNotifier {
       _worksListStyle = AppListStyle.values[worksStyleIndex];
     }
     _showQuickProgress = prefs.getBool(SettingsKeys.showQuickProgress) ?? true;
+    _showLibraryProgress = prefs.getBool(SettingsKeys.showLibraryProgress) ?? true;
+    final progressTypeIndex = prefs.getInt(SettingsKeys.libraryProgressType);
+    if (progressTypeIndex != null && progressTypeIndex >= 0 && progressTypeIndex < LibraryProgressType.values.length) {
+      _libraryProgressType = LibraryProgressType.values[progressTypeIndex];
+    }
+    _showRemainingProgress = prefs.getBool(SettingsKeys.showRemainingProgress) ?? false;
 
     notifyListeners();
   }
@@ -356,6 +374,30 @@ class SettingsManager extends ChangeNotifier {
     _showQuickProgress = value;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(SettingsKeys.showQuickProgress, value);
+    notifyListeners();
+  }
+
+  Future<void> setShowLibraryProgress(bool value) async {
+    if (_showLibraryProgress == value) return;
+    _showLibraryProgress = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(SettingsKeys.showLibraryProgress, value);
+    notifyListeners();
+  }
+
+  Future<void> setLibraryProgressType(LibraryProgressType type) async {
+    if (_libraryProgressType == type) return;
+    _libraryProgressType = type;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(SettingsKeys.libraryProgressType, type.index);
+    notifyListeners();
+  }
+
+  Future<void> setShowRemainingProgress(bool value) async {
+    if (_showRemainingProgress == value) return;
+    _showRemainingProgress = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(SettingsKeys.showRemainingProgress, value);
     notifyListeners();
   }
 }

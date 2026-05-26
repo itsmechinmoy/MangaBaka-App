@@ -24,4 +24,7 @@ class SettingsKeys {
   static const String collectionsGridColumns = '${AppConstants.prefixStorageKey}collections_grid_columns';
   static const String worksListStyle = '${AppConstants.prefixStorageKey}works_list_style';
   static const String showQuickProgress = '${AppConstants.prefixStorageKey}show_quick_progress';
+  static const String showLibraryProgress = '${AppConstants.prefixStorageKey}show_library_progress';
+  static const String libraryProgressType = '${AppConstants.prefixStorageKey}library_progress_type';
+  static const String showRemainingProgress = '${AppConstants.prefixStorageKey}show_remaining_progress';
 }
