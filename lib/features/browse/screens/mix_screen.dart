@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/browse/controllers/mix_controller.dart';
 import 'package:mangabaka_app/features/browse/models/mix_result.dart';
-import 'package:mangabaka_app/features/browse/models/search_filters.dart';
 import 'package:mangabaka_app/features/browse/utils/browse_helpers.dart';
-import 'package:mangabaka_app/features/browse/widgets/search_filter_bottom_sheet.dart';
 import 'package:mangabaka_app/features/browse/widgets/search_suggestions_panel.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
@@ -33,7 +31,6 @@ class _MixScreenState extends State<MixScreen> {
 
   List<AutocompleteSeriesResult> _suggestions = [];
   bool _showSuggestions = false;
-  SearchFilters _seedFilters = SearchFilters();
 
   @override
   void initState() {
@@ -106,45 +103,7 @@ class _MixScreenState extends State<MixScreen> {
     );
   }
 
-  void _openSeedFilterSheet() {
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
 
-    if (isLandscape) {
-      showDialog(
-        context: context,
-        builder: (context) => Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: SearchFilterBottomSheet(
-              isDialog: true,
-              initialFilters: _seedFilters,
-              onApply: (filters) => setState(() => _seedFilters = filters),
-            ),
-          ),
-        ),
-      );
-      return;
-    }
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: AppConstants.secondaryBackground,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppConstants.largeRadius),
-        ),
-      ),
-      builder: (context) => SearchFilterBottomSheet(
-        initialFilters: _seedFilters,
-        onApply: (filters) => setState(() => _seedFilters = filters),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -354,7 +313,6 @@ class _MixScreenState extends State<MixScreen> {
   }
 
   Widget _buildSeedSearchField(LocalizationService l10n) {
-    final hasActiveFilters = !_seedFilters.isEmpty;
     return TextField(
       controller: _searchCtrl,
       focusNode: _searchFocus,
@@ -364,11 +322,8 @@ class _MixScreenState extends State<MixScreen> {
         hintStyle: TextStyle(color: AppConstants.textMutedColor, fontSize: 16),
         prefixIcon: Icon(Icons.search, color: AppConstants.textColor, size: 22),
         prefixIconConstraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-        suffixIcon: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (_searchCtrl.text.isNotEmpty)
-              IconButton(
+        suffixIcon: _searchCtrl.text.isNotEmpty
+            ? IconButton(
                 icon: Icon(Icons.close, color: AppConstants.textMutedColor, size: 18),
                 onPressed: () {
                   _searchCtrl.clear();
@@ -377,20 +332,8 @@ class _MixScreenState extends State<MixScreen> {
                     _showSuggestions = false;
                   });
                 },
-              ),
-            IconButton(
-              icon: Icon(
-                Icons.tune_rounded,
-                color: hasActiveFilters
-                    ? AppConstants.accentColor
-                    : AppConstants.textMutedColor,
-                size: 20,
-              ),
-              onPressed: _openSeedFilterSheet,
-              tooltip: l10n.translate('filters'),
-            ),
-          ],
-        ),
+              )
+            : null,
         filled: true,
         fillColor: AppConstants.tertiaryBackground,
         border: OutlineInputBorder(
