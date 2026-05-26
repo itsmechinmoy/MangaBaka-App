@@ -228,68 +228,74 @@ class SettingsScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SettingsCategoryScreen(
-          title: l10n.translate('general'),
-          children: [
-            SettingsGroup(
+        builder: (context) => ListenableBuilder(
+          listenable: Listenable.merge([LocalizationService(), SettingsManager()]),
+          builder: (context, _) {
+            final l10n = LocalizationService();
+            return SettingsCategoryScreen(
+              title: l10n.translate('general'),
               children: [
-                SettingsItem(
-                  icon: Icons.language,
-                  title: l10n.translate('language'),
-                  subtitle: GeneralSettingsDialogs.getLanguageName(
-                    l10n.currentLanguage,
-                  ),
-                  onTap: () =>
-                      GeneralSettingsDialogs.showLanguageSelectionDialog(
-                        context,
+                SettingsGroup(
+                  children: [
+                    SettingsItem(
+                      icon: Icons.language,
+                      title: l10n.translate('language'),
+                      subtitle: GeneralSettingsDialogs.getLanguageName(
+                        l10n.currentLanguage,
                       ),
-                  isFirst: true,
-                ),
-                const SettingsDivider(),
-                SettingsItem(
-                  icon: Icons.start,
-                  title: l10n.translate('start_page'),
-                  subtitle: GeneralSettingsDialogs.getAppStartPageName(
-                    SettingsManager().defaultStartPage,
-                  ),
-                  onTap: () =>
-                      GeneralSettingsDialogs.showAppStartPageSelectionDialog(
-                        context,
+                      onTap: () =>
+                          GeneralSettingsDialogs.showLanguageSelectionDialog(
+                            context,
+                          ),
+                      isFirst: true,
+                    ),
+                    const SettingsDivider(),
+                    SettingsItem(
+                      icon: Icons.start,
+                      title: l10n.translate('start_page'),
+                      subtitle: GeneralSettingsDialogs.getAppStartPageName(
+                        SettingsManager().defaultStartPage,
                       ),
-                ),
-                const SettingsDivider(),
-                SettingsItem(
-                  icon: Icons.translate,
-                  title: l10n.translate('title_language'),
-                  subtitle: GeneralSettingsDialogs.getTitleLanguageName(
-                    SettingsManager().defaultTitleLanguage,
-                  ),
-                  onTap: () =>
-                      GeneralSettingsDialogs.showTitleLanguageSelectionDialog(
-                        context,
+                      onTap: () =>
+                          GeneralSettingsDialogs.showAppStartPageSelectionDialog(
+                            context,
+                          ),
+                    ),
+                    const SettingsDivider(),
+                    SettingsItem(
+                      icon: Icons.translate,
+                      title: l10n.translate('title_language'),
+                      subtitle: GeneralSettingsDialogs.getTitleLanguageName(
+                        SettingsManager().defaultTitleLanguage,
                       ),
-                ),
-                const SettingsDivider(),
-                SettingsSwitchItem(
-                  icon: Icons.help_outline,
-                  title: l10n.translate('show_tooltips'),
-                  subtitle: l10n.translate('show_tooltips_subtext'),
-                  value: SettingsManager().showTooltips,
-                  onChanged: (val) => SettingsManager().setShowTooltips(val),
-                ),
-                const SettingsDivider(),
-                SettingsSwitchItem(
-                  icon: Icons.search,
-                  title: l10n.translate('auto_suggest_browse'),
-                  subtitle: l10n.translate('auto_suggest_browse_subtitle'),
-                  value: SettingsManager().autoSuggestBrowse,
-                  onChanged: (val) =>
-                      SettingsManager().setAutoSuggestBrowse(val),
-                  isLast: true,
+                      onTap: () =>
+                          GeneralSettingsDialogs.showTitleLanguageSelectionDialog(
+                            context,
+                          ),
+                    ),
+                    const SettingsDivider(),
+                    SettingsSwitchItem(
+                      icon: Icons.help_outline,
+                      title: l10n.translate('show_tooltips'),
+                      subtitle: l10n.translate('show_tooltips_subtext'),
+                      value: SettingsManager().showTooltips,
+                      onChanged: (val) => SettingsManager().setShowTooltips(val),
+                    ),
+                    const SettingsDivider(),
+                    SettingsSwitchItem(
+                      icon: Icons.search,
+                      title: l10n.translate('auto_suggest_browse'),
+                      subtitle: l10n.translate('auto_suggest_browse_subtitle'),
+                      value: SettingsManager().autoSuggestBrowse,
+                      onChanged: (val) =>
+                          SettingsManager().setAutoSuggestBrowse(val),
+                      isLast: true,
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
