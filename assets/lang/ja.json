@@ -26,6 +26,8 @@
         "library_default": "ライブラリ追加時のデフォルト",
         "show_tooltips": "ツールチップを表示",
         "show_tooltips_subtext": "アイテムにホバーしたときに役立つ情報を表示します",
+        "show_library_tab_counts": "タブの件数を表示",
+        "show_library_tab_counts_subtitle": "ライブラリの各タブにシリーズの件数を表示します",
         "list": "リスト",
         "title_language": "デフォルトのタイトル言語",
         "separate_list": "リストスタイルを分ける",

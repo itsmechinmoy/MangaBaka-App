@@ -36,6 +36,7 @@ class SettingsManager extends ChangeNotifier {
     _instance._showLibraryProgress = true;
     _instance._libraryProgressType = LibraryProgressType.chapters;
     _instance._showRemainingProgress = false;
+    _instance._showLibraryTabCounts = true;
   }
 
   bool _showQuickProgress = true;
@@ -49,6 +50,9 @@ class SettingsManager extends ChangeNotifier {
 
   bool _showRemainingProgress = false;
   bool get showRemainingProgress => _showRemainingProgress;
+
+  bool _showLibraryTabCounts = true;
+  bool get showLibraryTabCounts => _showLibraryTabCounts;
 
   AppListStyle _currentListStyle = AppListStyle.compactGrid;
   AppListStyle get currentListStyle => _currentListStyle;
@@ -189,6 +193,7 @@ class SettingsManager extends ChangeNotifier {
       _libraryProgressType = LibraryProgressType.values[progressTypeIndex];
     }
     _showRemainingProgress = prefs.getBool(SettingsKeys.showRemainingProgress) ?? false;
+    _showLibraryTabCounts = prefs.getBool(SettingsKeys.showLibraryTabCounts) ?? true;
 
     notifyListeners();
   }
@@ -398,6 +403,14 @@ class SettingsManager extends ChangeNotifier {
     _showRemainingProgress = value;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(SettingsKeys.showRemainingProgress, value);
+    notifyListeners();
+  }
+
+  Future<void> setShowLibraryTabCounts(bool value) async {
+    if (_showLibraryTabCounts == value) return;
+    _showLibraryTabCounts = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(SettingsKeys.showLibraryTabCounts, value);
     notifyListeners();
   }
 }

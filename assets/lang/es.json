@@ -32,6 +32,8 @@
         "library_default": "Agregar a biblioteca por defecto",
         "show_tooltips": "Mostrar sugerencias",
         "show_tooltips_subtext": "Muestra información útil al pasar el cursor sobre los elementos",
+        "show_library_tab_counts": "Mostrar contadores de pestañas",
+        "show_library_tab_counts_subtitle": "Muestra el número de obras en cada pestaña de la biblioteca",
         "list": "Lista",
         "title_language": "Idioma de título por defecto",
         "separate_list": "Separar estilos de lista",

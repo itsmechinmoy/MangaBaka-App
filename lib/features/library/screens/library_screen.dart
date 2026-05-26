@@ -435,27 +435,29 @@ class _LibraryScreenState extends State<LibraryScreen>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(label),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppConstants.tertiaryBackground,
-                        borderRadius: BorderRadius.circular(
-                          AppConstants.pillRadius,
+                    if (settings.showLibraryTabCounts) ...[
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppConstants.tertiaryBackground,
+                          borderRadius: BorderRadius.circular(
+                            AppConstants.pillRadius,
+                          ),
+                        ),
+                        child: Text(
+                          NumberUtils.formatCount(count),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: AppConstants.textMutedColor,
+                          ),
                         ),
                       ),
-                      child: Text(
-                        NumberUtils.formatCount(count),
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: AppConstants.textMutedColor,
-                        ),
-                      ),
-                    ),
+                    ],
                   ],
                 ),
               );

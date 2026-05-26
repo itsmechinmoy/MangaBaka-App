@@ -487,7 +487,7 @@ class SettingsScreen extends StatelessWidget {
                     onChanged: (val) =>
                         SettingsManager().setSeparateListStyles(val),
                     isFirst: true,
-                    isLast: !SettingsManager().separateListStyles,
+                    isLast: false,
                   ),
                   ClipRect(
                     child: AnimatedSize(
@@ -520,12 +520,22 @@ class SettingsScreen extends StatelessWidget {
                                   ListStyleDialogs.showBrowseListStyleSelectionDialog(
                                     context,
                                   ),
-                              isLast: true,
+                              isLast: false,
                             ),
                           ],
                         ],
                       ),
                     ),
+                  ),
+                  const SettingsDivider(),
+                  SettingsSwitchItem(
+                    icon: Icons.tag,
+                    title: l10n.translate('show_library_tab_counts'),
+                    subtitle: l10n.translate('show_library_tab_counts_subtitle'),
+                    value: SettingsManager().showLibraryTabCounts,
+                    onChanged: (val) =>
+                        SettingsManager().setShowLibraryTabCounts(val),
+                    isLast: true,
                   ),
                 ],
               ),

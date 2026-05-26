@@ -29,6 +29,8 @@
     "library_default": "পুথিভঁৰালত যোগ কৰাৰ ডিফল্ট স্থান",
     "show_tooltips": "টুলটিপ দেখুৱাওক",
     "show_tooltips_subtext": "আইটেমবোৰৰ ওপৰত কাৰ্ছৰ ৰাখিলে সহায়ক তথ্য প্ৰদৰ্শন কৰক",
+    "show_library_tab_counts": "Show Tab Counts",
+    "show_library_tab_counts_subtitle": "Display the number of series in each library tab",
     "list": "তালিকা",
     "title_language": "ডিফল্ট শিৰোনামৰ ভাষা",
     "separate_list": "পৃথক তালিকা শৈলী",

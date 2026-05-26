@@ -39,6 +39,8 @@
         "library_progress_type_volumes": "Volumes",
         "show_remaining_progress": "Show Remaining Count",
         "show_remaining_progress_subtitle": "Display remaining chapter or volume count on library items",
+        "show_library_tab_counts": "Show Tab Counts",
+        "show_library_tab_counts_subtitle": "Display the number of series in each library tab",
         "remaining_chapters": "{count} left",
         "remaining_volumes": "{count} vols left",
         "list": "List",

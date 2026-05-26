@@ -27,6 +27,8 @@
         "library_default": "Ajout par défaut à la bibliothèque",
         "show_tooltips": "Afficher les info-bulles",
         "show_tooltips_subtext": "Afficher des informations utiles au survol des éléments",
+        "show_library_tab_counts": "Afficher le nombre d'éléments",
+        "show_library_tab_counts_subtitle": "Afficher le nombre de séries dans chaque onglet de la bibliothèque",
         "list": "Liste",
         "title_language": "Langue du titre par défaut",
         "separate_list": "Styles de liste séparés",
