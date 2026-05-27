@@ -90,6 +90,7 @@ jobs:
           echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/upload-keystore.jks
 
       - name: Build APKs
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -105,7 +106,7 @@ jobs:
           APK_FILES=(build/app/outputs/flutter-apk/app-*-release.apk)
           shopt -u nullglob
           if [ "${#APK_FILES[@]}" -eq 0 ]; then
-            echo "No split APKs found in build/app/outputs/flutter-apk/. Verify that flutter build apk --release --split-per-abi succeeded."
+            echo "No split APKs found in build/app/outputs/flutter-apk/. Check the Flutter build logs above and verify the project still supports ABI split APK output."
             exit 1
           fi
 
