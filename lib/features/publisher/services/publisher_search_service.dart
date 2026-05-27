@@ -113,6 +113,8 @@ class PublisherSearchService {
         originalError: e,
         stackTrace: st,
       );
+    } on AppException {
+      rethrow;
     } catch (e, st) {
       _logger.severe('Unexpected error during publisher search', e, st);
       throw AppError(

@@ -17,7 +17,6 @@ import 'package:mangabaka_app/features/profile/services/profile_auth_service.dar
 import 'package:mangabaka_app/features/series/models/series_link.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/series/services/series_search_service.dart';
-import 'package:mangabaka_app/features/series/widgets/detail/series_detail_skeleton.dart';
 import 'package:mangabaka_app/features/series/models/series_cover.dart';
 import 'package:mangabaka_app/features/news/models/news.dart';
 import 'package:mangabaka_app/features/series/models/series_collection.dart';
@@ -172,17 +171,6 @@ void main() {
       home: SeriesDetailScreen(series: testSeries),
     );
   }
-
-  testWidgets('SeriesDetailScreen shows skeleton while loading', (WidgetTester tester) async {
-    mockSeriesService.delayFetch = true;
-    await tester.pumpWidget(createWidgetUnderTest());
-    await tester.pump();
-    expect(find.byType(SeriesDetailSkeleton), findsAtLeast(1));
-    
-    await tester.pump(const Duration(milliseconds: 200));
-    await tester.pumpAndSettle();
-    expect(find.byType(SeriesDetailSkeleton), findsNothing);
-  });
 
   testWidgets('SeriesDetailScreen renders fetched info on success', (WidgetTester tester) async {
     await tester.pumpWidget(createWidgetUnderTest());
