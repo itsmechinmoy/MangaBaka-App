@@ -64,6 +64,17 @@ class LibraryGridList extends StatelessWidget {
     );
   }
 
+  /// Builds a single tappable library item with hover-prefetch for desktop.
+  Widget _buildEntryItem(LibraryEntry entry, SeriesService seriesService) {
+    return MouseRegion(
+      onEnter: (_) => seriesService.fetchSeries(entry.series.id),
+      child: GestureDetector(
+        onTap: () => onItemTap(entry.series),
+        child: EntryListItem(series: entry.series, isLibrary: true),
+      ),
+    );
+  }
+
   Widget _buildList(BuildContext context) {
     return ListenableBuilder(
       listenable: SettingsManager(),
@@ -97,16 +108,8 @@ class LibraryGridList extends StatelessWidget {
                     mainAxisSpacing: 10,
                   ),
             itemCount: items.length,
-            itemBuilder: (context, index) {
-              final entry = items[index];
-              return MouseRegion(
-                onEnter: (_) => seriesService.fetchSeries(entry.series.id),
-                child: GestureDetector(
-                  onTap: () => onItemTap(entry.series),
-                  child: EntryListItem(series: entry.series, isLibrary: true),
-                ),
-              );
-            },
+            itemBuilder: (context, index) =>
+                _buildEntryItem(items[index], seriesService),
           );
 
           if (columns > 0) {
@@ -128,16 +131,8 @@ class LibraryGridList extends StatelessWidget {
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.symmetric(horizontal: 12),
           itemCount: items.length,
-          itemBuilder: (context, index) {
-            final entry = items[index];
-            return MouseRegion(
-              onEnter: (_) => seriesService.fetchSeries(entry.series.id),
-              child: GestureDetector(
-                onTap: () => onItemTap(entry.series),
-                child: EntryListItem(series: entry.series, isLibrary: true),
-              ),
-            );
-          },
+          itemBuilder: (context, index) =>
+              _buildEntryItem(items[index], seriesService),
         );
       },
     );

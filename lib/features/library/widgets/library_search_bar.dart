@@ -7,6 +7,7 @@ import 'package:mangabaka_app/features/browse/models/search_filters.dart';
 import 'package:mangabaka_app/features/browse/widgets/search_filter_bottom_sheet.dart';
 import 'package:mangabaka_app/features/browse/widgets/search_suggestions_panel.dart';
 import 'package:mangabaka_app/features/browse/widgets/mb_search_bar_suffix.dart';
+import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart' show GhostTextEditingController;
 import 'package:mangabaka_app/utils/constants/app_constants.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/theme/theme_manager.dart';
@@ -68,8 +69,9 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
   }
 
   KeyEventResult _handleKeyEvent(FocusNode node, KeyEvent event) {
-    if (event is! KeyDownEvent && event is! KeyRepeatEvent)
+    if (event is! KeyDownEvent && event is! KeyRepeatEvent) {
       return KeyEventResult.ignored;
+    }
 
     final query = _controller.text;
     final hasSuggestions = _suggestions.isNotEmpty && _showSuggestions;
@@ -323,42 +325,41 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
     widget.onResultSelected?.call(result);
   }
 
-  void _acceptGhostText() {
-    if (_ghostSuffix.isEmpty || _suggestions.isEmpty) return;
-
-    AutocompleteSeriesResult? matchedResult;
-    String? matchedTitle;
-
+  /// Finds the suggestion whose title matches the current ghost suffix.
+  /// Returns `null` when there is no ghost text or no matching suggestion.
+  ({AutocompleteSeriesResult result, String title})? _findGhostMatch() {
+    if (_ghostSuffix.isEmpty || _suggestions.isEmpty) return null;
     final query = _controller.text;
-    for (var result in _suggestions) {
-      for (var t in result.allTitles) {
+    for (final result in _suggestions) {
+      for (final t in result.allTitles) {
         if (t.toLowerCase().startsWith(query.toLowerCase()) &&
             t.substring(query.length) == _ghostSuffix) {
-          matchedResult = result;
-          matchedTitle = t;
-          break;
+          return (result: result, title: t);
         }
       }
-      if (matchedResult != null) break;
     }
+    return null;
+  }
 
-    if (matchedTitle != null) {
-      _isNavigatingWithArrows = true;
-      _controller.value = _controller.value.copyWith(
-        text: matchedTitle,
-        selection: TextSelection.collapsed(offset: matchedTitle.length),
-      );
-      _originalQuery = matchedTitle;
-      _ghostSuffix = '';
-      _controller.ghostSuffix = '';
-      _isNavigatingWithArrows = false;
-      setState(() {
-        _suggestions = [];
-        _showSuggestions = false;
-        _selectedIndex = -1;
-      });
-      _updateOverlay();
-    }
+  void _acceptGhostText() {
+    final match = _findGhostMatch();
+    if (match == null) return;
+
+    _isNavigatingWithArrows = true;
+    _controller.value = _controller.value.copyWith(
+      text: match.title,
+      selection: TextSelection.collapsed(offset: match.title.length),
+    );
+    _originalQuery = match.title;
+    _ghostSuffix = '';
+    _controller.ghostSuffix = '';
+    _isNavigatingWithArrows = false;
+    setState(() {
+      _suggestions = [];
+      _showSuggestions = false;
+      _selectedIndex = -1;
+    });
+    _updateOverlay();
   }
 
   void _clear() {
@@ -493,6 +494,12 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
   }
 
   void _openFilterSheet() {
+    // Single callback shared by both the dialog (landscape) and bottom-sheet (portrait) paths.
+    void onApply(SearchFilters filters) {
+      setState(() => _currentFilters = filters);
+      widget.onFilterApplied?.call(filters);
+    }
+
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
 
@@ -511,10 +518,7 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
               isDialog: true,
               showLibrarySorts: true,
               initialFilters: _currentFilters,
-              onApply: (filters) {
-                setState(() => _currentFilters = filters);
-                widget.onFilterApplied?.call(filters);
-              },
+              onApply: onApply,
             ),
           ),
         ),
@@ -532,61 +536,14 @@ class _LibrarySearchBarState extends State<LibrarySearchBar> {
           top: Radius.circular(AppConstants.largeRadius),
         ),
       ),
-      builder: (context) {
-        return SearchFilterBottomSheet(
-          initialFilters: _currentFilters,
-          showLibrarySorts: true,
-          onApply: (filters) {
-            setState(() => _currentFilters = filters);
-            widget.onFilterApplied?.call(filters);
-          },
-        );
-      },
+      builder: (context) => SearchFilterBottomSheet(
+        initialFilters: _currentFilters,
+        showLibrarySorts: true,
+        onApply: onApply,
+      ),
     );
   }
 
-  AutocompleteSeriesResult? _getMatchedResultForGhost() {
-    if (_ghostSuffix.isEmpty || _suggestions.isEmpty) return null;
-    final query = _controller.text;
-    for (var result in _suggestions) {
-      for (var t in result.allTitles) {
-        if (t.toLowerCase().startsWith(query.toLowerCase()) &&
-            t.substring(query.length) == _ghostSuffix) {
-          return result;
-        }
-      }
-    }
-    return null;
-  }
+  AutocompleteSeriesResult? _getMatchedResultForGhost() => _findGhostMatch()?.result;
 }
 
-class GhostTextEditingController extends TextEditingController {
-  String ghostSuffix = '';
-  Color? ghostColor;
-
-  @override
-  TextSpan buildTextSpan({
-    required BuildContext context,
-    TextStyle? style,
-    required bool withComposing,
-  }) {
-    if (ghostSuffix.isEmpty) {
-      return super.buildTextSpan(
-        context: context,
-        style: style,
-        withComposing: withComposing,
-      );
-    }
-
-    return TextSpan(
-      style: style,
-      children: [
-        TextSpan(text: text),
-        TextSpan(
-          text: ghostSuffix,
-          style: style?.copyWith(color: ghostColor),
-        ),
-      ],
-    );
-  }
-}

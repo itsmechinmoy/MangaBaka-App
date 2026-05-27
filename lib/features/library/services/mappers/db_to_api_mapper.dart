@@ -4,6 +4,37 @@ import 'package:mangabaka_app/features/library/models/library_entry.dart' as api
 import 'package:mangabaka_app/features/series/models/series.dart' as api;
 
 class DbToApiMapper {
+  // ── JSON decode helpers ───────────────────────────────────────────────────
+
+  static List<String> _decodeStringArray(String? jsonStr) {
+    if (jsonStr == null || jsonStr.isEmpty) return [];
+    try {
+      final decoded = jsonDecode(jsonStr);
+      if (decoded is List) return decoded.cast<String>();
+    } catch (_) {}
+    return [];
+  }
+
+  static Map<String, dynamic>? _decodeJsonObject(String? jsonStr) {
+    if (jsonStr == null || jsonStr.isEmpty) return null;
+    try {
+      final decoded = jsonDecode(jsonStr);
+      if (decoded is Map) return decoded.cast<String, dynamic>();
+    } catch (_) {}
+    return null;
+  }
+
+  static List<dynamic> _decodeList(String? jsonStr) {
+    if (jsonStr == null || jsonStr.isEmpty) return [];
+    try {
+      final decoded = jsonDecode(jsonStr);
+      if (decoded is List) return decoded;
+    } catch (_) {}
+    return [];
+  }
+
+  // ── Mapping ───────────────────────────────────────────────────────────────
+
   static api.LibraryEntry libraryEntryFromDb(
     db.LibraryEntryWithSeries dbEntry,
   ) {
@@ -20,40 +51,7 @@ class DbToApiMapper {
   }
 
   static api.Series seriesFromDb(db.SeriesTableData dbSeries) {
-    List<String> decodeStringArray(String? jsonStr) {
-      if (jsonStr == null || jsonStr.isEmpty) return [];
-      try {
-        final decoded = jsonDecode(jsonStr);
-        if (decoded is List) {
-          return decoded.cast<String>();
-        }
-      } catch (_) {}
-      return [];
-    }
-
-    Map<String, dynamic>? decodeJsonObject(String? jsonStr) {
-      if (jsonStr == null || jsonStr.isEmpty) return null;
-      try {
-        final decoded = jsonDecode(jsonStr);
-        if (decoded is Map) {
-          return decoded.cast<String, dynamic>();
-        }
-      } catch (_) {}
-      return null;
-    }
-
-    List<dynamic> decodeList(String? jsonStr) {
-      if (jsonStr == null || jsonStr.isEmpty) return [];
-      try {
-        final decoded = jsonDecode(jsonStr);
-        if (decoded is List) {
-          return decoded;
-        }
-      } catch (_) {}
-      return [];
-    }
-
-    final source = decodeJsonObject(dbSeries.source);
+    final source = _decodeJsonObject(dbSeries.source);
     
     // Calculate combined average if source data is available
     String rating = dbSeries.rating ?? '';
@@ -75,29 +73,29 @@ class DbToApiMapper {
       title: dbSeries.title,
       nativeTitle: dbSeries.nativeTitle ?? '',
       romanizedTitle: dbSeries.romanizedTitle ?? '',
-      secondaryTitles: decodeStringArray(dbSeries.secondaryTitles),
+      secondaryTitles: _decodeStringArray(dbSeries.secondaryTitles),
       coverUrl: dbSeries.coverUrl,
       rawCoverUrl: dbSeries.coverUrl,
-      authors: decodeStringArray(dbSeries.authors),
-      artists: decodeStringArray(dbSeries.artists),
+      authors: _decodeStringArray(dbSeries.authors),
+      artists: _decodeStringArray(dbSeries.artists),
       description: dbSeries.description,
       year: dbSeries.year ?? '',
-      published: decodeJsonObject(dbSeries.published),
+      published: _decodeJsonObject(dbSeries.published),
       status: dbSeries.status ?? '',
       isLicensed: dbSeries.isLicensed ?? '',
       hasAnime: dbSeries.hasAnime ?? '',
-      anime: decodeJsonObject(dbSeries.anime),
+      anime: _decodeJsonObject(dbSeries.anime),
       contentRating: dbSeries.contentRating ?? '',
       type: dbSeries.type ?? '',
       rating: rating,
       finalVolume: dbSeries.finalVolume ?? '',
       totalChapters: dbSeries.totalChapters ?? '',
-      links: decodeList(dbSeries.links),
-      publishers: decodeStringArray(dbSeries.publishers),
-      genres: decodeStringArray(dbSeries.genres),
-      tags: decodeStringArray(dbSeries.tags),
+      links: _decodeList(dbSeries.links),
+      publishers: _decodeStringArray(dbSeries.publishers),
+      genres: _decodeStringArray(dbSeries.genres),
+      tags: _decodeStringArray(dbSeries.tags),
       lastUpdated: dbSeries.lastUpdated ?? '',
-      relationships: decodeJsonObject(dbSeries.relationships),
+      relationships: _decodeJsonObject(dbSeries.relationships),
       source: source,
     );
   }

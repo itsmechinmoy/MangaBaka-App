@@ -107,6 +107,13 @@ class _LibraryScreenState extends State<LibraryScreen>
     }
   }
 
+  /// Cancels the active stream subscription and clears stream references.
+  void _tearDownStream() {
+    _entriesStream = null;
+    _entriesSubscription?.cancel();
+    _entriesSubscription = null;
+  }
+
   void _onAuthStateChanged() {
     if (!mounted) return;
     _logger.info(
@@ -115,9 +122,7 @@ class _LibraryScreenState extends State<LibraryScreen>
     setState(() {
       _loggedIn = _auth.isLoggedIn;
       if (!_loggedIn) {
-        _entriesStream = null;
-        _entriesSubscription?.cancel();
-        _entriesSubscription = null;
+        _tearDownStream();
       } else {
         _setupStreamAndSync();
       }
@@ -139,8 +144,9 @@ class _LibraryScreenState extends State<LibraryScreen>
   void _performAutoTabSwitching() {
     if (!mounted ||
         (_query.isEmpty && _filters.isEmpty) ||
-        _tabController.indexIsChanging)
+        _tabController.indexIsChanging) {
       return;
+    }
 
     final currentTabKey = LibraryScreenConstants.tabs[_tabController.index].key;
 
@@ -176,17 +182,19 @@ class _LibraryScreenState extends State<LibraryScreen>
       _entriesSubscription?.cancel();
       _entriesSubscription = _entriesStream?.listen(_onEntriesUpdate);
     });
-    // Full import only on first load; recents sync on subsequent ones.
-    _libraryService
-        .performInitialSyncIfNeeded()
-        .then((_) async {
-          _logger.info('Initial sync task completed');
-          final incomplete = await _libraryService.isLibraryIncomplete();
-          if (mounted) setState(() => _isLibraryIncomplete = incomplete);
-        })
-        .catchError((e) {
-          _logger.severe('Initial sync task failed: $e');
-        });
+    // Full import only on first load; subsequent calls do an incremental catch-up.
+    _runInitialSync();
+  }
+
+  Future<void> _runInitialSync() async {
+    try {
+      await _libraryService.performInitialSyncIfNeeded();
+      _logger.info('Initial sync task completed');
+      final incomplete = await _libraryService.isLibraryIncomplete();
+      if (mounted) setState(() => _isLibraryIncomplete = incomplete);
+    } catch (e) {
+      _logger.severe('Initial sync task failed: $e');
+    }
   }
 
   Future<void> _loginAndReload() async {
@@ -397,6 +405,25 @@ class _LibraryScreenState extends State<LibraryScreen>
     );
   }
 
+  /// Pill badge showing an entry count inside a tab label.
+  Widget _buildTabCountBadge(int count) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: AppConstants.tertiaryBackground,
+        borderRadius: BorderRadius.circular(AppConstants.pillRadius),
+      ),
+      child: Text(
+        NumberUtils.formatCount(count),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: AppConstants.textMutedColor,
+        ),
+      ),
+    );
+  }
+
   PreferredSizeWidget _buildTabBar(bool isLandscape) {
     final l10n = LocalizationService();
     return PreferredSize(
@@ -405,8 +432,8 @@ class _LibraryScreenState extends State<LibraryScreen>
         stream: _entriesStream,
         builder: (context, snapshot) {
           final entries = snapshot.data ?? [];
-
           final settings = SettingsManager();
+
           final filterHelper = LibraryFilterHelper(
             allEntries: entries,
             query: _query,
@@ -423,40 +450,17 @@ class _LibraryScreenState extends State<LibraryScreen>
           return TabBar(
             controller: _tabController,
             isScrollable: true,
-            tabAlignment: isLandscape
-                ? TabAlignment.center
-                : TabAlignment.start,
+            tabAlignment: isLandscape ? TabAlignment.center : TabAlignment.start,
             tabs: LibraryScreenConstants.tabs.map((tab) {
               final count = counts[tab.key] ?? 0;
-              final label = l10n.translate(tab.key);
-
               return Tab(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(label),
+                    Text(l10n.translate(tab.key)),
                     if (settings.showLibraryTabCounts) ...[
                       const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppConstants.tertiaryBackground,
-                          borderRadius: BorderRadius.circular(
-                            AppConstants.pillRadius,
-                          ),
-                        ),
-                        child: Text(
-                          NumberUtils.formatCount(count),
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: AppConstants.textMutedColor,
-                          ),
-                        ),
-                      ),
+                      _buildTabCountBadge(count),
                     ],
                   ],
                 ),

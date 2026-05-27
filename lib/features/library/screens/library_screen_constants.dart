@@ -3,8 +3,6 @@ import 'package:mangabaka_app/utils/constants/app_constants.dart';
 
 class LibraryScreenConstants {
   static Color get backgroundColor => AppConstants.primaryBackground;
-  static Color get accentColor => AppConstants.accentColor;
-  static Color get errorColor => AppConstants.errorColor;
 
   static const List<LibraryTabDefinition> tabs = [
     LibraryTabDefinition(key: 'reading', label: 'Reading'),

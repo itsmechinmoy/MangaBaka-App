@@ -36,6 +36,53 @@ class LibraryBody extends StatelessWidget {
     required this.onItemTap,
   });
 
+  Widget _buildErrorState(BuildContext context, LocalizationService l10n, Object error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.error_outline_rounded, color: AppConstants.errorColor, size: 40),
+            const SizedBox(height: 12),
+            Text(
+              '${l10n.translate('failed_to_load')}: $error',
+              style: TextStyle(color: AppConstants.errorColor),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyLibraryState(BuildContext context, LocalizationService l10n) {
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.library_books_outlined, size: 48, color: AppConstants.textMutedColor),
+                  const SizedBox(height: 12),
+                  Text(
+                    l10n.translate('empty_library'),
+                    style: TextStyle(color: AppConstants.textMutedColor, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = LocalizationService();
@@ -53,69 +100,20 @@ class LibraryBody extends StatelessWidget {
     return StreamBuilder<List<LibraryEntry>>(
       stream: entriesStream,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting &&
-            !snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting && !snapshot.hasData) {
           final settings = SettingsManager();
           final isGrid = settings.separateListStyles
               ? settings.libraryListStyle.isGrid
               : settings.currentListStyle.isGrid;
           return SeriesListSkeleton(isGrid: isGrid);
         }
+
         if (snapshot.hasError) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.error_outline_rounded,
-                    color: AppConstants.errorColor,
-                    size: 40,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '${l10n.translate('failed_to_load')}: ${snapshot.error}',
-                    style: TextStyle(color: AppConstants.errorColor),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          );
+          return _buildErrorState(context, l10n, snapshot.error!);
         }
+
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return RefreshIndicator(
-            onRefresh: onRefresh,
-            child: ListView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.library_books_outlined,
-                          size: 48,
-                          color: AppConstants.textMutedColor,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          l10n.translate('empty_library'),
-                          style: TextStyle(
-                            color: AppConstants.textMutedColor,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
+          return _buildEmptyLibraryState(context, l10n);
         }
 
         final filterHelper = LibraryFilterHelper(
