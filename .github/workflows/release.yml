@@ -101,9 +101,11 @@ jobs:
           flutter build apk --release --split-per-abi
 
           mkdir -p "$ARTIFACT_DIR"
+          shopt -s nullglob
           APK_FILES=(build/app/outputs/flutter-apk/app-*-release.apk)
+          shopt -u nullglob
           if [ "${#APK_FILES[@]}" -eq 0 ]; then
-            echo "No split APKs were produced."
+            echo "No split APKs found in build/app/outputs/flutter-apk/. Verify that flutter build apk --release --split-per-abi succeeded."
             exit 1
           fi
 
