@@ -164,7 +164,16 @@ mixin SeriesDetailActionsMixin<T extends StatefulWidget> on State<T> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              await libraryService.deleteEntry(series.id);
+              try {
+                await libraryService.deleteEntry(series.id);
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(this.context).showSnackBar(
+                    SnackBar(content: Text(LocalizationService().translate('failed_to_delete'))),
+                  );
+                }
+                return;
+              }
               if (mounted) Navigator.pop(this.context);
             },
             child: Text(l10n.translate('confirm'), style: TextStyle(color: AppConstants.errorColor, fontWeight: FontWeight.bold)),

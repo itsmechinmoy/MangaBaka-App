@@ -11,7 +11,6 @@ import 'package:mangabaka_app/utils/settings/settings_manager.dart';
 import 'package:mangabaka_app/utils/localization/localization_service.dart';
 import 'package:mangabaka_app/utils/settings/settings_enums.dart';
 import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/features/series/widgets/progress_update_dialog.dart';
 
 class EntryListItem extends StatefulWidget {
   final Series series;

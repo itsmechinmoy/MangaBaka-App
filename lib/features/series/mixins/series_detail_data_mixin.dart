@@ -23,6 +23,7 @@ mixin SeriesDetailDataMixin<T extends StatefulWidget> on State<T> {
   bool isDataLoaded = false;
   bool fetchError = false;
 
+  /// Lazily fetches data for [tab] on first visit; subsequent visits are no-ops.
   Future<void> fetchTabData(String tab) async {
     if (!mounted) return;
     final id = series.id;
@@ -33,31 +34,26 @@ mixin SeriesDetailDataMixin<T extends StatefulWidget> on State<T> {
           final data = await seriesService.fetchSeriesCovers(id);
           if (mounted) setState(() => covers = data);
         }
-        break;
       case 'Related':
         if (related == null) {
           final data = await seriesService.fetchSeriesRelated(id);
           if (mounted) setState(() => related = data);
         }
-        break;
       case 'News':
         if (news == null) {
           final data = await seriesService.fetchSeriesNews(id);
           if (mounted) setState(() => news = data);
         }
-        break;
       case 'Collections':
         if (collections == null) {
           final data = await seriesService.fetchSeriesCollections(id);
           if (mounted) setState(() => collections = data);
         }
-        break;
       case 'Works':
         if (works == null) {
           final data = await seriesService.fetchSeriesWorks(id);
           if (mounted) setState(() => works = data);
         }
-        break;
     }
   }
 
@@ -73,7 +69,7 @@ mixin SeriesDetailDataMixin<T extends StatefulWidget> on State<T> {
       }
 
       if (mounted) {
-        // Defer heavy state update to next frame so route animation stays smooth
+        // Defer heavy state update to the next frame to keep route animation smooth.
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (!mounted) return;
           setState(() {

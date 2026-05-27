@@ -57,6 +57,7 @@ class EntryListLayoutHelper {
       ),
     );
   }
+
   static Widget buildTopOverlays({
     required BuildContext context,
     required double cardWidth,
@@ -89,8 +90,13 @@ class EntryListLayoutHelper {
 
     if (!hasRemainingBadge && !hasProgressBadge) return const SizedBox.shrink();
 
-    // Solid dark color
-    final chipBgColor = const Color(0xFF121214);
+    // Shared badge decoration: solid dark pill with a subtle drop shadow.
+    // Using a const BoxDecoration avoids repeated allocation across rebuilds.
+    BoxDecoration badgeDecoration() => const BoxDecoration(
+      color: Color(0xFF121214),
+      borderRadius: BorderRadius.all(Radius.circular(20)),
+      boxShadow: [BoxShadow(color: Color(0x4D000000), blurRadius: 4, offset: Offset(0, 2))],
+    );
 
     Widget buildProgressContent() {
       final prefix = isChapter ? 'Ch. ' : 'Vol. ';
@@ -149,17 +155,7 @@ class EntryListLayoutHelper {
             borderRadius: BorderRadius.circular(20),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: chipBgColor,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
+              decoration: badgeDecoration(),
               child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Row(
@@ -193,17 +189,7 @@ class EntryListLayoutHelper {
             left: 8,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: chipBgColor,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
+              decoration: badgeDecoration(),
               child: buildRemainingContent(),
             ),
           ),
@@ -218,17 +204,7 @@ class EntryListLayoutHelper {
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: chipBgColor,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
+                  decoration: badgeDecoration(),
                   child: buildProgressContent(),
                 ),
               ),
