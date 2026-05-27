@@ -21,6 +21,8 @@ The official, free and open source app for MangaBaka
 
 Go to the [releases](https://github.com/Oazzies/MangaBaka-App/releases) page.
 
+Android releases are published as ABI-specific APKs, so download the one that matches your device.
+
 *Requires Android 6.0 or higher.*
 
 ## Features
