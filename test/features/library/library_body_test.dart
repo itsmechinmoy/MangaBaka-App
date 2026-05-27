@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/features/library/widgets/library_body.dart';
-import 'package:mangabaka_app/features/profile/widgets/mb_login_prompt.dart';
+import 'package:mangabaka_app/features/profile/widgets/login/mb_login_prompt.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/features/browse/models/search_filters.dart';
 

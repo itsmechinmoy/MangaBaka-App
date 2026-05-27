@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/features/series/services/series_autocomplete_service.dart';
 import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

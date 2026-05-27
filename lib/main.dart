@@ -7,15 +7,15 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:mangabaka_app/features/navigation/screens/main_screen.dart';
 import 'package:mangabaka_app/features/navigation/screens/onboarding_screen.dart';
 import 'package:mangabaka_app/features/navigation/screens/animated_splash_screen.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+import 'package:mangabaka_app/core/theme/theme_manager.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/app_shortcuts.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/shared/widgets/app_shortcuts.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {

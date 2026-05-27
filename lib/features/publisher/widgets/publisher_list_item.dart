@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/publisher/models/publisher.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
 
 class PublisherListItem extends StatelessWidget {
   final Publisher publisher;

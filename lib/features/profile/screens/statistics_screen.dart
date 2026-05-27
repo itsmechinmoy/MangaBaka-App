@@ -1,14 +1,14 @@
 import 'package:mangabaka_app/features/profile/widgets/statistics/statistics_data_mixin.dart';
 import 'package:mangabaka_app/features/profile/widgets/statistics/standout_pick_card.dart';
-import 'package:mangabaka_app/features/profile/widgets/statistic_card.dart';
+import 'package:mangabaka_app/features/profile/widgets/statistics/statistic_card.dart';
 import 'package:flutter/material.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/theme/theme_manager.dart';
 import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
 import 'package:mangabaka_app/features/library/services/mappers/db_to_api_mapper.dart';
-import 'package:mangabaka_app/database/database.dart';
-import 'package:mangabaka_app/utils/widget_utils.dart';
+import 'package:mangabaka_app/core/database/database.dart';
+import 'package:mangabaka_app/core/utils/widget_utils.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});

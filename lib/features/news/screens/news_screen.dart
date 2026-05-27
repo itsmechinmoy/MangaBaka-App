@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/news/models/news.dart';
-import 'package:mangabaka_app/utils/app_shortcuts.dart';
+import 'package:mangabaka_app/shared/widgets/app_shortcuts.dart';
 import 'package:mangabaka_app/features/news/services/news_service.dart';
-import 'package:mangabaka_app/features/news/widgets/news_list.item.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
-import 'package:mangabaka_app/utils/widget_utils.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/features/news/widgets/news_list_item.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/theme/theme_manager.dart';
+import 'package:mangabaka_app/core/utils/widget_utils.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
 import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
 
 class NewsScreen extends StatefulWidget {

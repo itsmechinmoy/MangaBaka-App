@@ -1,21 +1,21 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:mangabaka_app/database/database.dart' as db;
+import 'package:mangabaka_app/core/database/database.dart' as db;
 import 'package:mangabaka_app/features/library/models/library_entry.dart' as api;
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
-import 'package:mangabaka_app/features/library/services/library_constants.dart';
+import 'package:mangabaka_app/features/library/constants/library_constants.dart';
 import 'package:mangabaka_app/features/library/services/mappers/db_to_api_mapper.dart';
 import 'package:mangabaka_app/features/library/models/library_sync_status.dart';
 import 'package:mangabaka_app/features/library/services/mixins/library_crud_mixin.dart';
 import 'package:mangabaka_app/features/library/services/mixins/library_sync_mixin.dart';
 
 
-import 'package:mangabaka_app/utils/services/logging_service.dart';
-import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
+import 'package:mangabaka_app/core/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
 
 abstract class LibraryServiceBase {
   db.AppDatabase get database;

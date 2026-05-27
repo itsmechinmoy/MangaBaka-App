@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mangabaka_app/database/database.dart' as db;
+import 'package:mangabaka_app/core/database/database.dart' as db;
 import 'package:mangabaka_app/features/library/services/mappers/db_to_api_mapper.dart';
 
 void main() {

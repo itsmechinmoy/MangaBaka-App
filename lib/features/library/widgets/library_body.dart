@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/features/library/screens/library_screen_constants.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/features/library/constants/library_screen_constants.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
-import 'package:mangabaka_app/features/library/screens/library_filter_helper.dart';
+import 'package:mangabaka_app/features/library/helpers/library_filter_helper.dart';
 import 'package:mangabaka_app/features/library/widgets/library_grid_list.dart';
-import 'package:mangabaka_app/features/profile/widgets/mb_login_prompt.dart';
-import 'package:mangabaka_app/features/series/widgets/series_list_skeleton.dart';
+import 'package:mangabaka_app/features/profile/widgets/login/mb_login_prompt.dart';
+import 'package:mangabaka_app/features/series/widgets/list/series_list_skeleton.dart';
 import 'package:mangabaka_app/features/series/models/series.dart' as api;
 import 'package:mangabaka_app/features/browse/models/search_filters.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
-import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/settings/settings_enums.dart';
 
 class LibraryBody extends StatelessWidget {
   final bool loggedIn;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/features/profile/widgets/theme_preview_item.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/theme_manager.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/features/profile/widgets/settings/theme_preview_item.dart';
 
 String _themeModeName(ThemeMode mode, LocalizationService localization) {
   switch (mode) {

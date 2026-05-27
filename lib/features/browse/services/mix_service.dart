@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:mangabaka_app/features/browse/models/mix_result.dart';
 import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
 
 class MixService {
   static const String _mixUrl = '${AppConstants.baseApiUrl}/series/mix';

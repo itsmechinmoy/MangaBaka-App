@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-import 'package:mangabaka_app/features/library/services/library_constants.dart';
-import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/features/library/constants/library_constants.dart';
+import 'package:mangabaka_app/core/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

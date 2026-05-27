@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 
-import 'package:mangabaka_app/utils/widget_utils.dart';
+import 'package:mangabaka_app/core/utils/widget_utils.dart';
 
 class FullScreenImageScreen extends StatefulWidget {
   final List<String> imageUrls;

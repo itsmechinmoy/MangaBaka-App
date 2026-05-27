@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
 
 class WindowsAuthHandler {
   static final _logger = LoggingService.logger;

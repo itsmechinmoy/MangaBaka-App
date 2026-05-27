@@ -5,7 +5,7 @@ import 'package:mangabaka_app/features/news/models/news.dart';
 import 'package:mangabaka_app/features/series/models/series_collection.dart';
 import 'package:mangabaka_app/features/series/models/series_work.dart';
 import 'package:mangabaka_app/features/series/models/series_link.dart';
-import 'package:mangabaka_app/features/series/services/series_id_service.dart';
+import 'package:mangabaka_app/features/series/services/series_service.dart';
 
 mixin SeriesDetailDataMixin<T extends StatefulWidget> on State<T> {
   SeriesService get seriesService;

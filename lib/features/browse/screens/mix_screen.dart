@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/browse/controllers/mix_controller.dart';
 import 'package:mangabaka_app/features/browse/models/mix_result.dart';
 import 'package:mangabaka_app/features/browse/utils/browse_helpers.dart';
-import 'package:mangabaka_app/features/browse/widgets/search_suggestions_panel.dart';
+import 'package:mangabaka_app/features/browse/widgets/search/search_suggestions_panel.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart';
 import 'package:mangabaka_app/features/series/services/series_autocomplete_service.dart';
-import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
-import 'package:mangabaka_app/utils/transitions/app_transitions.dart';
-import 'package:mangabaka_app/utils/widget_utils.dart';
+import 'package:mangabaka_app/features/series/widgets/list/entry_list_item.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
+import 'package:mangabaka_app/shared/transitions/app_transitions.dart';
+import 'package:mangabaka_app/core/utils/widget_utils.dart';
 
 class MixScreen extends StatefulWidget {
   const MixScreen({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mangabaka_app/database/database.dart';
+import 'package:mangabaka_app/core/database/database.dart';
 import 'package:mangabaka_app/features/profile/services/statistics_service.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
 
 mixin StatisticsDataMixin<T extends StatefulWidget> on State<T> {
   late final StatisticsService statisticsService;

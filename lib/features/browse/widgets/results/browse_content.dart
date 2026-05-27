@@ -1,0 +1,281 @@
+import 'package:flutter/material.dart';
+import 'package:mangabaka_app/features/series/models/series.dart';
+import 'package:mangabaka_app/features/series/widgets/list/entry_list_item.dart';
+import 'package:mangabaka_app/features/browse/widgets/shortcuts/browse_shortcuts.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/settings/settings_enums.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/features/series/widgets/list/series_list_skeleton.dart';
+import 'package:mangabaka_app/features/series/services/series_service.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+
+import 'package:mangabaka_app/features/browse/models/browse_type.dart';
+import 'package:mangabaka_app/features/publisher/models/publisher.dart';
+import 'package:mangabaka_app/features/publisher/widgets/publisher_list_item.dart';
+import 'package:mangabaka_app/features/staff/models/staff.dart';
+import 'package:mangabaka_app/features/staff/widgets/staff_list_item.dart';
+
+class BrowseContent extends StatelessWidget {
+  final List<dynamic> searchResults;
+  final BrowseType browseType;
+  final bool isLoading;
+  final bool isLoadingMore;
+  final String? error;
+  final ScrollController scrollController;
+  final VoidCallback onRetry;
+  final Function(Series) onNavigateToDetail;
+  final Function(String, String, {String? type, String? staff, String? publisher}) onNavigateToResults;
+  final VoidCallback onNavigateToMix;
+
+  const BrowseContent({
+    super.key,
+    required this.searchResults,
+    required this.browseType,
+    required this.isLoading,
+    required this.isLoadingMore,
+    required this.error,
+    required this.scrollController,
+    required this.onRetry,
+    required this.onNavigateToDetail,
+    required this.onNavigateToResults,
+    required this.onNavigateToMix,
+  });
+
+
+  Widget _buildLoadingState() {
+    if (browseType == BrowseType.series) {
+      final settings = SettingsManager();
+      final activeStyle = settings.separateListStyles ? settings.browseListStyle : settings.currentListStyle;
+      final isGrid = activeStyle.isGrid;
+      
+      return SeriesListSkeleton(isGrid: isGrid);
+    }
+    
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildErrorState(LocalizationService l10n) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, color: AppConstants.errorColor, size: 48),
+          const SizedBox(height: 16),
+          Text(
+            error ?? 'An unexpected error occurred.',
+            style: TextStyle(color: AppConstants.errorColor),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(onPressed: onRetry, child: Text(l10n.translate('retry'))),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultsList(LocalizationService l10n) {
+    return switch (browseType) {
+      BrowseType.series => _buildSeriesResults(l10n),
+      BrowseType.publishers => _buildPublisherResults(),
+      BrowseType.staff => _buildStaffResults(),
+      _ => Center(child: Text(l10n.translate('no_results'))),
+    };
+  }
+
+  /// Builds a single tappable series item with hover-prefetch for desktop.
+  Widget _buildSeriesItem(Series series, {required bool isGrid}) {
+    final seriesService = getIt<SeriesService>();
+    return MouseRegion(
+      onEnter: (_) => seriesService.fetchSeries(series.id),
+      child: InkWell(
+        onTap: () => onNavigateToDetail(series),
+        child: EntryListItem(
+          key: ValueKey('${isGrid ? 'grid' : 'list'}_${series.id}'),
+          series: series,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSeriesResults(LocalizationService l10n) {
+    return ListenableBuilder(
+      listenable: Listenable.merge([SettingsManager(), l10n]),
+      builder: (context, _) {
+        final settings = SettingsManager();
+        final activeStyle = settings.separateListStyles
+            ? settings.browseListStyle
+            : settings.currentListStyle;
+        final isGrid = activeStyle.isGrid;
+        final itemCount = searchResults.length + (isLoadingMore ? 1 : 0);
+
+        if (isGrid) {
+          return GridView.builder(
+            controller: scrollController,
+            padding: const EdgeInsets.all(12),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 160,
+              childAspectRatio: 0.65,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: itemCount,
+            itemBuilder: (context, index) {
+              if (index == searchResults.length) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return _buildSeriesItem(searchResults[index] as Series, isGrid: true);
+            },
+          );
+        }
+
+        return ListView.builder(
+          controller: scrollController,
+          itemCount: itemCount,
+          itemBuilder: (context, index) {
+            if (index == searchResults.length) {
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            return _buildSeriesItem(searchResults[index] as Series, isGrid: false);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildPublisherResults() {
+    return ListView.builder(
+      controller: scrollController,
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      itemCount: searchResults.length + (isLoadingMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index == searchResults.length) {
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final publisher = searchResults[index] as Publisher;
+        return PublisherListItem(
+          publisher: publisher,
+          onTap: () => onNavigateToResults(
+            publisher.name,
+            'name_asc',
+            publisher: publisher.name,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildStaffResults() {
+    return ListView.builder(
+      controller: scrollController,
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      itemCount: searchResults.length + (isLoadingMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index == searchResults.length) {
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final staff = searchResults[index] as Staff;
+        return StaffListItem(
+          staff: staff,
+          onTap: () => onNavigateToResults(
+            staff.name,
+            'popularity_desc',
+            staff: staff.name,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Returns an appropriate icon for the empty / prompt state of each browse type.
+  IconData _emptyStateIconFor(BrowseType type) => switch (type) {
+        BrowseType.publishers => Icons.business,
+        BrowseType.staff => Icons.people,
+        _ => Icons.search,
+      };
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: LocalizationService(),
+      builder: (context, _) {
+        final l10n = LocalizationService();
+        
+        Widget content;
+        if (searchResults.isEmpty && !isLoading && error == null) {
+          if (browseType == BrowseType.series) {
+            content = BrowseShortcuts(
+              key: const ValueKey('shortcuts'),
+              onNavigate: onNavigateToResults,
+              onMix: onNavigateToMix,
+            );
+
+          } else {
+            content = Center(
+              key: const ValueKey('search_prompt'),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    _emptyStateIconFor(browseType),
+                    size: 64,
+                    color: AppConstants.textMutedColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.translate('no_results'),
+                    style: TextStyle(
+                      color: AppConstants.textMutedColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        } else if (isLoading && searchResults.isEmpty) {
+          content = _buildLoadingState();
+        } else if (error != null && searchResults.isEmpty) {
+          content = _buildErrorState(l10n);
+        } else if (searchResults.isNotEmpty) {
+          content = _buildResultsList(l10n);
+        } else {
+          content = const SizedBox.shrink(key: ValueKey('empty'));
+        }
+
+        return Expanded(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 400),
+            layoutBuilder: (currentChild, previousChildren) {
+              return Stack(
+                alignment: Alignment.topCenter,
+                children: [
+                  ...previousChildren,
+                  if (currentChild != null) currentChild,
+                ],
+              );
+            },
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            child: content,
+          ),
+        );
+      },
+    );
+  }
+}

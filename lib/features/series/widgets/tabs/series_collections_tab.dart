@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/models/series_collection.dart';
-import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
-import 'package:mangabaka_app/utils/widget_utils.dart';
+import 'package:mangabaka_app/features/series/widgets/common/series_section_header.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/utils/widget_utils.dart';
 
 class SeriesCollectionsTab extends StatelessWidget {
   final List<SeriesCollection>? collections;

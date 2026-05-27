@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mangabaka_app/utils/date_utils.dart' as mb_date;
-import 'package:mangabaka_app/features/series/widgets/mini_badge.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/core/utils/date_utils.dart' as mb_date;
+import 'package:mangabaka_app/features/series/widgets/common/mini_badge.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'date_dialog.dart';
 
 class DateRangeChip extends StatelessWidget {

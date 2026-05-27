@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
 import 'package:mangabaka_app/features/browse/screens/browse_screen.dart';
-import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart';
-import 'package:mangabaka_app/features/browse/widgets/browse_shortcuts.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/features/browse/widgets/search/mb_search_bar.dart';
+import 'package:mangabaka_app/features/browse/widgets/shortcuts/browse_shortcuts.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
 import 'package:mangabaka_app/features/series/services/series_search_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
 import 'package:mangabaka_app/features/publisher/services/publisher_search_service.dart';
-import 'package:mangabaka_app/features/series/services/series_id_service.dart';
+import 'package:mangabaka_app/features/series/services/series_service.dart';
 
 class MockSeriesSearchService extends Fake implements SeriesSearchService {
   @override

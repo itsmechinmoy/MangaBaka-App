@@ -6,13 +6,13 @@ import 'package:mangabaka_app/features/library/screens/library_screen.dart';
 import 'package:mangabaka_app/features/news/screens/news_screen.dart';
 import 'package:mangabaka_app/features/profile/screens/profile_screen.dart';
 import 'package:mangabaka_app/features/library/widgets/sync_progress_overlay.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/theme_manager.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
-import 'package:mangabaka_app/utils/widget_utils.dart';
+import 'package:mangabaka_app/core/utils/widget_utils.dart';
 
 // ---------------------------------------------------------------------------
 // Nav destination data

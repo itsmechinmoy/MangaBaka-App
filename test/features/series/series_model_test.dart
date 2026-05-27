@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
-import 'package:mangabaka_app/utils/settings/settings_enums.dart';
+import 'package:mangabaka_app/core/settings/settings_enums.dart';
 
 void main() {
   group('Series Model', () {

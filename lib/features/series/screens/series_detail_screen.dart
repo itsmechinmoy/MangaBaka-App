@@ -1,25 +1,25 @@
 import 'dart:ui';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/app_shortcuts.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/shared/widgets/app_shortcuts.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/features/series/services/series_id_service.dart';
-import 'package:mangabaka_app/features/series/widgets/series_detail_app_bar.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+import 'package:mangabaka_app/features/series/services/series_service.dart';
+import 'package:mangabaka_app/features/series/widgets/detail/series_detail_app_bar.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/theme/theme_manager.dart';
 import 'package:mangabaka_app/features/series/widgets/layouts/series_detail_mobile_layout.dart';
 import 'package:mangabaka_app/features/series/widgets/layouts/series_detail_wide_layout.dart';
-import 'package:mangabaka_app/features/series/widgets/series_detail_error_banner.dart';
-import 'package:mangabaka_app/features/series/widgets/series_detail_fab.dart';
-import 'package:mangabaka_app/features/series/widgets/series_detail_tab_content.dart';
+import 'package:mangabaka_app/features/series/widgets/detail/series_detail_error_banner.dart';
+import 'package:mangabaka_app/features/series/widgets/detail/series_detail_fab.dart';
+import 'package:mangabaka_app/features/series/widgets/detail/series_detail_tab_content.dart';
 import 'package:mangabaka_app/features/series/mixins/series_detail_actions_mixin.dart';
 import 'package:mangabaka_app/features/series/mixins/series_detail_data_mixin.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
-import 'package:mangabaka_app/utils/transitions/app_transitions.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
+import 'package:mangabaka_app/shared/transitions/app_transitions.dart';
 import 'package:mangabaka_app/features/browse/screens/browse_results_screen.dart';
 
 class SeriesDetailScreen extends StatefulWidget {

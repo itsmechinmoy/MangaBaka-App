@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:mangabaka_app/database/database.dart' as db;
+import 'package:mangabaka_app/core/database/database.dart' as db;
 import 'package:mangabaka_app/features/library/models/library_entry.dart' as api;
 import 'package:mangabaka_app/features/series/models/series.dart' as api;
 

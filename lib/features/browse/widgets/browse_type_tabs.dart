@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/browse/models/browse_type.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
 
 class BrowseTypeTabs extends StatelessWidget {
   final BrowseType selectedType;

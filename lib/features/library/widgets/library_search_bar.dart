@@ -4,13 +4,13 @@ import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/features/library/services/library_autocomplete_service.dart';
 import 'package:mangabaka_app/features/series/models/autocomplete_series_result.dart';
 import 'package:mangabaka_app/features/browse/models/search_filters.dart';
-import 'package:mangabaka_app/features/browse/widgets/search_filter_bottom_sheet.dart';
-import 'package:mangabaka_app/features/browse/widgets/search_suggestions_panel.dart';
-import 'package:mangabaka_app/features/browse/widgets/mb_search_bar_suffix.dart';
-import 'package:mangabaka_app/features/browse/widgets/mb_search_bar.dart' show GhostTextEditingController;
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
+import 'package:mangabaka_app/features/browse/widgets/filters/search_filter_bottom_sheet.dart';
+import 'package:mangabaka_app/features/browse/widgets/search/search_suggestions_panel.dart';
+import 'package:mangabaka_app/features/browse/widgets/search/mb_search_bar_suffix.dart';
+import 'package:mangabaka_app/features/browse/widgets/search/mb_search_bar.dart' show GhostTextEditingController;
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/theme/theme_manager.dart';
 
 class LibrarySearchBar extends StatefulWidget {
   final ValueChanged<String> onChanged;

@@ -5,8 +5,8 @@ import 'package:mangabaka_app/features/profile/services/statistics_service.dart'
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'package:mangabaka_app/features/profile/models/mb_profile.dart';
-import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
 
 mixin ProfileDataMixin<T extends StatefulWidget> on State<T> {
   ProfileAuthService get auth;

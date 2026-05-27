@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
-import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
+import 'package:mangabaka_app/features/series/widgets/list/entry_list_item.dart';
 import 'package:mangabaka_app/features/series/models/series.dart' as api;
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/settings/settings_manager.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/settings/settings_enums.dart';
-import 'package:mangabaka_app/features/series/services/series_id_service.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/settings/settings_manager.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/settings/settings_enums.dart';
+import 'package:mangabaka_app/features/series/services/series_service.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
 
 class LibraryGridList extends StatelessWidget {
   final List<LibraryEntry> items;

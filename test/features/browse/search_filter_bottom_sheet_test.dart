@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mangabaka_app/features/browse/widgets/search_filter_bottom_sheet.dart';
+import 'package:mangabaka_app/features/browse/widgets/filters/search_filter_bottom_sheet.dart';
 import 'package:mangabaka_app/features/browse/models/search_filters.dart';
 import 'package:mangabaka_app/features/series/services/series_search_service.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
 
 class MockSeriesSearchService extends Fake implements SeriesSearchService {
   @override

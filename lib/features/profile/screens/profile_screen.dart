@@ -1,21 +1,21 @@
-import 'package:mangabaka_app/database/database.dart';
+import 'package:mangabaka_app/core/database/database.dart';
 import 'package:mangabaka_app/features/profile/services/snapshot_service.dart';
-import 'package:mangabaka_app/utils/app_shortcuts.dart';
+import 'package:mangabaka_app/shared/widgets/app_shortcuts.dart';
 import 'package:mangabaka_app/features/profile/services/statistics_service.dart';
 import 'package:flutter/material.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/features/profile/screens/settings_screen.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/utils/localization/localization_service.dart';
-import 'package:mangabaka_app/utils/theme/theme_manager.dart';
-import 'package:mangabaka_app/features/profile/widgets/mb_login_prompt.dart';
-import 'package:mangabaka_app/features/profile/widgets/profile_statistics_section.dart';
-import 'package:mangabaka_app/features/profile/widgets/profile_snapshot_section.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+import 'package:mangabaka_app/core/localization/localization_service.dart';
+import 'package:mangabaka_app/core/theme/theme_manager.dart';
+import 'package:mangabaka_app/features/profile/widgets/login/mb_login_prompt.dart';
+import 'package:mangabaka_app/features/profile/widgets/statistics/profile_statistics_section.dart';
+import 'package:mangabaka_app/features/profile/widgets/snapshot/profile_snapshot_section.dart';
 import 'package:mangabaka_app/features/profile/mixins/profile_data_mixin.dart';
-import 'package:mangabaka_app/utils/widget_utils.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/core/utils/widget_utils.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

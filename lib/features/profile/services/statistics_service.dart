@@ -1,6 +1,6 @@
-import 'package:mangabaka_app/database/database.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
-import 'package:mangabaka_app/utils/exceptions/app_exceptions.dart';
+import 'package:mangabaka_app/core/database/database.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
+import 'package:mangabaka_app/core/exceptions/app_exceptions.dart';
 import 'package:drift/drift.dart' as drift;
 
 class StatisticsService {

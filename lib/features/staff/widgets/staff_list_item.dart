@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/staff/models/staff.dart';
-import 'package:mangabaka_app/utils/constants/app_constants.dart';
-import 'package:mangabaka_app/utils/widget_utils.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/utils/widget_utils.dart';
 
 class StaffListItem extends StatelessWidget {
   final Staff staff;

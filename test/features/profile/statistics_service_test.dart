@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mangabaka_app/features/profile/services/statistics_service.dart';
-import 'package:mangabaka_app/database/database.dart';
-import 'package:mangabaka_app/utils/di/service_locator.dart';
-import 'package:mangabaka_app/utils/services/logging_service.dart';
+import 'package:mangabaka_app/core/database/database.dart';
+import 'package:mangabaka_app/core/di/service_locator.dart';
+import 'package:mangabaka_app/core/logging/logging_service.dart';
 import 'package:drift/native.dart';
 import 'package:drift/drift.dart' as drift;
 
