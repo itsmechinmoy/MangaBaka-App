@@ -268,14 +268,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen>
                                 if (fetchError)
                                   SeriesDetailErrorBanner(onRetry: _retryFetch),
                                 SliverToBoxAdapter(
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(AppConstants.largeRadius),
-                                        topRight: Radius.circular(AppConstants.largeRadius),
-                                      ),
-                                    ),
-                                    child: isWide
+                                  child: isWide
                                         ? SeriesDetailWideLayout(
                                             series: _activeSeries,
                                             entry: entry,
@@ -314,7 +307,6 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen>
                                             buildTabContent: (hPadding) =>
                                                 _buildTabContent(entry, l10n, hPadding),
                                           ),
-                                  ),
                                 ),
                                 const SliverToBoxAdapter(child: SizedBox(height: 80)),
                               ],

@@ -11,16 +11,18 @@ class SeriesSegmentedControl extends StatelessWidget {
     required this.onTabChanged,
   });
 
+  static const List<Map<String, Object>> _tabs = [
+    {'value': 'Information', 'icon': Icons.info_outline},
+    {'value': 'Covers', 'icon': Icons.image_outlined},
+    {'value': 'Related', 'icon': Icons.auto_stories_outlined},
+    {'value': 'News', 'icon': Icons.newspaper_outlined},
+    {'value': 'Collections', 'icon': Icons.collections_bookmark_outlined},
+    {'value': 'Works', 'icon': Icons.work_outline},
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final tabs = [
-      {'value': 'Information', 'icon': Icons.info_outline},
-      {'value': 'Covers', 'icon': Icons.image_outlined},
-      {'value': 'Related', 'icon': Icons.auto_stories_outlined},
-      {'value': 'News', 'icon': Icons.newspaper_outlined},
-      {'value': 'Collections', 'icon': Icons.collections_bookmark_outlined},
-      {'value': 'Works', 'icon': Icons.work_outline},
-    ];
+    final tabs = _tabs;
 
     final selectedIndex = tabs.indexWhere((t) => t['value'] == selectedTab);
 

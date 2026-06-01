@@ -217,13 +217,16 @@ class _SeriesDetailsGridState extends State<SeriesDetailsGrid> {
     child: Text(text, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: fg, letterSpacing: 0.5)),
   );
 
-  Widget _badgeRow(String type, String? status) => Row(
-    children: [
-      _badge(type.toUpperCase(), AppConstants.tertiaryBackground, AppConstants.textColor),
-      const SizedBox(width: 8),
-      _badge(status?.toUpperCase() ?? '', _statusColor(status).withValues(alpha: 0.2), _statusColor(status)),
-    ],
-  );
+  Widget _badgeRow(String type, String? status) {
+    final statusColor = _statusColor(status);
+    return Row(
+      children: [
+        _badge(type.toUpperCase(), AppConstants.tertiaryBackground, AppConstants.textColor),
+        const SizedBox(width: 8),
+        _badge(status?.toUpperCase() ?? '', statusColor.withValues(alpha: 0.2), statusColor),
+      ],
+    );
+  }
 
   Widget _metadataRow(Series s) {
     final avg = s.combinedAverage;
