@@ -47,18 +47,25 @@ class SeriesDetailAppBar extends StatelessWidget {
     
     return SliverLayoutBuilder(
       builder: (context, constraints) {
-        // Approximate collapse detection
         final double offset = constraints.scrollOffset;
-        final bool isCollapsed = offset > (expandedHeight - 100);
         final isDark = ThemeManager().isDarkMode;
-        
+
+        // Title fades in continuously: starts at 35% of expanded height,
+        // fully opaque when the bar reaches its minimum (toolbar) height.
+        final double fadeStart = expandedHeight * 0.35;
+        final double fadeEnd = expandedHeight - kToolbarHeight;
+        final double titleOpacity = ((offset - fadeStart) / (fadeEnd - fadeStart)).clamp(0.0, 1.0);
+
+        // Button styling switches at roughly the halfway point of the fade.
+        final bool isCollapsed = titleOpacity > 0.5;
+
         // Colors that adapt to collapse state
-        final Color buttonForeground = isCollapsed 
-            ? AppConstants.textColor 
+        final Color buttonForeground = isCollapsed
+            ? AppConstants.textColor
             : (isDark ? AppConstants.textColor : Colors.white);
-            
-        final Color? buttonBackground = (isCollapsed || isDark) 
-            ? null 
+
+        final Color? buttonBackground = (isCollapsed || isDark)
+            ? null
             : Colors.black.withValues(alpha: 0.3);
 
         final buttonStyle = IconButton.styleFrom(
@@ -115,10 +122,9 @@ class SeriesDetailAppBar extends StatelessWidget {
             titlePadding: const EdgeInsetsDirectional.only(start: 56, bottom: 16),
             centerTitle: false,
             title: IgnorePointer(
-              ignoring: !isCollapsed,
-              child: AnimatedOpacity(
-                duration: const Duration(milliseconds: 200),
-                opacity: isCollapsed ? 1.0 : 0.0,
+              ignoring: titleOpacity == 0,
+              child: Opacity(
+                opacity: titleOpacity,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: isWide ? 600 : 200),
                   child: Text(
