@@ -4,6 +4,7 @@ import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/features/series/widgets/tabs/series_covers_tab.dart';
 import 'package:mangabaka_app/features/series/widgets/tabs/series_related_tab.dart';
+import 'package:mangabaka_app/features/series/widgets/tabs/series_similar_tab.dart';
 import 'package:mangabaka_app/features/series/widgets/tabs/series_news_tab.dart';
 import 'package:mangabaka_app/features/series/widgets/tabs/series_collections_tab.dart';
 import 'package:mangabaka_app/features/series/widgets/tabs/series_works_tab.dart';
@@ -21,6 +22,7 @@ class SeriesDetailTabContent extends StatelessWidget {
   final String selectedTab;
   final List<SeriesCover>? covers;
   final List<Series>? related;
+  final List<Series>? similar;
   final List<News>? news;
   final List<SeriesCollection>? collections;
   final List<SeriesWork>? works;
@@ -40,6 +42,7 @@ class SeriesDetailTabContent extends StatelessWidget {
     required this.selectedTab,
     this.covers,
     this.related,
+    this.similar,
     this.news,
     this.collections,
     this.works,
@@ -64,11 +67,18 @@ class SeriesDetailTabContent extends StatelessWidget {
         );
       case 'Related':
         return SeriesRelatedTab(
-          related: related, 
-          l10n: l10n, 
+          related: related,
+          l10n: l10n,
           horizontalPadding: tabPadding,
           currentSeriesId: series.id,
           heroTagPrefix: 'related',
+        );
+      case 'Similar':
+        return SeriesSimilarTab(
+          similar: similar,
+          l10n: l10n,
+          horizontalPadding: tabPadding,
+          currentSeriesId: series.id,
         );
       case 'News':
         return SeriesNewsTab(news: news, horizontalPadding: hPadding);

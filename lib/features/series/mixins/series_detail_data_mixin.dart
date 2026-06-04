@@ -14,6 +14,7 @@ mixin SeriesDetailDataMixin<T extends StatefulWidget> on State<T> {
 
   List<SeriesCover>? covers;
   List<Series>? related;
+  List<Series>? similar;
   List<News>? news;
   List<SeriesCollection>? collections;
   List<SeriesWork>? works;
@@ -56,6 +57,12 @@ mixin SeriesDetailDataMixin<T extends StatefulWidget> on State<T> {
         if (works == null) {
           final data = await seriesService.fetchSeriesWorks(id);
           if (mounted) setState(() => works = data);
+        }
+        break;
+      case 'Similar':
+        if (similar == null) {
+          final data = await seriesService.fetchSeriesSimilar(id);
+          if (mounted) setState(() => similar = data);
         }
         break;
     }

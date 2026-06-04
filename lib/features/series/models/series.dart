@@ -79,6 +79,55 @@ class Series {
   }
 
 
+  factory Series.fromSimilarJson(Map<String, dynamic> json) {
+    // The /similar endpoint uses genres_v2, tags_v2, links_v2, and a titles array
+    // instead of the flat title/native_title/romanized_title fields.
+    final patched = Map<String, dynamic>.from(json);
+
+    // Titles
+    if (patched['title'] == null || (patched['title'] as String).isEmpty) {
+      final titlesList = patched['titles'] as List?;
+      if (titlesList != null) {
+        final primary = titlesList.firstWhere(
+          (t) => t['is_primary'] == true,
+          orElse: () => titlesList.isNotEmpty ? titlesList.first : null,
+        );
+        patched['title'] = primary?['title']?.toString() ?? '';
+        patched['native_title'] = (titlesList.firstWhere(
+              (t) => t['language'] == 'ja',
+              orElse: () => null,
+            ) as Map?)?['title']?.toString() ?? '';
+        patched['romanized_title'] = (titlesList.firstWhere(
+              (t) => t['language'] == 'ja-ro',
+              orElse: () => null,
+            ) as Map?)?['title']?.toString() ?? '';
+      }
+    }
+
+    // Genres
+    if (patched['genres_v2'] != null) {
+      patched['genres'] = (patched['genres_v2'] as List)
+          .map((g) => (g['name'] ?? '').toString())
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+
+    // Tags
+    if (patched['tags_v2'] != null) {
+      patched['tags'] = (patched['tags_v2'] as List)
+          .map((t) => (t['name'] ?? '').toString())
+          .where((s) => s.isNotEmpty)
+          .toList();
+    }
+
+    // Links
+    if (patched['links'] == null) {
+      patched['links'] = patched['links_v2'] ?? [];
+    }
+
+    return Series.fromJson(patched);
+  }
+
   //Thanks GPT4.1
   factory Series.fromJson(Map<String, dynamic> json) {
     final source = (json['source'] as Map?)?.cast<String, dynamic>();

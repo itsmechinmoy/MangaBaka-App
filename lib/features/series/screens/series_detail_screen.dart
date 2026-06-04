@@ -136,8 +136,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 1400),
                     child: RepaintBoundary(
-                    child: SelectionArea(
-                      child: CustomScrollView(
+                    child: CustomScrollView(
                         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                         slivers: [
                           SeriesDetailAppBar(
@@ -185,6 +184,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                                   selectedTab: _selectedTab,
                                   covers: covers,
                                   related: related,
+                                  similar: similar,
                                   news: news,
                                   collections: collections,
                                   works: works,
@@ -219,6 +219,7 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                                   selectedTab: _selectedTab,
                                   covers: covers,
                                   related: related,
+                                  similar: similar,
                                   news: news,
                                   collections: collections,
                                   works: works,
@@ -232,7 +233,6 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                           const SliverToBoxAdapter(child: SizedBox(height: 80)),
                         ],
                       ),
-                    ),
                     ),
                   ),
                 );

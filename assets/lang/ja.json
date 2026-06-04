@@ -278,6 +278,7 @@
         "copied_description": "説明をクリップボードにコピーしました",
         "copied_id": "IDをクリップボードにコピーしました: {id}",
         "no_related_series": "関連シリーズはありません。",
+        "no_similar_series": "類似シリーズはありません。",
         "no_collections_available": "コレクションはありません。",
         "no_covers_available": "カバーはありません。",
         "no_news_available": "ニュースはありません。",

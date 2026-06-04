@@ -1,46 +1,49 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
-import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
 import 'package:mangabaka_app/core/settings/settings_manager.dart';
 import 'package:mangabaka_app/core/settings/settings_enums.dart';
 
-class SeriesRelatedTab extends StatelessWidget {
-  final List<Series>? related;
+class SeriesSimilarTab extends StatelessWidget {
+  final List<Series>? similar;
   final LocalizationService l10n;
   final double horizontalPadding;
-
   final String? currentSeriesId;
-  final String? heroTagPrefix;
 
-  const SeriesRelatedTab({
-    super.key, 
-    this.related, 
+  const SeriesSimilarTab({
+    super.key,
+    required this.similar,
     required this.l10n,
     this.horizontalPadding = 16.0,
     this.currentSeriesId,
-    this.heroTagPrefix,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (related == null) {
-      return const Center(child: Padding(padding: EdgeInsets.all(32.0), child: CircularProgressIndicator()));
+    if (similar == null) {
+      return const Padding(
+        padding: EdgeInsets.all(32.0),
+        child: Center(child: CircularProgressIndicator()),
+      );
     }
+
     // Filter out the current series and any duplicate IDs to prevent Hero tag collisions
-    final uniqueRelated = <String, Series>{};
-    for (final s in related!) {
+    final unique = <String, Series>{};
+    for (final s in similar!) {
       if (s.id != currentSeriesId) {
-        uniqueRelated[s.id] = s;
+        unique[s.id] = s;
       }
     }
-    final finalRelated = uniqueRelated.values.toList();
+    final filtered = unique.values.toList();
 
-    if (finalRelated.isEmpty) {
-      return Center(child: Padding(padding: const EdgeInsets.all(32.0), child: Text(l10n.translate('no_related_series'))));
+    if (filtered.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Center(child: Text(l10n.translate('no_similar_series'))),
+      );
     }
-    
+
     return ListenableBuilder(
       listenable: SettingsManager(),
       builder: (context, _) {
@@ -51,16 +54,9 @@ class SeriesRelatedTab extends StatelessWidget {
 
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SeriesSectionHeader(title: l10n.translate('tab_related')),
-              if (style.isGrid)
-                _buildGrid(settings, finalRelated)
-              else
-                _buildList(finalRelated),
-            ],
-          ),
+          child: style.isGrid
+              ? _buildGrid(settings, filtered)
+              : _buildList(filtered),
         );
       },
     );
@@ -73,7 +69,7 @@ class SeriesRelatedTab extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: series.length,
       itemBuilder: (context, index) =>
-          EntryListItem(series: series[index], heroTagPrefix: heroTagPrefix),
+          EntryListItem(series: series[index], heroTagPrefix: 'similar'),
     );
   }
 
@@ -101,7 +97,7 @@ class SeriesRelatedTab extends StatelessWidget {
             ),
       itemCount: series.length,
       itemBuilder: (context, index) =>
-          EntryListItem(series: series[index], heroTagPrefix: heroTagPrefix),
+          EntryListItem(series: series[index], heroTagPrefix: 'similar'),
     );
   }
 }

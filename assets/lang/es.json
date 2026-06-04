@@ -278,6 +278,7 @@
         "staff_works_title": "Obras de {name}",
         "open_link": "Abrir {name}",
         "no_related_series": "No hay series relacionadas.",
+        "no_similar_series": "No hay series similares.",
         "no_collections_available": "No hay colecciones disponibles.",
         "no_covers_available": "No hay portadas disponibles.",
         "no_news_available": "No hay noticias disponibles.",

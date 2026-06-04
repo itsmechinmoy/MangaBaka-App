@@ -162,4 +162,39 @@ mixin SeriesMetadataMixin {
       return [];
     }
   }
+
+  Future<List<Series>> fetchSeriesSimilar(String id) async {
+    try {
+      final url = Uri.parse("${AppConstants.baseApiUrl}/series/$id/similar?limit=20");
+      final response = await http
+          .get(url, headers: {'User-Agent': AppConstants.userAgent})
+          .timeout(
+            Duration(seconds: AppConstants.networkTimeoutSeconds),
+            onTimeout: () => throw TimeoutException('Series similar fetch timed out'),
+          );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final rawData = data['data'];
+        if (rawData is List) {
+          final results = rawData
+              .map((item) => Series.fromSimilarJson(
+                    (item['series'] as Map<String, dynamic>),
+                  ))
+              .toList();
+          final contentPrefs = SettingsManager().contentPreferences;
+          if (contentPrefs.isNotEmpty) {
+            return results
+                .where((s) => contentPrefs.contains(s.contentRating.toLowerCase()))
+                .toList();
+          }
+          return results;
+        }
+      }
+      return [];
+    } catch (e) {
+      _logger.warning('Error fetching similar for $id: $e');
+      return [];
+    }
+  }
 }

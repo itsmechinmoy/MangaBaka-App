@@ -34,15 +34,17 @@ class _DescriptionSectionState extends State<DescriptionSection> {
           alignment: Alignment.topCenter,
           child: Stack(
             children: [
-              Text(
-                widget.description,
-                maxLines: expanded ? null : 6,
-                overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      height: 1.6,
-                      color: AppConstants.textColor.withValues(alpha: 0.9),
-                      fontSize: 15,
-                    ),
+              SelectionArea(
+                child: Text(
+                  widget.description,
+                  maxLines: expanded ? null : 6,
+                  overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        height: 1.6,
+                        color: AppConstants.textColor.withValues(alpha: 0.9),
+                        fontSize: 15,
+                      ),
+                ),
               ),
               if (isLong && !expanded)
                 Positioned(
