@@ -137,34 +137,45 @@ class ProfileAuthService extends ChangeNotifier {
     }
   }
 
-  Future<void> _refreshIfNeeded() async {
+  /// Guards against concurrent refreshes. With rotating refresh tokens, two
+  /// parallel refreshes would race: the first invalidates the token the second
+  /// is still using, permanently breaking the session. Callers share one
+  /// in-flight refresh instead.
+  Future<void>? _refreshInFlight;
+
+  Future<void> _refreshIfNeeded() {
+    return _refreshInFlight ??=
+        _runRefresh().whenComplete(() => _refreshInFlight = null);
+  }
+
+  Future<void> _runRefresh() async {
+    final expRaw = await _storage.read(AuthStorage.kAccessTokenExp);
+    if (expRaw == null) {
+      _logger.fine('No token expiration found, assuming refresh not needed');
+      return;
+    }
+
+    final exp = DateTime.tryParse(expRaw);
+    if (exp == null) return;
+
+    final now = DateTime.now().toUtc();
+    final threshold = exp.subtract(const Duration(minutes: 5));
+
+    if (now.isBefore(threshold)) {
+      _logger.fine('Access token still valid. Expires at: $exp');
+      return;
+    }
+
+    _logger.info('Access token expiring soon or already expired. Attempting refresh...');
+    final refreshToken = await _storage.read(AuthStorage.kRefreshToken);
+    if (refreshToken == null || refreshToken.isEmpty) {
+      _logger.warning('No refresh token available to perform refresh');
+      await _clearSession();
+      throw SessionExpiredException();
+    }
+
+    TokenResponse? response;
     try {
-      final expRaw = await _storage.read(AuthStorage.kAccessTokenExp);
-      if (expRaw == null) {
-        _logger.fine('No token expiration found, assuming refresh not needed');
-        return;
-      }
-
-      final exp = DateTime.tryParse(expRaw);
-      if (exp == null) return;
-
-      final now = DateTime.now().toUtc();
-      final threshold = exp.subtract(const Duration(minutes: 5));
-      
-      if (now.isBefore(threshold)) {
-        _logger.fine('Access token still valid. Expires at: $exp');
-        return;
-      }
-
-      _logger.info('Access token expiring soon or already expired. Attempting refresh...');
-      final refreshToken = await _storage.read(AuthStorage.kRefreshToken);
-      if (refreshToken == null || refreshToken.isEmpty) {
-        _logger.warning('No refresh token available to perform refresh');
-        return;
-      }
-
-      TokenResponse? response;
-
       if (Platform.isWindows) {
         response = await WindowsAuthHandler.refresh(
           clientId: _clientId,
@@ -184,18 +195,57 @@ class ProfileAuthService extends ChangeNotifier {
           ),
         );
       }
-
-      if (response == null) {
-        throw AuthException(message: 'Token refresh failed: No response from auth server');
-      }
-
-      _logger.info('Token refresh successful');
-      await _persistTokens(response);
     } catch (e, st) {
       _logger.severe('Token refresh failed', e, st);
-      if (e is AppException) rethrow;
+      // An invalid_grant (HTTP 400/401) means the refresh token is dead and no
+      // amount of retrying will help — clear the session and force re-login.
+      // Anything else (network, 5xx) stays retryable.
+      if (_isInvalidGrant(e)) {
+        await _clearSession();
+        throw SessionExpiredException(originalError: e, stackTrace: st);
+      }
       throw AuthException(message: 'Failed to refresh tokens', originalError: e, stackTrace: st);
     }
+
+    if (response == null) {
+      throw AuthException(message: 'Token refresh failed: No response from auth server');
+    }
+
+    _logger.info('Token refresh successful');
+    await _persistTokens(response);
+  }
+
+  /// Detects an unrecoverable `invalid_grant` from either the Windows handler
+  /// (typed [ApiException]) or flutter_appauth (a [PlatformException] whose
+  /// payload carries the OAuth error).
+  bool _isInvalidGrant(Object e) {
+    if (e is ApiException) {
+      return e.statusCode == 400 || e.statusCode == 401;
+    }
+    if (e is PlatformException) {
+      final blob =
+          '${e.code} ${e.message ?? ''} ${e.details ?? ''}'.toLowerCase();
+      return blob.contains('invalid_grant') ||
+          blob.contains('invalid_token') ||
+          blob.contains(' 400') ||
+          blob.contains(' 401');
+    }
+    return false;
+  }
+
+  /// Drops the local credentials and flips state to logged-out so the UI can
+  /// route the user back to login. Library data is left intact (it is
+  /// server-backed and re-syncs on the next login); explicit [logout] is the
+  /// path that also clears the library.
+  Future<void> _clearSession() async {
+    try {
+      await _storage.deleteAll();
+    } catch (e) {
+      _logger.warning('Failed to clear storage during session expiry: $e');
+    }
+    _cachedProfile = null;
+    _hasSessionCache = false;
+    notifyListeners();
   }
 
   Future<MbProfile> fetchProfile({bool forceRefresh = false}) async {

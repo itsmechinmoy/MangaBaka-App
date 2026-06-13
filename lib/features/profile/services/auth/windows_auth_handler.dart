@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:mangabaka_app/core/logging/logging_service.dart';
+import 'package:mangabaka_app/core/exceptions/app_exceptions.dart';
 
 class WindowsAuthHandler {
   static final _logger = LoggingService.logger;
@@ -188,8 +189,12 @@ class WindowsAuthHandler {
         data,
       );
     } else {
-      _logger.severe('Token refresh failed: ${response.body}');
-      throw Exception('Token refresh failed: ${response.statusCode}');
+      _logger.severe('Token refresh failed: ${response.statusCode} ${response.body}');
+      throw ApiException(
+        message: 'Token refresh failed',
+        statusCode: response.statusCode,
+        responseBody: response.body,
+      );
     }
   }
 

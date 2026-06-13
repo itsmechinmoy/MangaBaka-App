@@ -78,6 +78,18 @@ class AuthCancelledException extends AppException {
   });
 }
 
+/// Thrown when the refresh token is no longer valid (revoked, expired, or
+/// already consumed) and the user must re-authenticate. Unlike [AuthException],
+/// this is not retryable — the local session has already been cleared.
+class SessionExpiredException extends AppException {
+  SessionExpiredException({
+    super.message = 'Session expired. Please log in again.',
+    super.code = 'SESSION_EXPIRED',
+    super.originalError,
+    super.stackTrace,
+  });
+}
+
 class AppError extends AppException {
   AppError({
     required super.message,
