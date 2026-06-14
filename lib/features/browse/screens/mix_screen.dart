@@ -112,6 +112,8 @@ class _MixScreenState extends State<MixScreen> {
     return ListenableBuilder(
       listenable: Listenable.merge([_controller, l10n]),
       builder: (context, _) {
+        final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+        if (isLandscape) return _buildLandscapeScaffold(l10n);
         return Scaffold(
           backgroundColor: AppConstants.primaryBackground,
           body: CustomScrollView(
@@ -129,6 +131,88 @@ class _MixScreenState extends State<MixScreen> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildLandscapeScaffold(LocalizationService l10n) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final leftWidth = (screenWidth * 0.38).clamp(280.0, 360.0);
+
+    return Scaffold(
+      backgroundColor: AppConstants.primaryBackground,
+      appBar: AppBar(
+        backgroundColor: AppConstants.primaryBackground,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: AppConstants.textColor, size: 22),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          l10n.translate('mix'),
+          style: AppTypography.serif(
+            color: AppConstants.textColor,
+            fontWeight: FontWeight.w500,
+            fontSize: 22,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          if (_controller.hasSeeds)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: IconButton(
+                icon: Icon(Icons.refresh_rounded,
+                    color: AppConstants.textMutedColor, size: 22),
+                onPressed: _controller.clearSeeds,
+                tooltip: 'Clear seeds',
+              ),
+            ),
+        ],
+      ),
+      body: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Left panel: seeds + options + DNA
+          SizedBox(
+            width: leftWidth,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSeedSection(l10n),
+                  _buildOptionsSection(l10n),
+                  if (_controller.dna.isNotEmpty) _buildDnaSection(l10n),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ),
+          VerticalDivider(
+            width: 1,
+            thickness: 1,
+            color: AppConstants.borderColor.withValues(alpha: 0.15),
+          ),
+          // Right panel: results
+          Expanded(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return CustomScrollView(
+                  slivers: [
+                    if (_controller.hasSeeds &&
+                        !_controller.isLoading &&
+                        _controller.error == null &&
+                        _controller.results.isNotEmpty)
+                      SliverToBoxAdapter(child: _buildResultsHeader(l10n)),
+                    _buildResultsSliver(l10n, availableWidth: constraints.maxWidth),
+                    const SliverToBoxAdapter(child: SizedBox(height: 16)),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -778,7 +862,7 @@ class _MixScreenState extends State<MixScreen> {
 
   // ─── Results Sliver ───────────────────────────────────────────────────────
 
-  Widget _buildResultsSliver(LocalizationService l10n) {
+  Widget _buildResultsSliver(LocalizationService l10n, {double? availableWidth}) {
     if (!_controller.hasSeeds) {
       return SliverFillRemaining(
         hasScrollBody: false,
@@ -835,7 +919,7 @@ class _MixScreenState extends State<MixScreen> {
         ),
         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: SettingsManager().browseGridColumnCount > 0
-              ? MediaQuery.of(context).size.width /
+              ? (availableWidth ?? MediaQuery.of(context).size.width) /
                   SettingsManager().browseGridColumnCount
               : 160,
           childAspectRatio: 0.65,
