@@ -124,7 +124,7 @@ class MainScreenState extends State<MainScreen> {
       return Scaffold(
         backgroundColor: AppConstants.secondaryBackground,
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
+          preferredSize: const Size.fromHeight(72),
           child: _buildTopNavBar(context, l10n),
         ),
         body: content,
@@ -301,6 +301,7 @@ class MainScreenState extends State<MainScreen> {
 
   Widget _buildTopNavBar(BuildContext context, LocalizationService l10n) {
     return Container(
+      height: 72,
       decoration: BoxDecoration(
         color: AppConstants.secondaryBackground,
         border: Border(
@@ -347,19 +348,23 @@ class MainScreenState extends State<MainScreen> {
                     final item = _navItems[i];
                     final isSelected = _selectedIndex == i;
                     return Padding(
-                      padding: const EdgeInsets.only(right: 4),
+                      padding: const EdgeInsets.only(right: 22),
                       child: InkWell(
                         onTap: () => _onItemTapped(i),
-                        borderRadius: BorderRadius.circular(AppConstants.pillRadius),
+                        borderRadius: BorderRadius.zero,
                         child: AnimatedContainer(
                           duration: AppConstants.shortAnimationDuration,
                           curve: Curves.easeInOut,
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
                           decoration: BoxDecoration(
-                            color: isSelected
-                                ? AppConstants.accentColor.withValues(alpha: 0.15)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(AppConstants.pillRadius),
+                            border: Border(
+                              bottom: BorderSide(
+                                color: isSelected
+                                    ? AppConstants.accentColor
+                                    : Colors.transparent,
+                                width: 2,
+                              ),
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -368,17 +373,17 @@ class MainScreenState extends State<MainScreen> {
                                 isSelected ? item.selectedIcon : item.icon,
                                 size: 18,
                                 color: isSelected
-                                    ? AppConstants.accentColor
+                                    ? AppConstants.textColor
                                     : AppConstants.textMutedColor,
                               ),
                               const SizedBox(width: 6),
                               Text(
                                 l10n.translate(item.labelKey),
                                 style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
                                   color: isSelected
-                                      ? AppConstants.accentColor
+                                      ? AppConstants.textColor
                                       : AppConstants.textMutedColor,
                                 ),
                               ),
