@@ -222,11 +222,11 @@ void main() {
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
     
-    final iconFinder = find.byIcon(Icons.image_outlined);
-    await tester.ensureVisible(iconFinder);
+    final coverTabFinder = find.text('Covers');
+    await tester.ensureVisible(coverTabFinder);
     await tester.pumpAndSettle();
-    
-    await tester.tap(iconFinder);
+
+    await tester.tap(coverTabFinder);
     await tester.pumpAndSettle();
     expect(mockSeriesService.fetchCoversCalled, isTrue);
   });

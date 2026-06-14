@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,6 +8,12 @@ import 'package:google_fonts/google_fonts.dart';
 ///   • Spline Sans Mono — metadata / section labels ("database" feel)
 class AppTypography {
   const AppTypography._();
+
+  static bool _testMode = false;
+
+  /// Enable in tests to skip Google Fonts network fetching.
+  @visibleForTesting
+  static void setTestMode(bool value) => _testMode = value;
 
   /// Warm display serif (Newsreader). Used for series titles and headlines.
   static TextStyle serif({
@@ -18,6 +25,17 @@ class AppTypography {
     List<Shadow>? shadows,
     FontStyle? fontStyle,
   }) {
+    if (_testMode) {
+      return TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        letterSpacing: letterSpacing ?? (fontSize != null ? -0.018 * fontSize : null),
+        height: height,
+        shadows: shadows,
+        fontStyle: fontStyle,
+      );
+    }
     return GoogleFonts.newsreader(
       color: color,
       fontSize: fontSize,
@@ -38,6 +56,15 @@ class AppTypography {
     double? letterSpacing,
     double? height,
   }) {
+    if (_testMode) {
+      return TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        letterSpacing: letterSpacing,
+        height: height,
+      );
+    }
     return GoogleFonts.hankenGrotesk(
       color: color,
       fontSize: fontSize,
@@ -55,6 +82,16 @@ class AppTypography {
     double? letterSpacing,
     double? height,
   }) {
+    if (_testMode) {
+      return TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        letterSpacing: letterSpacing,
+        height: height,
+        fontFamily: 'monospace',
+      );
+    }
     return GoogleFonts.splineSansMono(
       color: color,
       fontSize: fontSize,
@@ -71,6 +108,16 @@ class AppTypography {
     double fontSize = 11,
     FontWeight fontWeight = FontWeight.w500,
   }) {
+    if (_testMode) {
+      return TextStyle(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+        letterSpacing: fontSize * 0.14,
+        height: 1.2,
+        fontFamily: 'monospace',
+      );
+    }
     return GoogleFonts.splineSansMono(
       color: color,
       fontSize: fontSize,
@@ -83,6 +130,8 @@ class AppTypography {
   /// Builds the global [TextTheme]: Hanken Grotesk everywhere, with Newsreader
   /// serif promoted onto the large display / headline / title roles.
   static TextTheme textTheme(TextTheme base) {
+    if (_testMode) return base;
+
     final body = GoogleFonts.hankenGroteskTextTheme(base);
 
     TextStyle? toSerif(TextStyle? s) {
