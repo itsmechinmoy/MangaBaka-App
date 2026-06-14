@@ -16,7 +16,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 /// floating at its base, plus a glass "Back" pill and (portrait only) transparent
 /// share / delete icons. Landscape shows the back pill only. The remaining
 /// content (tabs, cards, synopsis) lives below.
-class SeriesDetailAppBar extends StatelessWidget {
+class SeriesDetailAppBar extends StatefulWidget {
   final Series series;
   final String title;
   final LibraryEntry? entry;
@@ -43,6 +43,47 @@ class SeriesDetailAppBar extends StatelessWidget {
   });
 
   @override
+  State<SeriesDetailAppBar> createState() => _SeriesDetailAppBarState();
+}
+
+class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
+  bool _transitionComplete = false;
+  bool _listenerAdded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_listenerAdded) {
+      _listenerAdded = true;
+      final route = ModalRoute.of(context);
+      if (route != null) {
+        final animation = route.animation;
+        if (animation != null && !animation.isCompleted) {
+          animation.addStatusListener(_onStatus);
+        } else {
+          _transitionComplete = true;
+        }
+      } else {
+        _transitionComplete = true;
+      }
+    }
+  }
+
+  void _onStatus(AnimationStatus status) {
+    if (status == AnimationStatus.completed && mounted) {
+      setState(() => _transitionComplete = true);
+      ModalRoute.of(context)?.animation?.removeStatusListener(_onStatus);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Safe to call even if already removed
+    ModalRoute.of(context)?.animation?.removeStatusListener(_onStatus);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     final isLandscape = orientation == Orientation.landscape;
@@ -51,10 +92,10 @@ class SeriesDetailAppBar extends StatelessWidget {
     // Calculate the margin needed to center the app bar contents on screens wider than 1400px
     final double horizontalMargin = math.max(0.0, (screenWidth - 1400) / 2);
 
-    final double expandedHeight = isWide
+    final double expandedHeight = widget.isWide
         ? (isLandscape ? 330 : 380)
         : (isLandscape ? 220 : 300);
-    final double coverHeight = isWide
+    final double coverHeight = widget.isWide
         ? (isLandscape ? 190 : 230)
         : (isLandscape ? 140 : 172);
     final double coverWidth = coverHeight * 0.7;
@@ -75,24 +116,25 @@ class SeriesDetailAppBar extends StatelessWidget {
           elevation: 0,
           scrolledUnderElevation: 0,
           // Always reserve space for the "Back" text pill.
-          leadingWidth: (isWide ? 112 : 96) + horizontalMargin,
+          leadingWidth: (widget.isWide ? 150 : 120) + horizontalMargin,
           leading: Padding(
             padding: EdgeInsets.only(
-              left: (isWide ? 16 : 8) + horizontalMargin, 
+              left: (widget.isWide ? 40.0 : 16.0) + horizontalMargin, 
               top: 6, 
               bottom: 6,
             ),
             child: _GlassControl(
-              onTap: onBack,
+              onTap: widget.onBack,
               tooltip: LocalizationService().translate('go_back'),
               icon: Icons.arrow_back,
               // Design: "Back" label in both portrait and landscape.
               label: LocalizationService().translate('back'),
+              showBg: titleOpacity < 0.5,
             ).animate().fadeIn(duration: 400.ms),
           ),
           // Landscape: no banner icons — clean behind the back pill.
           // Portrait: transparent circle share + delete (if in library).
-          actions: isWide
+          actions: widget.isWide
               ? [
                   Padding(
                     padding: EdgeInsets.only(right: horizontalMargin + 16),
@@ -101,13 +143,13 @@ class SeriesDetailAppBar extends StatelessWidget {
                 ]
               : [
                   _SubbarIcon(
-                    onTap: onShare,
+                    onTap: widget.onShare,
                     tooltip: LocalizationService().translate('share_series'),
                     icon: Icons.share_outlined,
                   ).animate().fadeIn(delay: 80.ms, duration: 400.ms),
-                  if (entry != null)
+                  if (widget.entry != null)
                     _SubbarIcon(
-                      onTap: onDelete,
+                      onTap: widget.onDelete,
                       tooltip: LocalizationService().translate('delete_from_library'),
                       icon: Icons.delete_outline,
                     ).animate().fadeIn(delay: 160.ms, duration: 400.ms),
@@ -118,7 +160,7 @@ class SeriesDetailAppBar extends StatelessWidget {
                 ],
           flexibleSpace: FlexibleSpaceBar(
             titlePadding: EdgeInsetsDirectional.only(
-              start: (isWide ? 124 : 96) + horizontalMargin,
+              start: (widget.isWide ? 166 : 136) + horizontalMargin,
               bottom: 16,
               end: 16 + horizontalMargin,
             ),
@@ -128,7 +170,7 @@ class SeriesDetailAppBar extends StatelessWidget {
               child: Opacity(
                 opacity: titleOpacity,
                 child: Text(
-                  title,
+                  widget.title,
                   style: AppTypography.serif(
                     color: AppConstants.textColor,
                     fontWeight: FontWeight.w600,
@@ -144,18 +186,18 @@ class SeriesDetailAppBar extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   Container(color: AppConstants.tertiaryBackground),
-                  if (series.coverUrl.isNotEmpty)
-                    ImageFiltered(
-                      imageFilter: ImageFilter.blur(sigmaX: 26, sigmaY: 26),
-                      child: seriesBannerImage(series, memCacheWidth: isWide ? 1200 : 800),
-                    )
-                        .animate()
-                        .fadeIn(duration: 1000.ms, curve: Curves.easeOut)
-                        .scale(
-                          begin: const Offset(1.06, 1.06),
-                          end: const Offset(1, 1),
-                          curve: Curves.easeOut,
-                        ),
+                  // Defer the expensive blur until after the route transition
+                  // completes to avoid GPU contention during the slide animation.
+                  if (widget.series.coverUrl.isNotEmpty)
+                    AnimatedOpacity(
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.easeOut,
+                      opacity: _transitionComplete ? 1.0 : 0.0,
+                      child: ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 26, sigmaY: 26),
+                        child: seriesBannerImage(widget.series, memCacheWidth: widget.isWide ? 1200 : 800),
+                      ),
+                    ),
                   Container(
                     color: AppConstants.primaryBackground.withValues(alpha: 0.2),
                   ),
@@ -183,7 +225,7 @@ class SeriesDetailAppBar extends StatelessWidget {
                     ),
                   ),
                   // Cover + serif title block floating at the base.
-                  if (showCover)
+                  if (widget.showCover)
                     Positioned(
                       left: 0,
                       right: 0,
@@ -192,27 +234,24 @@ class SeriesDetailAppBar extends StatelessWidget {
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1400),
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                            padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 SeriesHeroCover(
-                                  series: series,
+                                  series: widget.series,
                                   height: coverHeight,
                                   width: coverWidth,
                                 ),
-                                SizedBox(width: isWide ? 22 : 16),
+                                SizedBox(width: widget.isWide ? 22 : 16),
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.only(bottom: 4),
                                     child: SeriesTitleBlock(
-                                      series: series,
-                                      title: title,
-                                      isWide: isWide,
-                                    )
-                                        .animate()
-                                        .fadeIn(duration: 600.ms)
-                                        .slideY(begin: 0.06, end: 0, curve: Curves.easeOutCubic),
+                                      series: widget.series,
+                                      title: widget.title,
+                                      isWide: widget.isWide,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -237,12 +276,14 @@ class _GlassControl extends StatelessWidget {
   final String tooltip;
   final IconData icon;
   final String? label;
+  final bool showBg;
 
   const _GlassControl({
     required this.onTap,
     required this.tooltip,
     required this.icon,
     this.label,
+    this.showBg = true,
   });
 
   @override
@@ -251,16 +292,23 @@ class _GlassControl extends StatelessWidget {
     final child = ClipRRect(
       borderRadius: radius,
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        filter: ImageFilter.blur(
+          sigmaX: showBg ? 10 : 0,
+          sigmaY: showBg ? 10 : 0,
+        ),
         child: Container(
           height: 40,
           padding: EdgeInsets.symmetric(horizontal: label != null ? 14 : 0),
           width: label != null ? null : 40,
           decoration: BoxDecoration(
-            color: AppConstants.secondaryBackground.withValues(alpha: 0.55),
+            color: showBg
+                ? AppConstants.secondaryBackground.withValues(alpha: 0.55)
+                : Colors.transparent,
             borderRadius: radius,
             border: Border.all(
-              color: AppConstants.borderColor.withValues(alpha: 0.7),
+              color: showBg
+                  ? AppConstants.borderColor.withValues(alpha: 0.7)
+                  : Colors.transparent,
               width: 1,
             ),
           ),

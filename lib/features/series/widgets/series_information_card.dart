@@ -69,6 +69,7 @@ class SeriesInformationCard extends StatelessWidget {
         ),
       if (series.contentRating.isNotEmpty && series.contentRating != 'null')
         _Row(label: l10n.translate('content_rating'), value: _cap(series.contentRating)),
+      _Row(label: 'MangaBaka ID', value: series.id),
     ];
 
     if (rows.isEmpty) return const SizedBox.shrink();

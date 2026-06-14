@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/core/di/service_locator.dart';
@@ -17,7 +17,6 @@ class SeriesGenresSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (series.genres.isEmpty) return const SizedBox.shrink();
     final metadataService = getIt<MetadataService>();
-    final accent = AppConstants.accentColor;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,19 +30,13 @@ class SeriesGenresSection extends StatelessWidget {
               ChipBase(
                 label: Text(metadataService.getGenreLabel(series.genres[i])),
                 borderRadius: AppConstants.pillRadius,
-                // First genre is highlighted with the emerald accent, the rest
-                // sit on a soft surface pill with a hairline border.
-                backgroundColor: i == 0
-                    ? accent.withValues(alpha: 0.12)
-                    : AppConstants.secondaryBackground,
-                borderColor: i == 0
-                    ? accent.withValues(alpha: 0.45)
-                    : AppConstants.borderColor,
+                backgroundColor: AppConstants.secondaryBackground,
+                borderColor: AppConstants.borderColor,
                 labelStyle: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
                   height: 1.2,
-                  color: i == 0 ? accent : AppConstants.textColor,
+                  color: AppConstants.textColor,
                 ),
               ),
           ],

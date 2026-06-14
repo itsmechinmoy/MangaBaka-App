@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/models/series_work.dart';
 import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
@@ -34,20 +34,20 @@ class SeriesWorksTab extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: SeriesSectionHeader(
-                      title: l10n.translate('tab_works'),
-                      bottomPadding: 0,
+              SizedBox(
+                width: double.infinity,
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    SeriesSectionHeader(title: l10n.translate('tab_works')),
+                    Positioned(
+                      right: 0,
+                      top: -12,
+                      child: _buildListStyleSwitch(context, settings),
                     ),
-                  ),
-                  _buildListStyleSwitch(context, settings),
-                ],
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
               LayoutBuilder(
                 builder: (context, constraints) {
                   if (isGrid) {

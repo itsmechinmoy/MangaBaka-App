@@ -3,7 +3,6 @@ import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mangabaka_app/features/series/widgets/series_section_header.dart';
 import 'package:mangabaka_app/features/series/widgets/description_section.dart';
 import 'package:mangabaka_app/features/series/widgets/series_genres_section.dart';
@@ -55,17 +54,19 @@ class SeriesDetailWideLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: 600.ms,
-      switchInCurve: Curves.easeOut,
-      switchOutCurve: Curves.easeIn,
-      child: isDataLoaded
-          ? _buildContent()
-          : Padding(
-              key: const ValueKey('wide_skeleton'),
-              padding: const EdgeInsets.symmetric(horizontal: _hPadding),
-              child: const SeriesDetailSkeleton(isWide: true),
-            ),
+    if (!isDataLoaded) {
+      return Padding(
+        key: const ValueKey('wide_skeleton'),
+        padding: const EdgeInsets.symmetric(horizontal: _hPadding),
+        child: const SeriesDetailSkeleton(isWide: true),
+      );
+    }
+
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeOut,
+      opacity: isDataLoaded ? 1.0 : 0.0,
+      child: _buildContent(),
     );
   }
 
@@ -101,7 +102,7 @@ class SeriesDetailWideLayout extends StatelessWidget {
                   onPublisherTap: onPublisherTap,
                 ),
               ],
-            ).animate().fadeIn(duration: 400.ms).slideX(begin: -0.05, end: 0, curve: Curves.easeOutCubic),
+            ),
           ),
           const SizedBox(width: _columnGap),
           // Main column: title block + tabs + content.
@@ -109,7 +110,6 @@ class SeriesDetailWideLayout extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 8),
                 SeriesSegmentedControl(
                   selectedTab: selectedTab,
                   onTabChanged: onTabChanged,
@@ -117,10 +117,10 @@ class SeriesDetailWideLayout extends StatelessWidget {
                 ),
                 Divider(height: 1, thickness: 1, color: AppConstants.borderColor),
                 if (selectedTab == 'Info') _buildInfoPanel(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 buildTabContent(0, isWide: true, wideRightPaddingOnly: false),
               ],
-            ).animate().fadeIn(duration: 500.ms, delay: 80.ms).slideX(begin: 0.04, end: 0, curve: Curves.easeOutCubic),
+            ),
           ),
         ],
       ),

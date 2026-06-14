@@ -1,4 +1,4 @@
-﻿import 'package:mangabaka_app/features/series/widgets/entry_list_item_layouts.dart';
+import 'package:mangabaka_app/features/series/widgets/entry_list_item_layouts.dart';
 import 'package:mangabaka_app/features/series/widgets/entry_list_item_list_layouts.dart';
 import 'package:mangabaka_app/features/series/widgets/series_quick_action_button.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ class EntryListItem extends StatefulWidget {
   final int? ranking;
   final bool isLibrary;
   final String? heroTagPrefix;
+  final AppListStyle? listStyle;
 
   const EntryListItem({
     super.key,
@@ -24,6 +25,7 @@ class EntryListItem extends StatefulWidget {
     this.ranking,
     this.isLibrary = false,
     this.heroTagPrefix,
+    this.listStyle,
   });
 
   @override
@@ -40,11 +42,11 @@ class _EntryListItemState extends State<EntryListItem> {
     final displayTitle = widget.series.getDisplayTitle(
       settings.defaultTitleLanguage,
     );
-    final style = settings.separateListStyles
+    final style = widget.listStyle ?? (settings.separateListStyles
         ? (widget.isLibrary
               ? settings.libraryListStyle
               : settings.browseListStyle)
-        : settings.currentListStyle;
+        : settings.currentListStyle);
 
     final auth = getIt<ProfileAuthService>();
     final libraryService = getIt<LibraryService>();

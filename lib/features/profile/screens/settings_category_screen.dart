@@ -16,11 +16,13 @@ class SettingsCategoryScreen extends StatelessWidget {
     BuildContext context, {
     required String title,
     required Widget content,
+    VoidCallback? onBack,
   }) {
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (_) => _CategoryDialog(title: title, content: content),
+      builder: (_) =>
+          _CategoryDialog(title: title, content: content, onBack: onBack),
     );
   }
 
@@ -62,8 +64,13 @@ class SettingsCategoryScreen extends StatelessWidget {
 class _CategoryDialog extends StatelessWidget {
   final String title;
   final Widget content;
+  final VoidCallback? onBack;
 
-  const _CategoryDialog({required this.title, required this.content});
+  const _CategoryDialog({
+    required this.title,
+    required this.content,
+    this.onBack,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -82,16 +89,32 @@ class _CategoryDialog extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 8, 12),
+              padding: const EdgeInsets.fromLTRB(0, 12, 8, 12),
               child: Row(
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: AppConstants.textColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      letterSpacing: -0.5,
+                  if (onBack != null)
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        onBack!();
+                      },
+                      color: AppConstants.textMutedColor,
+                      padding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.compact,
+                    )
+                  else
+                    const SizedBox(width: 48),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        color: AppConstants.textColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        letterSpacing: -0.5,
+                      ),
                     ),
                   ),
                   const Spacer(),
