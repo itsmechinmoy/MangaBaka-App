@@ -396,7 +396,7 @@ class LibraryScreenState extends State<LibraryScreen>
     return AppBar(
       centerTitle: isLandscape && !useTopNavBarSearch,
       title: useTopNavBarSearch
-          ? Text(l10n.translate('library'))
+          ? null
           : ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 800),
               child: LibrarySearchBar(

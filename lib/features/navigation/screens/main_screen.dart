@@ -76,6 +76,11 @@ class MainScreenState extends State<MainScreen> {
   // Cached once so IndexedStack never recreates its children.
   late final List<Widget> _pages;
 
+  // Nested navigator for non-bottom landscape layouts so the navbar stays
+  // visible while series detail (or any pushed route) is open.
+  final GlobalKey<NavigatorState> _contentNavigatorKey = GlobalKey<NavigatorState>();
+  late final ValueNotifier<int> _selectedIndexNotifier;
+
   void updateTopNavBar() {
     if (mounted) {
       setState(() {});
@@ -83,9 +88,16 @@ class MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void dispose() {
+    _selectedIndexNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     _selectedIndex = SettingsManager().defaultStartPage.index;
+    _selectedIndexNotifier = ValueNotifier<int>(_selectedIndex);
     // BrowseScreen needs ExcludeSemantics on Windows to suppress a platform
     // accessibility warning triggered by the web-view component.
     _pages = [
@@ -106,6 +118,10 @@ class MainScreenState extends State<MainScreen> {
     if (_selectedIndex != index) {
       _logger.info('Tab switched to: $index');
       setState(() => _selectedIndex = index);
+      _selectedIndexNotifier.value = index;
+      // Pop series-detail (or any nested route) so switching tabs always
+      // returns to the tab root within the nested navigator.
+      _contentNavigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
   }
 
@@ -133,12 +149,42 @@ class MainScreenState extends State<MainScreen> {
     );
   }
 
+  // Wraps pages in a nested Navigator so routes pushed from within (e.g.
+  // series detail) stay inside the content area and the navbar remains visible.
+  Widget _buildContentWithNestedNav() {
+    return Stack(
+      children: [
+        Navigator(
+          key: _contentNavigatorKey,
+          onGenerateInitialRoutes: (_, __) => [
+            PageRouteBuilder<void>(
+              opaque: true,
+              pageBuilder: (ctx, __, ___) => ValueListenableBuilder<int>(
+                valueListenable: _selectedIndexNotifier,
+                builder: (_, idx, __) => IndexedStack(
+                  index: idx,
+                  children: _pages,
+                ),
+              ),
+              transitionsBuilder: (_, __, ___, child) => child,
+            ),
+          ],
+        ),
+        const SyncProgressOverlay(),
+      ],
+    );
+  }
+
   Widget _buildTabletLayout(
     BuildContext context,
     Widget content,
     LocalizationService l10n,
     LandscapeAppBarPosition position,
   ) {
+    // Non-bottom positions: use nested navigator so the navbar stays visible
+    // while series detail is open. Bottom uses full-screen push (content as-is).
+    final nestedContent = _buildContentWithNestedNav();
+
     if (position == LandscapeAppBarPosition.top) {
       return Scaffold(
         backgroundColor: AppConstants.secondaryBackground,
@@ -146,7 +192,7 @@ class MainScreenState extends State<MainScreen> {
           preferredSize: const Size.fromHeight(72),
           child: _buildTopNavBar(context, l10n),
         ),
-        body: content,
+        body: nestedContent,
       );
     }
 
@@ -175,7 +221,7 @@ class MainScreenState extends State<MainScreen> {
         backgroundColor: AppConstants.secondaryBackground,
         body: Row(
           children: [
-            Expanded(child: content),
+            Expanded(child: nestedContent),
             Container(
               width: 1,
               color: AppConstants.borderColor.withValues(alpha: 0.3),
@@ -298,7 +344,7 @@ class MainScreenState extends State<MainScreen> {
             width: 1,
             color: AppConstants.borderColor.withValues(alpha: 0.3),
           ),
-          Expanded(child: content),
+          Expanded(child: nestedContent),
         ],
       ),
     );

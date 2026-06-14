@@ -49,6 +49,7 @@ class SeriesDetailAppBar extends StatefulWidget {
 class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
   bool _transitionComplete = false;
   bool _listenerAdded = false;
+  Animation<double>? _routeAnimation;
 
   @override
   void didChangeDependencies() {
@@ -57,9 +58,9 @@ class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
       _listenerAdded = true;
       final route = ModalRoute.of(context);
       if (route != null) {
-        final animation = route.animation;
-        if (animation != null && !animation.isCompleted) {
-          animation.addStatusListener(_onStatus);
+        _routeAnimation = route.animation;
+        if (_routeAnimation != null && !_routeAnimation!.isCompleted) {
+          _routeAnimation!.addStatusListener(_onStatus);
         } else {
           _transitionComplete = true;
         }
@@ -72,14 +73,13 @@ class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
   void _onStatus(AnimationStatus status) {
     if (status == AnimationStatus.completed && mounted) {
       setState(() => _transitionComplete = true);
-      ModalRoute.of(context)?.animation?.removeStatusListener(_onStatus);
+      _routeAnimation?.removeStatusListener(_onStatus);
     }
   }
 
   @override
   void dispose() {
-    // Safe to call even if already removed
-    ModalRoute.of(context)?.animation?.removeStatusListener(_onStatus);
+    _routeAnimation?.removeStatusListener(_onStatus);
     super.dispose();
   }
 
@@ -87,10 +87,6 @@ class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     final isLandscape = orientation == Orientation.landscape;
-    final screenWidth = MediaQuery.of(context).size.width;
-    
-    // Calculate the margin needed to center the app bar contents on screens wider than 1400px
-    final double horizontalMargin = math.max(0.0, (screenWidth - 1400) / 2);
 
     final double expandedHeight = widget.isWide
         ? (isLandscape ? 330 : 380)
@@ -102,6 +98,10 @@ class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
 
     return SliverLayoutBuilder(
       builder: (context, constraints) {
+        final double layoutWidth = constraints.crossAxisExtent;
+        // Calculate the margin needed to center the app bar contents on screens wider than 1400px
+        final double horizontalMargin = math.max(0.0, (layoutWidth - 1400) / 2);
+
         final double offset = constraints.scrollOffset;
         final double fadeStart = expandedHeight * 0.45;
         final double fadeEnd = expandedHeight - kToolbarHeight;
@@ -119,24 +119,27 @@ class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
           leadingWidth: (widget.isWide ? 150 : 120) + horizontalMargin,
           leading: Padding(
             padding: EdgeInsets.only(
-              left: (widget.isWide ? 40.0 : 16.0) + horizontalMargin,
+              left: widget.horizontalPadding + horizontalMargin,
               top: 6,
               bottom: 6,
             ),
-            child: AppTooltip(
-              message: LocalizationService().translate('go_back'),
-              child: _GlassControl(
-                onTap: widget.onBack,
-                icon: Icons.arrow_back,
-                // Design: "Back" label in both portrait and landscape.
-                label: LocalizationService().translate('back'),
-                showBg: titleOpacity < 0.5,
-              ).animate().fadeIn(duration: 400.ms),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: AppTooltip(
+                message: LocalizationService().translate('go_back'),
+                child: _GlassControl(
+                  onTap: widget.onBack,
+                  icon: Icons.arrow_back,
+                  // Design: "Back" label in both portrait and landscape.
+                  label: LocalizationService().translate('back'),
+                  showBg: titleOpacity < 0.5,
+                ).animate().fadeIn(duration: 400.ms),
+              ),
             ),
           ),
-          // Landscape: no banner icons — clean behind the back pill.
-          // Portrait: transparent circle share + delete (if in library).
-          actions: widget.isWide
+          // Wide portrait: no banner icons (they live in the wide layout below).
+          // Landscape (any width) and narrow portrait: show share + delete.
+          actions: (widget.isWide && !isLandscape)
               ? [
                   Padding(
                     padding: EdgeInsets.only(right: horizontalMargin + 16),
@@ -172,7 +175,7 @@ class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
             titlePadding: EdgeInsetsDirectional.only(
               start: (widget.isWide ? 166 : 136) + horizontalMargin,
               bottom: 16,
-              end: (widget.isWide
+              end: (widget.isWide && !isLandscape
                       ? 16.0
                       : widget.entry != null
                           ? 104.0
