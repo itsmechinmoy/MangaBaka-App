@@ -12,6 +12,18 @@ class SettingsCategoryScreen extends StatelessWidget {
     required this.children,
   });
 
+  static void showAsDialog(
+    BuildContext context, {
+    required String title,
+    required Widget content,
+  }) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) => _CategoryDialog(title: title, content: content),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +53,71 @@ class SettingsCategoryScreen extends StatelessWidget {
             bottom: 80,
           ),
           children: children,
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryDialog extends StatelessWidget {
+  final String title;
+  final Widget content;
+
+  const _CategoryDialog({required this.title, required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    final maxHeight = MediaQuery.of(context).size.height - 64;
+    return Dialog(
+      backgroundColor: AppConstants.primaryBackground,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppConstants.largeRadius),
+      ),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 480, maxHeight: maxHeight),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 8, 12),
+              child: Row(
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: AppConstants.textColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                    color: AppConstants.textMutedColor,
+                    padding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 1, color: AppConstants.borderColor),
+            Flexible(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  left: AppConstants.horizontalPadding,
+                  right: AppConstants.horizontalPadding,
+                  top: 16,
+                  bottom: 24,
+                ),
+                child: content,
+              ),
+            ),
+          ],
         ),
       ),
     );
