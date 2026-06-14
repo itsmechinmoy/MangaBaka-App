@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/features/profile/widgets/snapshot/snapshot_list.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
@@ -30,11 +31,10 @@ class ProfileSnapshotSection extends StatelessWidget {
       children: [
         Text(
           l10n.translate('library_snapshot'),
-          style: TextStyle(
+          style: AppTypography.serif(
             color: AppConstants.textColor,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
+            fontSize: 23,
+            fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(height: 8),

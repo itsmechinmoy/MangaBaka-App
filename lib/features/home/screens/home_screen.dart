@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/core/theme/theme_manager.dart';
 import 'package:mangabaka_app/core/utils/widget_utils.dart';
@@ -27,9 +28,9 @@ class HomeScreen extends StatelessWidget {
             scrolledUnderElevation: 0,
             title: Text(
               l10n.translate("home"),
-              style: TextStyle(
+              style: AppTypography.serif(
                 color: AppConstants.textColor,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
                 fontSize: 24,
               ),
             ),

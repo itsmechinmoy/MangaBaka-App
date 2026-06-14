@@ -4,6 +4,7 @@ import 'package:mangabaka_app/shared/widgets/app_shortcuts.dart';
 import 'package:mangabaka_app/features/news/services/news_service.dart';
 import 'package:mangabaka_app/features/news/widgets/news_list_item.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/core/theme/theme_manager.dart';
 import 'package:mangabaka_app/core/utils/widget_utils.dart';
@@ -204,11 +205,10 @@ class _NewsScreenState extends State<NewsScreen> {
       centerTitle: true,
       title: Text(
         l10n.translate('news'),
-        style: TextStyle(
+        style: AppTypography.serif(
           color: AppConstants.textColor,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
           fontSize: 22,
-          letterSpacing: -0.5,
         ),
       ),
       actions: [

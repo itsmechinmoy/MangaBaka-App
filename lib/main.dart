@@ -11,6 +11,7 @@ import 'package:mangabaka_app/core/logging/logging_service.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/core/di/service_locator.dart';
 import 'package:mangabaka_app/core/theme/theme_manager.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'package:mangabaka_app/core/settings/settings_manager.dart';
 import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
@@ -122,6 +123,9 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
 
           _cachedLightTheme = ThemeData(
             useMaterial3: true,
+            textTheme: AppTypography.textTheme(
+              Typography.material2021(platform: TargetPlatform.android).black,
+            ),
             tooltipTheme: TooltipThemeData(
               triggerMode: showTooltips ? null : TooltipTriggerMode.manual,
               waitDuration: showTooltips ? null : const Duration(days: 365),
@@ -177,17 +181,20 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
               ),
             ),
             chipTheme: ChipThemeData(
+              backgroundColor: AppConstants.secondaryBackground,
+              side: BorderSide(color: AppConstants.borderColor, width: 1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppConstants.pillRadius),
-                side: BorderSide.none,
+                side: BorderSide(color: AppConstants.borderColor, width: 1),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             ),
             cardTheme: CardThemeData(
               elevation: 0,
+              surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(AppConstants.largeRadius),
+                borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+                side: BorderSide(color: AppConstants.borderColor, width: 1),
               ),
               color: AppConstants.secondaryBackground,
             ),
@@ -230,6 +237,9 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
           );
 
           _cachedDarkTheme = ThemeData.dark(useMaterial3: true).copyWith(
+            textTheme: AppTypography.textTheme(
+              Typography.material2021(platform: TargetPlatform.android).white,
+            ),
             colorScheme: ColorScheme.fromSeed(
               seedColor: AppConstants.primaryAccent,
               brightness: Brightness.dark,
@@ -285,17 +295,20 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
               ),
             ),
             chipTheme: ChipThemeData(
+              backgroundColor: AppConstants.secondaryBackground,
+              side: BorderSide(color: AppConstants.borderColor, width: 1),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppConstants.pillRadius),
-                side: BorderSide.none,
+                side: BorderSide(color: AppConstants.borderColor, width: 1),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             ),
             cardTheme: CardThemeData(
               elevation: 0,
+              surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(AppConstants.largeRadius),
+                borderRadius: BorderRadius.circular(AppConstants.cardRadius),
+                side: BorderSide(color: AppConstants.borderColor, width: 1),
               ),
               color: AppConstants.secondaryBackground,
             ),

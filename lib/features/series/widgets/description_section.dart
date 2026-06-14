@@ -40,9 +40,9 @@ class _DescriptionSectionState extends State<DescriptionSection> {
                   maxLines: expanded ? null : 6,
                   overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        height: 1.6,
-                        color: AppConstants.textColor.withValues(alpha: 0.9),
-                        fontSize: 15,
+                        height: 1.72,
+                        color: AppConstants.textColor.withValues(alpha: 0.88),
+                        fontSize: 15.5,
                       ),
                 ),
               ),

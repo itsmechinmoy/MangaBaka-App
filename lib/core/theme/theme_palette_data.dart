@@ -63,17 +63,21 @@ class ThemePaletteData {
     );
   }
 
+  /// MangaBaka design system — warm "paper & ink" neutrals with an emerald
+  /// accent (#1B9F70). Tokens mirror the Claude Design handoff:
+  /// light  -> bg #F6F4EF, surface #FFFDFA, surface-3 #F1EDE4, ink #211D17
+  /// dark   -> bg #14120E, surface #1B1813, surface-3 #2A261E, ink #F1ECE2
   static ThemePalette _getDefault(bool isDark) {
     return _createPalette(
       isDark: isDark,
-      primary: isDark ? const Color(0xFF0A0A0A) : const Color(0xFFF5F5F5),
-      secondary: isDark ? const Color(0xFF171717) : const Color(0xFFFFFFFF),
-      tertiary: isDark ? const Color(0xFF262626) : const Color(0xFFE8E6E3),
-      border: isDark ? const Color(0xFF262626) : const Color(0xFFE8E6E3),
-      accent: isDark ? const Color(0xFFE8E6E3) : const Color(0xFF121212),
-      primaryAccent: isDark ? const Color(0xFF121212) : const Color(0xFFE8E6E3),
-      text: isDark ? const Color(0xFFF5F5F5) : const Color(0xFF121212),
-      textMuted: isDark ? const Color(0xFFA3A3A3) : const Color(0xFF737373),
+      primary: isDark ? const Color(0xFF14120E) : const Color(0xFFF6F4EF),
+      secondary: isDark ? const Color(0xFF1B1813) : const Color(0xFFFFFDFA),
+      tertiary: isDark ? const Color(0xFF2A261E) : const Color(0xFFF1EDE4),
+      border: isDark ? const Color(0xFF2C2820) : const Color(0xFFE6E0D4),
+      accent: const Color(0xFF1B9F70),
+      primaryAccent: const Color(0xFF15875E),
+      text: isDark ? const Color(0xFFF1ECE2) : const Color(0xFF211D17),
+      textMuted: isDark ? const Color(0xFF8B8474) : const Color(0xFF8C8474),
     );
   }
 

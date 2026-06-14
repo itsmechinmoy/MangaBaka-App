@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 
 /// A shared centered hero layout used across onboarding pages.
 ///
@@ -56,11 +57,10 @@ class OnboardingHeroLayout extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: AppTypography.serif(
                 fontSize: isShort ? 24 : titleFontSize,
-                fontWeight: titleFontWeight,
+                fontWeight: FontWeight.w500,
                 color: AppConstants.textColor,
-                letterSpacing: titleLetterSpacing,
               ),
             ),
             const SizedBox(height: 12),

@@ -4,6 +4,8 @@ import 'package:mangabaka_app/core/constants/app_constants.dart';
 class ChipBase extends StatelessWidget {
   final Widget label;
   final Color? backgroundColor;
+  final Color? borderColor;
+  final double borderRadius;
   final EdgeInsetsGeometry? padding;
   final TextStyle? labelStyle;
 
@@ -12,6 +14,8 @@ class ChipBase extends StatelessWidget {
   const ChipBase({
     required this.label,
     this.backgroundColor,
+    this.borderColor,
+    this.borderRadius = 16,
     this.padding,
     this.labelStyle,
     this.onTap,
@@ -25,7 +29,10 @@ class ChipBase extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: backgroundColor ?? AppConstants.secondaryBackground,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: borderColor != null
+            ? Border.all(color: borderColor!, width: 1)
+            : null,
       ),
       child: DefaultTextStyle(
         style: labelStyle ??
@@ -44,7 +51,7 @@ class ChipBase extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(borderRadius),
           child: chip,
         ),
       );

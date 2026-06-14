@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/browse/widgets/shortcuts/shortcut_button.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 
 import 'package:mangabaka_app/core/localization/localization_service.dart';
 
@@ -85,12 +86,11 @@ class ShortcutSection extends StatelessWidget {
             children: [
               Text(
                 header,
-                style: TextStyle(
+                style: AppTypography.serif(
                   color: AppConstants.textColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22,
-                  letterSpacing: -0.5,
-                  height: 1.15,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 24,
+                  height: 1.1,
                 ),
               ),
               const SizedBox(height: 12),

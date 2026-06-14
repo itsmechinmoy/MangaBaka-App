@@ -1,4 +1,4 @@
-﻿import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/shared/widgets/app_shortcuts.dart';
 import 'package:mangabaka_app/features/library/services/library_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
@@ -132,110 +132,114 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
               stream: _entryStream,
               builder: (context, snapshot) {
                 final entry = snapshot.data;
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1400),
-                    child: RepaintBoundary(
-                    child: CustomScrollView(
-                        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                        slivers: [
-                          SeriesDetailAppBar(
-                            series: fullSeries ?? widget.series,
-                            title: (fullSeries ?? widget.series).getDisplayTitle(settings.defaultTitleLanguage),
-                            entry: entry,
-                            isWide: isWide || isTablet,
-                            horizontalPadding: isWide ? 40.0 : 16.0,
-                            isLoaded: isDataLoaded,
-                            onBack: () => Navigator.pop(context),
-                            onShare: shareLink,
-                            onDelete: showDeleteConfirmationDialog,
-                            onCopy: copyToClipboard,
-                          ),
-                          if (fetchError)
-                            SeriesDetailErrorBanner(onRetry: () {
-                              setState(() {
-                                isDataLoaded = false;
-                                fetchError = false;
-                              });
-                              fetchFullData();
-                            }),
-                          SliverToBoxAdapter(
-                            child: isWide 
-                              ? SeriesDetailWideLayout(
-                                series: fullSeries ?? widget.series,
-                                entry: entry,
-                                l10n: l10n,
-                                isDataLoaded: isDataLoaded,
-                                selectedTab: _selectedTab,
-                                onTabChanged: (tab) {
-                                  _logger.info('Series detail tab switched to: $tab');
-                                  setState(() => _selectedTab = tab);
-                                  fetchTabData(tab);
-                                },
-                                onStateChanged: (s) => _libraryService.updateLibraryEntryState((fullSeries ?? widget.series).id, s),
-                                onRatingChanged: (r) => _libraryService.updateLibraryEntryRating((fullSeries ?? widget.series).id, r),
-                                onUpdateChapter: () => entry != null ? showUpdateProgressDialog(entry, isChapter: true) : null,
-                                onUpdateVolume: () => entry != null ? showUpdateProgressDialog(entry, isChapter: false) : null,
-                                onUpdateRating: () => entry != null ? showUpdateRatingDialog(entry) : null,
-                                buildTabContent: (hPadding, {isWide = false, wideRightPaddingOnly = false}) => SeriesDetailTabContent(
+                return RepaintBoundary(
+                  child: CustomScrollView(
+                      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                      slivers: [
+                        SeriesDetailAppBar(
+                          series: fullSeries ?? widget.series,
+                          title: (fullSeries ?? widget.series).getDisplayTitle(settings.defaultTitleLanguage),
+                          entry: entry,
+                          isWide: isWide || isTablet,
+                          horizontalPadding: isWide ? 40.0 : 16.0,
+                          isLoaded: isDataLoaded,
+                          onBack: () => Navigator.pop(context),
+                          onShare: shareLink,
+                          onDelete: showDeleteConfirmationDialog,
+                          onCopy: copyToClipboard,
+                        ),
+                        if (fetchError)
+                          SeriesDetailErrorBanner(onRetry: () {
+                            setState(() {
+                              isDataLoaded = false;
+                              fetchError = false;
+                            });
+                            fetchFullData();
+                          }),
+                        SliverToBoxAdapter(
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 1400),
+                              child: isWide 
+                                ? SeriesDetailWideLayout(
                                   series: fullSeries ?? widget.series,
+                                  title: (fullSeries ?? widget.series).getDisplayTitle(settings.defaultTitleLanguage),
                                   entry: entry,
                                   l10n: l10n,
+                                  isDataLoaded: isDataLoaded,
                                   selectedTab: _selectedTab,
-                                  covers: covers,
-                                  related: related,
-                                  similar: similar,
-                                  news: news,
-                                  collections: collections,
-                                  works: works,
-                                  enrichedLinks: enrichedLinks,
-                                  isWide: isWide,
-                                  hPadding: hPadding,
-                                  wideRightPaddingOnly: wideRightPaddingOnly,
                                   onAuthorTap: _navigateToAuthorSeries,
                                   onPublisherTap: _navigateToPublisherSeries,
-                                ),
-                              )
-                              : SeriesDetailMobileLayout(
-                                series: fullSeries ?? widget.series,
-                                entry: entry,
-                                l10n: l10n,
-                                isDataLoaded: isDataLoaded,
-                                selectedTab: _selectedTab,
-                                onTabChanged: (tab) {
-                                  _logger.info('Series detail tab switched to: $tab');
-                                  setState(() => _selectedTab = tab);
-                                  fetchTabData(tab);
-                                },
-                                onStateChanged: (s) => _libraryService.updateLibraryEntryState((fullSeries ?? widget.series).id, s),
-                                onRatingChanged: (r) => _libraryService.updateLibraryEntryRating((fullSeries ?? widget.series).id, r),
-                                onUpdateChapter: () => entry != null ? showUpdateProgressDialog(entry, isChapter: true) : null,
-                                onUpdateVolume: () => entry != null ? showUpdateProgressDialog(entry, isChapter: false) : null,
-                                onUpdateRating: () => entry != null ? showUpdateRatingDialog(entry) : null,
-                                buildTabContent: (hPadding) => SeriesDetailTabContent(
+                                  onTabChanged: (tab) {
+                                    _logger.info('Series detail tab switched to: $tab');
+                                    setState(() => _selectedTab = tab);
+                                    fetchTabData(tab);
+                                  },
+                                  onStateChanged: (s) => _libraryService.updateLibraryEntryState((fullSeries ?? widget.series).id, s),
+                                  onRatingChanged: (r) => _libraryService.updateLibraryEntryRating((fullSeries ?? widget.series).id, r),
+                                  onUpdateChapter: () => entry != null ? showUpdateProgressDialog(entry, isChapter: true) : null,
+                                  onUpdateVolume: () => entry != null ? showUpdateProgressDialog(entry, isChapter: false) : null,
+                                  onUpdateRating: () => entry != null ? showUpdateRatingDialog(entry) : null,
+                                  buildTabContent: (hPadding, {isWide = false, wideRightPaddingOnly = false}) => SeriesDetailTabContent(
+                                    series: fullSeries ?? widget.series,
+                                    entry: entry,
+                                    l10n: l10n,
+                                    selectedTab: _selectedTab,
+                                    covers: covers,
+                                    related: related,
+                                    similar: similar,
+                                    news: news,
+                                    collections: collections,
+                                    works: works,
+                                    enrichedLinks: enrichedLinks,
+                                    isWide: isWide,
+                                    hPadding: hPadding,
+                                    wideRightPaddingOnly: wideRightPaddingOnly,
+                                    onAuthorTap: _navigateToAuthorSeries,
+                                    onPublisherTap: _navigateToPublisherSeries,
+                                  ),
+                                )
+                                : SeriesDetailMobileLayout(
                                   series: fullSeries ?? widget.series,
+                                  title: (fullSeries ?? widget.series).getDisplayTitle(settings.defaultTitleLanguage),
                                   entry: entry,
                                   l10n: l10n,
+                                  isDataLoaded: isDataLoaded,
                                   selectedTab: _selectedTab,
-                                  covers: covers,
-                                  related: related,
-                                  similar: similar,
-                                  news: news,
-                                  collections: collections,
-                                  works: works,
-                                  enrichedLinks: enrichedLinks,
-                                  hPadding: hPadding,
-                                  onAuthorTap: _navigateToAuthorSeries,
-                                  onPublisherTap: _navigateToPublisherSeries,
+                                  onTabChanged: (tab) {
+                                    _logger.info('Series detail tab switched to: $tab');
+                                    setState(() => _selectedTab = tab);
+                                    fetchTabData(tab);
+                                  },
+                                  onStateChanged: (s) => _libraryService.updateLibraryEntryState((fullSeries ?? widget.series).id, s),
+                                  onRatingChanged: (r) => _libraryService.updateLibraryEntryRating((fullSeries ?? widget.series).id, r),
+                                  onUpdateChapter: () => entry != null ? showUpdateProgressDialog(entry, isChapter: true) : null,
+                                  onUpdateVolume: () => entry != null ? showUpdateProgressDialog(entry, isChapter: false) : null,
+                                  onUpdateRating: () => entry != null ? showUpdateRatingDialog(entry) : null,
+                                  buildTabContent: (hPadding) => SeriesDetailTabContent(
+                                    series: fullSeries ?? widget.series,
+                                    entry: entry,
+                                    l10n: l10n,
+                                    selectedTab: _selectedTab,
+                                    covers: covers,
+                                    related: related,
+                                    similar: similar,
+                                    news: news,
+                                    collections: collections,
+                                    works: works,
+                                    enrichedLinks: enrichedLinks,
+                                    hPadding: hPadding,
+                                    onAuthorTap: _navigateToAuthorSeries,
+                                    onPublisherTap: _navigateToPublisherSeries,
+                                  ),
                                 ),
-                              ),
+                            ),
                           ),
-                          const SliverToBoxAdapter(child: SizedBox(height: 80)),
-                        ],
-                      ),
+                        ),
+                        const SliverToBoxAdapter(child: SizedBox(height: 80)),
+                      ],
                     ),
-                  ),
-                );
+                  );
               },
             ),
           ),

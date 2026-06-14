@@ -19,18 +19,18 @@ class AppConstants {
   static const int libraryMaxPages = 10000; // API max pages
   static const double scrollThresholdPx = 100;
 
-  static Color primaryBackground = const Color(0xFF0a0a0a);
-  static Color secondaryBackground = const Color(0xFF18181B);
-  static Color tertiaryBackground = const Color(0xFF23232a);
+  static Color primaryBackground = const Color(0xFF14120E);
+  static Color secondaryBackground = const Color(0xFF1B1813);
+  static Color tertiaryBackground = const Color(0xFF2A261E);
   static Color accentColor = const Color(0xFF1b9f70);
-  static Color primaryAccent = const Color(0xFF00301d);
-  static Color borderColor = const Color(0xFF3f3f46);
+  static Color primaryAccent = const Color(0xFF15875E);
+  static Color borderColor = const Color(0xFF2C2820);
   static Color successColor = const Color(0xFF81e6ca);
   static Color warningColor = const Color(0xFFffc83e);
   static Color errorColor = const Color(0xFFef4444);
   static Color infoColor = const Color(0xFF3b82f6);
-  static Color textColor = const Color(0xFFFFFFFF);
-  static Color textMutedColor = const Color(0x8AFFFFFF);
+  static Color textColor = const Color(0xFFF1ECE2);
+  static Color textMutedColor = const Color(0xFF8B8474);
 
   static void setAppTheme(AppTheme theme, bool isDark) {
     AppThemeColors.applyTheme(theme, isDark);

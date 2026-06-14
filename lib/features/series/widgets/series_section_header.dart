@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 
 class SeriesSectionHeader extends StatelessWidget {
   final String title;
@@ -8,20 +9,19 @@ class SeriesSectionHeader extends StatelessWidget {
   const SeriesSectionHeader({
     super.key,
     required this.title,
-    this.bottomPadding = 16,
+    this.bottomPadding = 14,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Signature design-system label: uppercase, letter-spaced monospace.
     return Padding(
       padding: EdgeInsets.only(bottom: bottomPadding),
       child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          color: AppConstants.textColor,
-          letterSpacing: 0.5,
+        title.toUpperCase(),
+        style: AppTypography.monoLabel(
+          color: AppConstants.textMutedColor,
+          fontSize: 11.5,
         ),
       ),
     );

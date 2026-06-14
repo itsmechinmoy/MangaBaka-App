@@ -1,14 +1,21 @@
-﻿import 'dart:ui';
+import 'dart:ui';
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
-import 'package:mangabaka_app/core/theme/theme_manager.dart';
-import 'package:mangabaka_app/features/series/widgets/series_hero_cover.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'package:mangabaka_app/core/utils/widget_utils.dart';
+import 'package:mangabaka_app/features/series/widgets/series_hero_cover.dart';
+import 'package:mangabaka_app/features/series/widgets/series_hero.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+/// Banner hero for the series detail page: a full-bleed blurred cover that fades
+/// into the page background, with the cover artwork and serif title block
+/// floating at its base, plus a glass "Back" pill and (portrait only) transparent
+/// share / delete icons. Landscape shows the back pill only. The remaining
+/// content (tabs, cards, synopsis) lives below.
 class SeriesDetailAppBar extends StatelessWidget {
   final Series series;
   final String title;
@@ -41,101 +48,96 @@ class SeriesDetailAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final orientation = MediaQuery.of(context).orientation;
     final isLandscape = orientation == Orientation.landscape;
-    final double expandedHeight = isWide 
-        ? (isLandscape ? 300 : 400) 
-        : (isLandscape ? 200 : 320);
+    final screenWidth = MediaQuery.of(context).size.width;
     
+    // Calculate the margin needed to center the app bar contents on screens wider than 1400px
+    final double horizontalMargin = math.max(0.0, (screenWidth - 1400) / 2);
+
+    final double expandedHeight = isWide
+        ? (isLandscape ? 330 : 380)
+        : (isLandscape ? 220 : 300);
+    final double coverHeight = isWide
+        ? (isLandscape ? 190 : 230)
+        : (isLandscape ? 140 : 172);
+    final double coverWidth = coverHeight * 0.7;
+
     return SliverLayoutBuilder(
       builder: (context, constraints) {
         final double offset = constraints.scrollOffset;
-        final isDark = ThemeManager().isDarkMode;
-
-        // Title fades in continuously: starts at 35% of expanded height,
-        // fully opaque when the bar reaches its minimum (toolbar) height.
-        final double fadeStart = expandedHeight * 0.35;
+        final double fadeStart = expandedHeight * 0.45;
         final double fadeEnd = expandedHeight - kToolbarHeight;
-        final double titleOpacity = ((offset - fadeStart) / (fadeEnd - fadeStart)).clamp(0.0, 1.0);
-
-        // Button styling switches at roughly the halfway point of the fade.
-        final bool isCollapsed = titleOpacity > 0.5;
-
-        // Colors that adapt to collapse state
-        final Color buttonForeground = isCollapsed
-            ? AppConstants.textColor
-            : (isDark ? AppConstants.textColor : Colors.white);
-
-        final Color? buttonBackground = (isCollapsed || isDark)
-            ? null
-            : Colors.black.withValues(alpha: 0.3);
-
-        final buttonStyle = IconButton.styleFrom(
-          foregroundColor: buttonForeground,
-          backgroundColor: buttonBackground,
-          minimumSize: const Size(40, 40),
-          maximumSize: const Size(40, 40),
-          padding: EdgeInsets.zero,
-        );
+        final double titleOpacity =
+            ((offset - fadeStart) / (fadeEnd - fadeStart)).clamp(0.0, 1.0);
 
         return SliverAppBar(
           expandedHeight: expandedHeight,
           pinned: true,
           backgroundColor: AppConstants.primaryBackground,
+          surfaceTintColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(32)),
-          ),
+          // Always reserve space for the "Back" text pill.
+          leadingWidth: (isWide ? 112 : 96) + horizontalMargin,
           leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Center(
-              child: WidgetUtils.tooltip(
-                message: LocalizationService().translate('go_back'),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: onBack,
-                  style: buttonStyle,
-                ),
-              ).animate().fadeIn(duration: 400.ms).slideX(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
+            padding: EdgeInsets.only(
+              left: (isWide ? 16 : 8) + horizontalMargin, 
+              top: 6, 
+              bottom: 6,
             ),
+            child: _GlassControl(
+              onTap: onBack,
+              tooltip: LocalizationService().translate('go_back'),
+              icon: Icons.arrow_back,
+              // Design: "Back" label in both portrait and landscape.
+              label: LocalizationService().translate('back'),
+            ).animate().fadeIn(duration: 400.ms),
           ),
-          actions: [
-            WidgetUtils.tooltip(
-              message: LocalizationService().translate('share_series'),
-              child: IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: onShare,
-                style: buttonStyle,
-              ),
-            ).animate().fadeIn(delay: 100.ms, duration: 400.ms).slideX(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
-            if (entry != null)
-              WidgetUtils.tooltip(
-                message: LocalizationService().translate('delete_from_library'),
-                child: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: onDelete,
-                  style: buttonStyle,
-                ),
-              ).animate().fadeIn(delay: 200.ms, duration: 400.ms).slideX(begin: 0.2, end: 0, curve: Curves.easeOutCubic),
-            const SizedBox(width: 8),
-          ],
+          // Landscape: no banner icons — clean behind the back pill.
+          // Portrait: transparent circle share + delete (if in library).
+          actions: isWide
+              ? [
+                  Padding(
+                    padding: EdgeInsets.only(right: horizontalMargin + 16),
+                    child: const SizedBox(width: 16),
+                  )
+                ]
+              : [
+                  _SubbarIcon(
+                    onTap: onShare,
+                    tooltip: LocalizationService().translate('share_series'),
+                    icon: Icons.share_outlined,
+                  ).animate().fadeIn(delay: 80.ms, duration: 400.ms),
+                  if (entry != null)
+                    _SubbarIcon(
+                      onTap: onDelete,
+                      tooltip: LocalizationService().translate('delete_from_library'),
+                      icon: Icons.delete_outline,
+                    ).animate().fadeIn(delay: 160.ms, duration: 400.ms),
+                  Padding(
+                    padding: EdgeInsets.only(right: horizontalMargin + 8),
+                    child: const SizedBox(width: 8),
+                  ),
+                ],
           flexibleSpace: FlexibleSpaceBar(
-            titlePadding: const EdgeInsetsDirectional.only(start: 56, bottom: 16),
+            titlePadding: EdgeInsetsDirectional.only(
+              start: (isWide ? 124 : 96) + horizontalMargin,
+              bottom: 16,
+              end: 16 + horizontalMargin,
+            ),
             centerTitle: false,
             title: IgnorePointer(
               ignoring: titleOpacity == 0,
               child: Opacity(
                 opacity: titleOpacity,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: isWide ? 600 : 200),
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      color: AppConstants.textColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                child: Text(
+                  title,
+                  style: AppTypography.serif(
+                    color: AppConstants.textColor,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 19,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
@@ -143,188 +145,218 @@ class SeriesDetailAppBar extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Container(
-                    color: Colors.black.withValues(alpha: 0.2),
-                  ),
-                  WidgetUtils.networkImage(
-                    url: series.coverUrl,
-                    fit: BoxFit.cover,
-                    memCacheWidth: isWide ? 1200 : 800,
-                  ).animate(target: isLoaded ? 1 : 0)
-                   .fadeIn(duration: 1200.ms, curve: Curves.easeOut)
-                   .scale(begin: const Offset(1.05, 1.05), end: const Offset(1, 1), curve: Curves.easeOut),
-                ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                    child: Container(
-                      color: Colors.black.withValues(alpha: 0.3),
-                    ),
-                  ),
-                ).animate(target: isLoaded ? 1 : 0)
-                 .fadeIn(duration: 1200.ms, curve: Curves.easeOut),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withValues(alpha: 0.5),
-                        Colors.black.withValues(alpha: 0),
-                        AppConstants.primaryBackground.withValues(alpha: 0.4),
-                        AppConstants.primaryBackground.withValues(alpha: 0.9),
-                        AppConstants.primaryBackground,
-                      ],
-                      stops: const [0.0, 0.15, 0.5, 0.85, 1.0],
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 20,
-                  left: horizontalPadding,
-                  right: horizontalPadding,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      if (showCover) ...[
-                        SeriesHeroCover(
-                          series: series,
-                          height: isWide ? (isLandscape ? 180 : 220) : (isLandscape ? 140 : 180),
-                          width: isWide ? (isLandscape ? 120 : 150) : (isLandscape ? 100 : 125),
-                        ).animate().fadeIn(duration: 600.ms).slideX(begin: 0.1, end: 0, curve: Curves.easeOutCubic),
-                        const SizedBox(width: 16),
-                      ],
-                      Expanded(
-                        child: _buildMainInfo(context, isDark)
-                            .animate(target: isLoaded ? 1 : 0)
-                            .fadeIn(duration: 600.ms)
-                            .slideY(begin: 0.1, end: 0, curve: Curves.easeOutCubic),
+                  Container(color: AppConstants.tertiaryBackground),
+                  if (series.coverUrl.isNotEmpty)
+                    seriesBannerImage(series, memCacheWidth: isWide ? 1200 : 800)
+                        .animate(target: isLoaded ? 1 : 0)
+                        .fadeIn(duration: 1000.ms, curve: Curves.easeOut)
+                        .scale(
+                          begin: const Offset(1.06, 1.06),
+                          end: const Offset(1, 1),
+                          curve: Curves.easeOut,
+                        ),
+                  // Heavy blur so the cover reads as an ambient banner.
+                  ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 26, sigmaY: 26),
+                      child: Container(
+                        color: AppConstants.primaryBackground.withValues(alpha: 0.2),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                  IgnorePointer(
+                    child: CustomPaint(
+                      painter: _HatchPainter(
+                        color: AppConstants.textColor.withValues(alpha: 0.04),
+                      ),
+                    ),
+                  ),
+                  // Fade into the page background toward the bottom.
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppConstants.primaryBackground.withValues(alpha: 0.0),
+                          AppConstants.primaryBackground.withValues(alpha: 0.4),
+                          AppConstants.primaryBackground.withValues(alpha: 0.92),
+                          AppConstants.primaryBackground,
+                        ],
+                        stops: const [0.25, 0.55, 0.85, 1.0],
+                      ),
+                    ),
+                  ),
+                  // Cover + serif title block floating at the base.
+                  if (showCover)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 18,
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1400),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                SeriesHeroCover(
+                                  series: series,
+                                  height: coverHeight,
+                                  width: coverWidth,
+                                )
+                                    .animate(target: isLoaded ? 1 : 0)
+                                    .fadeIn(duration: 500.ms)
+                                    .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic),
+                                SizedBox(width: isWide ? 22 : 16),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 4),
+                                    child: SeriesTitleBlock(
+                                      series: series,
+                                      title: title,
+                                      isWide: isWide,
+                                    )
+                                        .animate(target: isLoaded ? 1 : 0)
+                                        .fadeIn(duration: 600.ms)
+                                        .slideY(begin: 0.06, end: 0, curve: Curves.easeOutCubic),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    },
-  );
-}
-
-  Widget _buildMainInfo(BuildContext context, bool isDark) {
-    final otherTitles = <String>[];
-    if (series.title.isNotEmpty && series.title != title) {
-      otherTitles.add(series.title);
-    }
-    if (series.nativeTitle.isNotEmpty &&
-        series.nativeTitle != title &&
-        !otherTitles.contains(series.nativeTitle)) {
-      otherTitles.add(series.nativeTitle);
-    }
-    if (series.romanizedTitle.isNotEmpty &&
-        series.romanizedTitle != title &&
-        !otherTitles.contains(series.romanizedTitle)) {
-      otherTitles.add(series.romanizedTitle);
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _HoverableTitle(
-          text: title,
-          fontSize: isWide ? 32 : 22,
-          fontWeight: FontWeight.bold,
-          color: AppConstants.textColor,
-          maxLines: 3,
-          shadows: [
-            Shadow(
-              color: AppConstants.primaryBackground.withValues(alpha: 0.5),
-              offset: const Offset(0, 2),
-              blurRadius: 4,
-            ),
-          ],
-          onTap: () => onCopy(title),
-        ),
-        if (otherTitles.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          ...otherTitles.map((t) => Padding(
-                padding: const EdgeInsets.only(bottom: 2),
-                child: _HoverableTitle(
-                  text: t,
-                  fontSize: isWide ? 15 : 13,
-                  color: AppConstants.textMutedColor,
-                  fontStyle: FontStyle.italic,
-                  maxLines: 1,
-                  onTap: () => onCopy(t),
-                ),
-              )),
-        ],
-      ],
+        );
+      },
     );
   }
 }
 
-/// A title widget that underlines on hover to indicate it is clickable.
-class _HoverableTitle extends StatefulWidget {
-  final String text;
-  final double fontSize;
-  final FontWeight fontWeight;
-  final Color color;
-  final FontStyle? fontStyle;
-  final int maxLines;
-  final List<Shadow>? shadows;
+/// A frosted-glass control (back pill / icon button) that floats on the banner.
+class _GlassControl extends StatelessWidget {
   final VoidCallback onTap;
+  final String tooltip;
+  final IconData icon;
+  final String? label;
 
-  const _HoverableTitle({
-    required this.text,
-    required this.fontSize,
-    this.fontWeight = FontWeight.normal,
-    required this.color,
-    this.fontStyle,
-    this.maxLines = 1,
-    this.shadows,
+  const _GlassControl({
     required this.onTap,
+    required this.tooltip,
+    required this.icon,
+    this.label,
   });
 
   @override
-  State<_HoverableTitle> createState() => _HoverableTitleState();
+  Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(999);
+    final child = ClipRRect(
+      borderRadius: radius,
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          height: 40,
+          padding: EdgeInsets.symmetric(horizontal: label != null ? 14 : 0),
+          width: label != null ? null : 40,
+          decoration: BoxDecoration(
+            color: AppConstants.secondaryBackground.withValues(alpha: 0.55),
+            borderRadius: radius,
+            border: Border.all(
+              color: AppConstants.borderColor.withValues(alpha: 0.7),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 19, color: AppConstants.textColor),
+              if (label != null) ...[
+                const SizedBox(width: 6),
+                Flexible(
+                  child: Text(
+                    label!,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTypography.sans(
+                      color: AppConstants.textColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+
+    return WidgetUtils.tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(onTap: onTap, borderRadius: radius, child: child),
+      ),
+    );
+  }
 }
 
-class _HoverableTitleState extends State<_HoverableTitle> {
-  bool _hovered = false;
+/// Transparent circular icon button for portrait banner right-side controls.
+/// Matches the design's `.mb-subbar-icon` style — no glass, no border, just ink.
+class _SubbarIcon extends StatelessWidget {
+  final VoidCallback onTap;
+  final String tooltip;
+  final IconData icon;
+
+  const _SubbarIcon({
+    required this.onTap,
+    required this.tooltip,
+    required this.icon,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: WidgetUtils.tooltip(
-        message: LocalizationService().translate('copy_title'),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          behavior: HitTestBehavior.opaque,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: Text(
-              widget.text,
-              style: TextStyle(
-                fontSize: widget.fontSize,
-                fontWeight: widget.fontWeight,
-                color: widget.color,
-                fontStyle: widget.fontStyle,
-                height: 1.1,
-                shadows: widget.shadows,
-                decoration: _hovered ? TextDecoration.underline : TextDecoration.none,
-                decorationColor: widget.color.withValues(alpha: 0.6),
-              ),
-              maxLines: widget.maxLines,
-              overflow: TextOverflow.ellipsis,
+    return WidgetUtils.tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(18),
+          child: SizedBox(
+            width: 36,
+            height: 36,
+            child: Center(
+              child: Icon(icon, size: 20, color: AppConstants.textColor),
             ),
           ),
         ),
       ),
     );
   }
+}
+
+class _HatchPainter extends CustomPainter {
+  final Color color;
+  _HatchPainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1;
+    const gap = 14.0;
+    for (double x = -size.height; x < size.width; x += gap) {
+      canvas.drawLine(Offset(x, size.height), Offset(x + size.height, 0), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _HatchPainter old) => old.color != color;
 }

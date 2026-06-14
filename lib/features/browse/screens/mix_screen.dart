@@ -10,6 +10,7 @@ import 'package:mangabaka_app/features/series/screens/series_detail_screen.dart'
 import 'package:mangabaka_app/features/series/services/series_autocomplete_service.dart';
 import 'package:mangabaka_app/features/series/widgets/entry_list_item.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'package:mangabaka_app/core/di/service_locator.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/core/settings/settings_manager.dart';
@@ -143,11 +144,10 @@ class _MixScreenState extends State<MixScreen> {
       ),
       title: Text(
         l10n.translate('mix'),
-        style: TextStyle(
+        style: AppTypography.serif(
           color: AppConstants.textColor,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w500,
           fontSize: 22,
-          letterSpacing: -0.5,
         ),
       ),
       centerTitle: true,
