@@ -47,6 +47,13 @@ void _showOrNavigate(
       : Builder(builder: buildInner);
 
   if (isLandscape) {
+    final dialogState = context.findAncestorStateOfType<_SettingsDialogState>();
+    if (dialogState != null) {
+      dialogState.pushCategory(title, content);
+      return;
+    }
+
+    // Fallback if not inside _SettingsDialog
     Navigator.pop(context);
     // Defer showing the new dialog until after the current one's pop animation completes
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -757,8 +764,38 @@ class SettingsScreen extends StatelessWidget {
 // Landscape dialog
 // ---------------------------------------------------------------------------
 
-class _SettingsDialog extends StatelessWidget {
+class _SettingsDialogPage {
+  final String title;
+  final Widget content;
+  _SettingsDialogPage({required this.title, required this.content});
+}
+
+class _SettingsDialog extends StatefulWidget {
   const _SettingsDialog();
+
+  @override
+  State<_SettingsDialog> createState() => _SettingsDialogState();
+}
+
+class _SettingsDialogState extends State<_SettingsDialog> {
+  final List<_SettingsDialogPage> _stack = [];
+  bool _isPushing = true;
+
+  void pushCategory(String title, Widget content) {
+    setState(() {
+      _isPushing = true;
+      _stack.add(_SettingsDialogPage(title: title, content: content));
+    });
+  }
+
+  void popCategory() {
+    if (_stack.isNotEmpty) {
+      setState(() {
+        _isPushing = false;
+        _stack.removeLast();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -774,64 +811,178 @@ class _SettingsDialog extends StatelessWidget {
         final auth = getIt<ProfileAuthService>();
         final maxHeight = MediaQuery.of(context).size.height - 64;
 
-        return Dialog(
-          backgroundColor: AppConstants.primaryBackground,
-          insetPadding:
-              const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
-          clipBehavior: Clip.antiAlias,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppConstants.largeRadius),
-          ),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 480, maxHeight: maxHeight),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-                  child: Row(
-                    children: [
-                      Text(
-                        l10n.translate('settings'),
-                        style: TextStyle(
-                          color: AppConstants.textColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.pop(context),
-                        color: AppConstants.textMutedColor,
-                        padding: EdgeInsets.zero,
-                        visualDensity: VisualDensity.compact,
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(height: 1, color: AppConstants.borderColor),
-                Flexible(
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.only(
-                      left: AppConstants.horizontalPadding,
-                      right: AppConstants.horizontalPadding,
-                      top: 16,
-                      bottom: 24,
+        final currentKey = _stack.isEmpty
+            ? const ValueKey('main_settings')
+            : ValueKey(_stack.last.title);
+
+        return PopScope(
+          canPop: _stack.isEmpty,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            popCategory();
+          },
+          child: Dialog(
+            backgroundColor: AppConstants.primaryBackground,
+            insetPadding:
+                const EdgeInsets.symmetric(horizontal: 48, vertical: 32),
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppConstants.largeRadius),
+            ),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 480, maxHeight: maxHeight),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                switchInCurve: Curves.easeInOutCubic,
+                switchOutCurve: Curves.easeInOutCubic,
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  final isEntering = child.key == currentKey;
+                  Offset beginOffset;
+                  if (_isPushing) {
+                    beginOffset = isEntering
+                        ? const Offset(0.0, 1.0)
+                        : const Offset(0.0, -1.0);
+                  } else {
+                    beginOffset = isEntering
+                        ? const Offset(0.0, -1.0)
+                        : const Offset(0.0, 1.0);
+                  }
+
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: beginOffset,
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: child,
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: _buildSettingsGroups(context, l10n, auth),
-                    ),
-                  ),
+                  );
+                },
+                child: KeyedSubtree(
+                  key: currentKey,
+                  child: _stack.isEmpty
+                      ? _buildMainSettings(context, l10n, auth)
+                      : _buildCategorySettings(context, l10n, _stack.last),
                 ),
-              ],
+              ),
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildMainSettings(
+    BuildContext context,
+    LocalizationService l10n,
+    ProfileAuthService auth,
+  ) {
+    return Column(
+      key: const ValueKey('main_settings_column'),
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+          child: Row(
+            children: [
+              Text(
+                l10n.translate('settings'),
+                style: TextStyle(
+                  color: AppConstants.textColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+                color: AppConstants.textMutedColor,
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
+          ),
+        ),
+        Divider(height: 1, color: AppConstants.borderColor),
+        Flexible(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: AppConstants.horizontalPadding,
+              right: AppConstants.horizontalPadding,
+              top: 16,
+              bottom: 24,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: _buildSettingsGroups(context, l10n, auth),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategorySettings(
+    BuildContext context,
+    LocalizationService l10n,
+    _SettingsDialogPage page,
+  ) {
+    return Column(
+      key: ValueKey('category_column_${page.title}'),
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
+          child: Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: popCategory,
+                color: AppConstants.textMutedColor,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  page.title,
+                  style: TextStyle(
+                    color: AppConstants.textColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+                color: AppConstants.textMutedColor,
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
+          ),
+        ),
+        Divider(height: 1, color: AppConstants.borderColor),
+        Flexible(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.only(
+              left: AppConstants.horizontalPadding,
+              right: AppConstants.horizontalPadding,
+              top: 16,
+              bottom: 24,
+            ),
+            child: page.content,
+          ),
+        ),
+      ],
     );
   }
 }

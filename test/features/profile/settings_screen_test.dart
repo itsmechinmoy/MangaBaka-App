@@ -53,4 +53,45 @@ void main() {
     tester.view.resetPhysicalSize();
     tester.view.resetDevicePixelRatio();
   });
+
+  testWidgets('Landscape Settings Dialog navigates internally with push/pop', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: Builder(
+          builder: (context) => ElevatedButton(
+            onPressed: () => SettingsScreen.show(context),
+            child: const Text('Open Settings'),
+          ),
+        ),
+      ),
+    ));
+
+    await tester.tap(find.text('Open Settings'));
+    await tester.pumpAndSettle();
+
+    // Verify dialog is open and shows main settings
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.text('settings'), findsWidgets);
+
+    // Tap general settings item
+    await tester.tap(find.text('general'));
+    await tester.pumpAndSettle();
+
+    // Verify dialog is still open and shows general settings title
+    expect(find.byType(Dialog), findsOneWidget);
+    expect(find.text('general'), findsOneWidget);
+
+    // Tap back button
+    await tester.tap(find.byIcon(Icons.arrow_back));
+    await tester.pumpAndSettle();
+
+    // Verify we are back to main settings list
+    expect(find.text('settings'), findsWidgets);
+
+    tester.view.resetPhysicalSize();
+    tester.view.resetDevicePixelRatio();
+  });
 }
