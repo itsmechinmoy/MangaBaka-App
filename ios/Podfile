@@ -44,12 +44,6 @@ post_install do |installer|
         '$(inherited)',
         'PERMISSION_CAMERA=1'
       ]
-      # Xcode 26 enforces strict ARC for availability-guarded APIs. device_info_plus
-      # 12.4+ calls isiOSAppOnVision (iOS 17+) without @available; raising this
-      # pod's deployment target to 17.0 brings the call in-range for the compiler.
-      if target.name == 'device_info_plus'
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
-      end
     end
   end
 end
