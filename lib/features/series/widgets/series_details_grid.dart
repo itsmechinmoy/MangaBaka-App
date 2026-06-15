@@ -5,6 +5,8 @@ import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/features/series/widgets/series_grouped_tags.dart';
 import 'package:mangabaka_app/core/utils/widget_utils.dart';
+import 'package:mangabaka_app/features/series/widgets/mb_card.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 
 class SeriesDetailsGrid extends StatelessWidget {
   final Series series;
@@ -22,24 +24,90 @@ class SeriesDetailsGrid extends StatelessWidget {
     this.horizontalPadding = 16.0,
   });
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildAnimeContainer(BuildContext context) {
     final animeStart = series.anime?['start']?.toString();
     final animeStop = series.anime?['end']?.toString();
 
+    final hasStart = animeStart != null && animeStart.trim().isNotEmpty;
+    final hasStop = animeStop != null && animeStop.trim().isNotEmpty;
+
+    if (!hasStart && !hasStop) return const SizedBox.shrink();
+
+    final children = <Widget>[
+      if (hasStart) ...[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 11),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.translate('anime_start').toUpperCase(),
+                style: AppTypography.monoLabel(
+                  color: AppConstants.textMutedColor,
+                  fontSize: 10,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                animeStart,
+                style: AppTypography.sans(
+                  color: AppConstants.textColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+      if (hasStart && hasStop)
+        Divider(height: 1, thickness: 1, color: AppConstants.borderColor),
+      if (hasStop) ...[
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 11),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.translate('anime_stop').toUpperCase(),
+                style: AppTypography.monoLabel(
+                  color: AppConstants.textMutedColor,
+                  fontSize: 10,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                animeStop,
+                style: AppTypography.sans(
+                  color: AppConstants.textColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
+      child: MbCard(
+        label: l10n.translate('anime_adaptation'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final content = [
-      if (animeStart != null && animeStart.trim().isNotEmpty)
-        WidgetUtils.chipWrap(
-          l10n.translate('anime_start'),
-          animeStart.split('/').map((e) => e.trim()).toList(),
-          color: AppConstants.secondaryBackground,
-        ),
-      if (animeStop != null && animeStop.trim().isNotEmpty)
-        WidgetUtils.chipWrap(
-          l10n.translate('anime_stop'),
-          animeStop.split('/').map((e) => e.trim()).toList(),
-          color: AppConstants.secondaryBackground,
-        ),
+      _buildAnimeContainer(context),
       // Genres moved to SeriesDetailScreen
       SeriesGroupedTags(series: series, l10n: l10n),
       if (enrichedLinks != null || series.links.isNotEmpty) ...[
