@@ -17,6 +17,8 @@ import 'package:mangabaka_app/features/series/services/metadata_service.dart';
 import 'package:mangabaka_app/features/profile/services/profile_auth_service.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/shared/widgets/app_shortcuts.dart';
+import 'package:mangabaka_app/features/updates/services/update_service.dart';
+import 'package:mangabaka_app/features/updates/widgets/update_dialog.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -92,6 +94,18 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
   AppTheme? _lastTheme;
   bool? _lastIsDarkMode;
   bool _showSplash = true;
+
+  /// Checks GitHub for a newer release and, if found, shows the update dialog.
+  /// Runs at most once per app launch.
+  Future<void> _checkForAppUpdate() async {
+    final service = getIt<UpdateService>();
+    if (!service.shouldPrompt()) return;
+    final release = await service.checkForUpdate();
+    if (release == null) return;
+    final ctx = AppConstants.navigatorKey.currentContext;
+    if (ctx == null || !ctx.mounted) return;
+    await UpdateDialog.show(ctx, release);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -384,6 +398,11 @@ class _MangaBakaAppState extends State<MangaBakaApp> {
                         setState(() {
                           _showSplash = false;
                         });
+                        // Once the splash clears (and the user is past
+                        // onboarding), check GitHub for a newer release.
+                        if (hasCompletedOnboarding || isLoggedIn) {
+                          _checkForAppUpdate();
+                        }
                       },
                     ),
                 ],

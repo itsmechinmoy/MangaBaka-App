@@ -5,8 +5,16 @@ export 'package:mangabaka_app/core/theme/app_theme_colors.dart' show AppTheme;
 
 class AppConstants {
   static const String appName = 'MangaBaka';
-  static const String appVersion = '0.1.0-pre-release-7';
+  // Canonical installed version used for the GitHub release update check.
+  // Keep in sync with `version:` in pubspec.yaml on every release.
+  static const String appVersion = '0.1.0-pre-release-8';
   static const String baseApiUrl = 'https://api.mangabaka.dev/v1';
+
+  // GitHub repository used by the in-app update system.
+  static const String githubOwner = 'Oazzies';
+  static const String githubRepo = 'MangaBaka-App';
+  static const String githubReleasesApi =
+      'https://api.github.com/repos/$githubOwner/$githubRepo/releases';
   static const String authBaseUrl = 'https://mangabaka.org/auth/oauth2';
   static const String userAgent =
       '$appName/$appVersion (oazziesmail@gmail.com)';
