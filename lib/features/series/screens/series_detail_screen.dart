@@ -201,8 +201,6 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                                     isWide: isWide,
                                     hPadding: hPadding,
                                     wideRightPaddingOnly: wideRightPaddingOnly,
-                                    onAuthorTap: _navigateToAuthorSeries,
-                                    onPublisherTap: _navigateToPublisherSeries,
                                   ),
                                 )
                                 : SeriesDetailMobileLayout(
@@ -222,6 +220,8 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                                   onUpdateChapter: () => entry != null ? showUpdateProgressDialog(entry, isChapter: true) : null,
                                   onUpdateVolume: () => entry != null ? showUpdateProgressDialog(entry, isChapter: false) : null,
                                   onUpdateRating: () => entry != null ? showUpdateRatingDialog(entry) : null,
+                                  onAuthorTap: _navigateToAuthorSeries,
+                                  onPublisherTap: _navigateToPublisherSeries,
                                   buildTabContent: (hPadding) => SeriesDetailTabContent(
                                     series: fullSeries ?? widget.series,
                                     entry: entry,
@@ -235,8 +235,6 @@ class _SeriesDetailScreenState extends State<SeriesDetailScreen> with SeriesDeta
                                     works: works,
                                     enrichedLinks: enrichedLinks,
                                     hPadding: hPadding,
-                                    onAuthorTap: _navigateToAuthorSeries,
-                                    onPublisherTap: _navigateToPublisherSeries,
                                   ),
                                 ),
                             ),

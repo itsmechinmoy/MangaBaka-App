@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/library/models/library_entry.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
@@ -31,9 +31,6 @@ class SeriesDetailTabContent extends StatelessWidget {
   final double hPadding;
   final bool wideRightPaddingOnly;
 
-  final Function(String)? onAuthorTap;
-  final Function(String)? onPublisherTap;
-
   const SeriesDetailTabContent({
     super.key,
     required this.series,
@@ -50,8 +47,6 @@ class SeriesDetailTabContent extends StatelessWidget {
     this.isWide = false,
     this.hPadding = 16.0,
     this.wideRightPaddingOnly = false,
-    this.onAuthorTap,
-    this.onPublisherTap,
   });
 
   @override
@@ -94,8 +89,6 @@ class SeriesDetailTabContent extends StatelessWidget {
           l10n: l10n, 
           isWide: isWide, 
           horizontalPadding: tabPadding,
-          onAuthorTap: onAuthorTap,
-          onPublisherTap: onPublisherTap,
         );
     }
   }
