@@ -5,9 +5,7 @@ export 'package:mangabaka_app/core/theme/app_theme_colors.dart' show AppTheme;
 
 class AppConstants {
   static const String appName = 'MangaBaka';
-  // Canonical installed version used for the GitHub release update check.
-  // Keep in sync with `version:` in pubspec.yaml on every release.
-  static const String appVersion = '0.2.2';
+  static const String appVersion = '0.2.3';
   static const String baseApiUrl = 'https://api.mangabaka.dev/v1';
 
   // GitHub repository used by the in-app update system.
