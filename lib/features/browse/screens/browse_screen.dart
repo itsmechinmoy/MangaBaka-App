@@ -252,14 +252,6 @@ class BrowseScreenState extends State<BrowseScreen> {
                           selectedType: _controller.currentType,
                           onTypeChanged: _controller.setType,
                         ),
-                      if (_controller.currentType == BrowseType.series)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: FilterChipsRow(
-                            filters: _controller.currentFilters,
-                            onFiltersChanged: _controller.updateFilters,
-                          ),
-                        ),
                       if (_controller.isSearchMode &&
                           _controller.totalResults > 0)
                         Padding(
@@ -276,7 +268,7 @@ class BrowseScreenState extends State<BrowseScreen> {
                               ),
                               const SizedBox(width: 6),
                               Text(
-                                '${_controller.totalResults} ${LocalizationService().translate('series')}',
+                                '${_controller.totalResults}${_controller.isTotalCapped ? '+' : ''} ${LocalizationService().translate(_controller.currentType.name)}',
                                 style: TextStyle(
                                   color: AppConstants.textMutedColor,
                                   fontSize: 11,
@@ -285,6 +277,14 @@ class BrowseScreenState extends State<BrowseScreen> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      if (_controller.currentType == BrowseType.series)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: FilterChipsRow(
+                            filters: _controller.currentFilters,
+                            onFiltersChanged: _controller.updateFilters,
                           ),
                         ),
                       BrowseContent(

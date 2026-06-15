@@ -150,13 +150,8 @@ class PublisherSearchService {
   }
 
   Future<PublisherSearchResult> search(Map<String, dynamic> params) async {
-    final finalParams = <String, dynamic>{...params};
-    if (!finalParams.containsKey('content_rating')) {
-      finalParams['content_rating'] = SettingsManager().contentPreferences;
-    }
-
     final uri = Uri.parse(_baseUrl).replace(
-      queryParameters: UriUtils.encodeQueryParameters(finalParams),
+      queryParameters: UriUtils.encodeQueryParameters(params),
     );
 
     _logger.info('Performing publisher search. URI: $uri');
@@ -173,13 +168,16 @@ class PublisherSearchService {
         final json = jsonDecode(response.body);
         final List data = json['data'] ?? [];
         final total = json['total'] as int? ?? 0;
-        
+
         final results = data
             .map((item) => Publisher.fromJson(item as Map<String, dynamic>))
             .toList();
-        
+
         return PublisherSearchResult(publishers: results, total: total);
       } else {
+        _logger.severe(
+          'Publisher search failed. Status: ${response.statusCode}, Body: ${response.body}',
+        );
         throw ApiException(
           message: 'Failed to search publishers',
           statusCode: response.statusCode,

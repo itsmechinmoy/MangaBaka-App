@@ -65,6 +65,8 @@ class BrowseController extends ChangeNotifier {
   bool _hasMore = true;
   int _totalResults = 0;
   int get totalResults => _totalResults;
+  bool _isTotalCapped = false;
+  bool get isTotalCapped => _isTotalCapped;
 
   SearchFilters _currentFilters = SearchFilters();
   SearchFilters get currentFilters => _currentFilters;
@@ -92,7 +94,7 @@ class BrowseController extends ChangeNotifier {
   }
 
   void _onScroll() {
-    if (!scrollController.hasClients) return;
+    if (!scrollController.hasClients || scrollController.positions.length != 1) return;
 
     final isNearEnd =
         scrollController.position.pixels >=
@@ -132,6 +134,7 @@ class BrowseController extends ChangeNotifier {
     _hasMore = true;
     _isLoadingMore = false;
     _totalResults = 0;
+    _isTotalCapped = false;
     notifyListeners();
   }
 
@@ -179,6 +182,7 @@ class BrowseController extends ChangeNotifier {
     _hasMore = true;
     _isLoadingMore = false;
     _totalResults = 0;
+    _isTotalCapped = false;
     notifyListeners();
 
     await _fetchSearchResults();
@@ -263,11 +267,16 @@ class BrowseController extends ChangeNotifier {
     final newResults = result.series;
 
     // API sometimes returns 0 even with data; fall back to a calculated total.
-    _totalResults = result.total > 0
-        ? result.total
-        : (newResults.length < AppConstants.defaultPageLimit
-            ? _seriesResults.length + newResults.length
-            : 1000);
+    if (result.total > 0) {
+      _totalResults = result.total;
+      _isTotalCapped = false;
+    } else if (newResults.length < AppConstants.defaultPageLimit) {
+      _totalResults = _seriesResults.length + newResults.length;
+      _isTotalCapped = false;
+    } else {
+      _totalResults = 1000;
+      _isTotalCapped = true;
+    }
 
     _logger.info(
       'Fetched ${newResults.length} series results for page $_currentPage (Total: $_totalResults)',
@@ -315,7 +324,9 @@ class BrowseController extends ChangeNotifier {
     });
 
     final newResults = result.publishers;
-    _totalResults = result.total;
+    _totalResults = result.total > 0
+        ? result.total
+        : _publisherResults.length + newResults.length;
 
     _logger.info(
       'Fetched ${newResults.length} publisher results for page $_currentPage (Total: $_totalResults)',
@@ -396,6 +407,7 @@ class BrowseController extends ChangeNotifier {
       }
     }
 
+    _totalResults = _staffResults.length;
     notifyListeners();
     _scheduleScrollCheckIfNeeded();
   }

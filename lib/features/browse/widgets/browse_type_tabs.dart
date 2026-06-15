@@ -13,63 +13,84 @@ class BrowseTypeTabs extends StatelessWidget {
     required this.onTypeChanged,
   });
 
+  static const _tabs = [
+    BrowseType.series,
+    BrowseType.publishers,
+    BrowseType.staff,
+    // BrowseType.characters,
+  ];
+
+  Alignment _indicatorAlignment() {
+    final index = _tabs.indexOf(selectedType).clamp(0, _tabs.length - 1);
+    // Map index 0..n-1 to alignment x -1..1
+    final x = _tabs.length > 1 ? (index / (_tabs.length - 1)) * 2 - 1 : 0.0;
+    return Alignment(x, 0);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = LocalizationService();
 
-    return Container(
-      height: 44,
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        children: [
-          _buildTab(context, BrowseType.series, l10n.translate('series')),
-          _buildTab(
-            context,
-            BrowseType.publishers,
-            l10n.translate('publishers'),
-          ),
-          _buildTab(context, BrowseType.staff, l10n.translate('staff')),
-          _buildTab(
-            context,
-            BrowseType.characters,
-            l10n.translate('characters'),
-          ),
-        ],
-      ),
-    );
-  }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final tabWidth = constraints.maxWidth / _tabs.length;
 
-  Widget _buildTab(BuildContext context, BrowseType type, String label) {
-    final isSelected = selectedType == type;
-
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: GestureDetector(
-        onTap: () => onTypeChanged(type),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          height: 38,
           decoration: BoxDecoration(
-            color: isSelected
-                ? AppConstants.accentColor.withValues(alpha: 0.12)
-                : AppConstants.tertiaryBackground,
-            borderRadius: BorderRadius.circular(AppConstants.pillRadius),
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isSelected
-                  ? AppConstants.accentColor
-                  : AppConstants.textMutedColor,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              fontSize: 14,
+            color: AppConstants.secondaryBackground,
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(
+              color: AppConstants.borderColor.withValues(alpha: 0.15),
+              width: 1.5,
             ),
           ),
-        ),
-      ),
+          child: Stack(
+            children: [
+              AnimatedAlign(
+                alignment: _indicatorAlignment(),
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOutCubic,
+                child: Container(
+                  width: tabWidth,
+                  height: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppConstants.accentColor,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+              ),
+              Row(
+                children: _tabs.map((type) {
+                  final isSelected = selectedType == type;
+                  final label = l10n.translate(type.name);
+                  return Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () => onTypeChanged(type),
+                      child: Center(
+                        child: AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 150),
+                          curve: Curves.easeInOut,
+                          style: TextStyle(
+                            color: isSelected
+                                ? AppConstants.primaryBackground
+                                : AppConstants.textColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                          child: Text(label),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
