@@ -5,11 +5,13 @@ import 'package:mangabaka_app/features/series/widgets/chip.dart';
 class SeriesTagGroup extends StatefulWidget {
   final String header;
   final Map<String, List<String>> subGroups;
+  final VoidCallback? onToggle;
 
   const SeriesTagGroup({
     super.key,
     required this.header,
     required this.subGroups,
+    this.onToggle,
   });
 
   @override
@@ -27,6 +29,7 @@ class _SeriesTagGroupState extends State<SeriesTagGroup> {
         setState(() {
           _isCollapsed = !_isCollapsed;
         });
+        widget.onToggle?.call();
       },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 24),
