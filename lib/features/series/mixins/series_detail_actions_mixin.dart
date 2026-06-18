@@ -17,32 +17,46 @@ mixin SeriesDetailActionsMixin<T extends StatefulWidget> on State<T> {
   set isAdding(bool value);
 
   void showUpdateRatingDialog(LibraryEntry entry) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => RatingSelectionDialog(
-        initialRating: entry.rating ?? 0,
-        onRatingChanged: (rating) {
-          libraryService.updateLibraryEntryRating(series.id, rating);
-        },
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: RatingSelectionDialog(
+          initialRating: entry.rating ?? 0,
+          onRatingChanged: (rating) {
+            libraryService.updateLibraryEntryRating(series.id, rating);
+          },
+        ),
       ),
     );
   }
 
   void showUpdateProgressDialog(LibraryEntry entry, {bool isChapter = true}) {
     final l10n = LocalizationService();
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => ProgressUpdateDialog(
-        initialValue: (isChapter ? entry.progressChapter : entry.progressVolume) ?? 0,
-        title: isChapter ? l10n.translate('update_chapters') : l10n.translate('update_volumes'),
-        maxValue: isChapter ? series.totalChapters : series.finalVolume,
-        onUpdate: (value) {
-          if (isChapter) {
-            libraryService.updateLibraryEntryProgress(series.id, progressChapter: value);
-          } else {
-            libraryService.updateLibraryEntryProgress(series.id, progressVolume: value);
-          }
-        },
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: ProgressUpdateDialog(
+          initialValue: (isChapter ? entry.progressChapter : entry.progressVolume) ?? 0,
+          title: isChapter ? l10n.translate('update_chapters') : l10n.translate('update_volumes'),
+          maxValue: isChapter ? series.totalChapters : series.finalVolume,
+          onUpdate: (value) {
+            if (isChapter) {
+              libraryService.updateLibraryEntryProgress(series.id, progressChapter: value);
+            } else {
+              libraryService.updateLibraryEntryProgress(series.id, progressVolume: value);
+            }
+          },
+        ),
       ),
     );
   }

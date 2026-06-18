@@ -122,20 +122,27 @@ class EntryListLayoutHelper {
     }
 
     void openUpdateDialog() {
-      showDialog(
+      showModalBottomSheet(
         context: context,
-        builder: (context) => ProgressUpdateDialog(
-          initialValue: progress,
-          title: isChapter ? l10n.translate('update_chapters') : l10n.translate('update_volumes'),
-          maxValue: isChapter ? series.totalChapters : series.finalVolume,
-          onUpdate: (value) {
-            final libraryService = getIt<LibraryService>();
-            if (isChapter) {
-              libraryService.updateLibraryEntryProgress(series.id, progressChapter: value);
-            } else {
-              libraryService.updateLibraryEntryProgress(series.id, progressVolume: value);
-            }
-          },
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (context) => Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: ProgressUpdateDialog(
+            initialValue: progress,
+            title: isChapter ? l10n.translate('update_chapters') : l10n.translate('update_volumes'),
+            maxValue: isChapter ? series.totalChapters : series.finalVolume,
+            onUpdate: (value) {
+              final libraryService = getIt<LibraryService>();
+              if (isChapter) {
+                libraryService.updateLibraryEntryProgress(series.id, progressChapter: value);
+              } else {
+                libraryService.updateLibraryEntryProgress(series.id, progressVolume: value);
+              }
+            },
+          ),
         ),
       );
     }
