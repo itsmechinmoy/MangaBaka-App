@@ -244,6 +244,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                               a: AppTypography.sans(
                                 color: context.colors.accent,
                                 fontSize: 14,
+                              ).copyWith(
                                 decoration: TextDecoration.underline,
                               ),
                               code: TextStyle(
