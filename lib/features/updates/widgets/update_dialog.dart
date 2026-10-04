@@ -1,4 +1,3 @@
-import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -9,10 +8,11 @@ import 'package:mangabaka_app/core/constants/app_constants.dart';
 import 'package:mangabaka_app/core/di/service_locator.dart';
 import 'package:mangabaka_app/core/localization/localization_service.dart';
 import 'package:mangabaka_app/core/logging/logging_service.dart';
-import 'package:mangabaka_app/features/updates/models/app_release.dart';
-import 'package:mangabaka_app/features/updates/services/update_service.dart';
+import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'package:mangabaka_app/core/theme/theme_context.dart';
 import 'package:mangabaka_app/core/widgets/design/mb_spinner.dart';
+import 'package:mangabaka_app/features/updates/models/app_release.dart';
+import 'package:mangabaka_app/features/updates/services/update_service.dart';
 
 /// Dialog shown when a newer GitHub release is detected. Title is the release
 /// name, body is the release description, with "Later" and "Update now"
