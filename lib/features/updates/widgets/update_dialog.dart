@@ -2,6 +2,7 @@ import 'package:mangabaka_app/core/theme/app_typography.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:mangabaka_app/core/constants/app_constants.dart';
@@ -190,16 +191,71 @@ class _UpdateDialogState extends State<UpdateDialog> {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 280),
                   child: SingleChildScrollView(
-                    child: Text(
-                      release.body.trim().isEmpty
-                          ? l10n.translate('no_release_notes')
-                          : release.body.trim(),
-                      style: AppTypography.sans(
-                        color: context.colors.text,
-                        fontSize: 14,
-                        height: 1.5,
-                      ),
-                    ),
+                    child: release.body.trim().isEmpty
+                        ? Text(
+                            l10n.translate('no_release_notes'),
+                            style: AppTypography.sans(
+                              color: context.colors.text,
+                              fontSize: 14,
+                              height: 1.5,
+                            ),
+                          )
+                        : MarkdownBody(
+                            data: release.body.trim(),
+                            selectable: true,
+                            onTapLink: (text, href, title) {
+                              if (href != null) {
+                                launchUrl(
+                                  Uri.parse(href),
+                                  mode: LaunchMode.externalApplication,
+                                );
+                              }
+                            },
+                            styleSheet: MarkdownStyleSheet.fromTheme(
+                              Theme.of(context),
+                            ).copyWith(
+                              p: AppTypography.sans(
+                                color: context.colors.text,
+                                fontSize: 14,
+                                height: 1.5,
+                              ),
+                              listBullet: AppTypography.sans(
+                                color: context.colors.textMuted,
+                                fontSize: 14,
+                              ),
+                              h1: AppTypography.display(
+                                color: context.colors.text,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              h2: AppTypography.display(
+                                color: context.colors.text,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              h3: AppTypography.display(
+                                color: context.colors.text,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              a: AppTypography.sans(
+                                color: context.colors.accent,
+                                fontSize: 14,
+                                decoration: TextDecoration.underline,
+                              ),
+                              code: TextStyle(
+                                fontFamily: 'monospace',
+                                color: context.colors.accent,
+                                fontSize: 13,
+                              ),
+                              codeblockDecoration: BoxDecoration(
+                                color: context.colors.surfaceRaised,
+                                borderRadius: BorderRadius.circular(
+                                  AppConstants.denseRadius,
+                                ),
+                              ),
+                            ),
+                          ),
                   ),
                 ),
               ),
