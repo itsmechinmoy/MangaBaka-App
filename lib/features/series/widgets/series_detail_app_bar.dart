@@ -8,6 +8,7 @@ import 'package:mangabaka_app/features/series/models/series.dart';
 import 'package:mangabaka_app/features/series/widgets/app_bar/glass_control.dart';
 import 'package:mangabaka_app/features/series/widgets/app_bar/series_app_bar_metrics.dart';
 import 'package:mangabaka_app/features/series/widgets/app_bar/series_banner_background.dart';
+import 'package:mangabaka_app/core/widgets/design/marquee_text.dart';
 import 'package:mangabaka_app/core/theme/theme_context.dart';
 
 /// Banner hero for the series detail page: a full-bleed blurred cover that
@@ -225,21 +226,20 @@ class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
   }
 
   Widget _buildCollapsedTitle(SeriesAppBarMetrics metrics) {
+    if (metrics.titleOpacity == 0) return const SizedBox.shrink();
     return IgnorePointer(
       // Fully faded out it is still laid out, and would otherwise swallow taps
       // meant for the banner beneath it.
       ignoring: metrics.titleOpacity == 0,
       child: Opacity(
         opacity: metrics.titleOpacity,
-        child: Text(
+        child: MarqueeText(
           widget.title,
           style: AppTypography.display(
             color: context.colors.text,
             fontWeight: FontWeight.w600,
             fontSize: 19,
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
