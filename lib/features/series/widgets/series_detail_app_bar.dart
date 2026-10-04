@@ -233,14 +233,25 @@ class _SeriesDetailAppBarState extends State<SeriesDetailAppBar> {
       ignoring: metrics.titleOpacity == 0,
       child: Opacity(
         opacity: metrics.titleOpacity,
-        child: MarqueeText(
-          widget.title,
-          style: AppTypography.display(
-            color: context.colors.text,
-            fontWeight: FontWeight.w600,
-            fontSize: 19,
-          ),
-        ),
+        child: metrics.titleOpacity == 0
+            ? Text(
+                widget.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTypography.display(
+                  color: context.colors.text,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 19,
+                ),
+              )
+            : MarqueeText(
+                widget.title,
+                style: AppTypography.display(
+                  color: context.colors.text,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 19,
+                ),
+              ),
       ),
     );
   }
