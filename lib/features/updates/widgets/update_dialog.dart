@@ -205,10 +205,13 @@ class _UpdateDialogState extends State<UpdateDialog> {
                             selectable: true,
                             onTapLink: (text, href, title) {
                               if (href != null) {
-                                launchUrl(
-                                  Uri.parse(href),
-                                  mode: LaunchMode.externalApplication,
-                                );
+                                final uri = Uri.tryParse(href);
+                                if (uri != null) {
+                                  launchUrl(
+                                    uri,
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
                               }
                             },
                             styleSheet: MarkdownStyleSheet.fromTheme(
